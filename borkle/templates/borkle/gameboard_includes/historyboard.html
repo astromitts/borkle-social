@@ -1,0 +1,33 @@
+{% load static apptags %}
+
+<div class="row">
+{% for player, turns in history.items %}
+	<div class="col">
+		<table class="table">
+			<tr><th colspan="100%">{{player.username}}</th></tr>
+			{% for turn_index, data in turns.items %}
+				<tr><td>
+					<b>Turn: {{turn_index}}</b><br />
+					{% for scoreset in data.scoresets %}	
+						<div class="row">
+							<div class="col">
+								{% if scoreset.score == 0 %}
+									<img src="{% static '0'|dice_image %}" width="20px"/> 
+								{% else %}
+									{% for score in scoreset.scorable_values %}
+										<img src="{% static score|dice_image %}" width="20px"/>&nbsp;
+									{% endfor %}
+								{% endif %}
+							</div>
+							<div class="col">= {{scoreset.score}}</div>
+						</div>
+					{% endfor %}
+					<div class="row">
+						<div class="col"><b>Total:</b></div><div class="col">= {{data.total_score}}</div>
+					</div>
+				</td></tr>
+			{% endfor %}
+		</table>
+	</div>
+{% endfor %}
+</div>

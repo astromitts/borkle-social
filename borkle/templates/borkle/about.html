@@ -1,0 +1,41 @@
+{% extends 'borkle/base.html' %}
+{% load static %}
+
+{% block main_content %}
+	<div block="container main-content">
+		<div class="row">
+			<div class="col">
+				<div class="jumbotron">
+				<h1 class="display-4">Welcome to Borkle!</h1>
+				<p class="lead">Borkle is a dice game where you try to roll scoring combinations to get the most points. You know, it's a lot like that game Farkle.</p>
+				<hr class="my-4">
+				<h3>The Rules</h3>
+					<ul>
+						<li>Roll the dice to score points!</li>
+						<li>There is no minimum score score is needed to get on the board</li>
+						<li>You can keep rolling as long as you keep scoring</li>
+						<li>For each roll, you can select any scoring dice combination to table it. This removes the dice from play</li>
+						<li>If you have tabled all six of your dice, you can start fresh with all six dice back in play and keep building on your score!</li>
+						<li>If you roll and don't have any possible score, your turn is over and you lose your points for that turn</li>
+						<li>Once some one reaches the game's max score, each other player gets one more turn to try to beat the highest scoring player and win</li>
+						<li>At the end of the game, the player with the highest score wins!</li>
+						<li>There is no tie breaking mechanism, so games can result in ties</li>
+						<li>Refer to <a href="{% url 'score_chart' %}">the score chart</a> to see possible dice scores</li>
+					</ul>
+				{% if not user.is_authenticated %}
+				<p>Already registered?</p>
+				<p class="lead">
+					<a class="btn btn-primary btn-lg" href="{% url 'session_manager_login' %}" role="button">Log in!</a>
+				</p>
+				<p>Want to register?</p>
+				<p class="lead">
+					<a class="btn btn-primary btn-lg" href="{% url 'session_manager_register' %}" role="button">Register!</a>
+				</p>
+				{% else %}
+					<p>You're already logged in. Way to go!</p>
+				{% endif %}
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

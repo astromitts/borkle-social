@@ -1,0 +1,17 @@
+{% if game.status == 'active' %}
+	{% if is_current_player %}
+		{% if game.current_player.is_last_turn %}
+			<b>This is your last turn!!</b>
+		{% else %}
+			<b>It's your turn!</b>
+		{% endif %}
+		<div id="roll-button">
+			<button class="btn btn-warning" id="rolldice" data-target-url="{% url 'game_board_roll_dice' game_uuid=game.uuid %}" data-target-div="diceboard">Roll Dice!</button>
+		</div>
+		{% if game.current_player.current_turn.has_rolled %}
+			<a id="end-turn" href="{% url 'game_board_advance_player' game_uuid=game.uuid %}"><button class="btn btn-danger">End Turn</button></a>
+		{% endif %}
+	{% else %}
+		It's {{game.current_player.username}}'s{% if game.current_player.is_last_turn %} last{%endif %} turn!
+	{% endif %}
+{% endif %}

@@ -1,0 +1,20 @@
+{% extends 'borkle/base.html' %}
+
+{% block main_content %}
+	{% block form %}
+		{% if form %}
+			<h2>{{form_header}}</h2>
+			<form class="form" method="POST" action="">
+			{% csrf_token %}
+			<table class="table">
+				{% if form %}
+					{{form.as_table}}
+				{% endif %}
+				<tr>
+					<td></td>
+					<td><input type="submit" class="btn btn-primary" value="{% if submit_text %}{{submit_text}}{% else %}Submit{% endif %}" /></td>
+			</table>
+			</form>
+		{% endif %}
+	{% endblock %}
+{% endblock %}

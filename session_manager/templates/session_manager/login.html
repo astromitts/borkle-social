@@ -1,3 +1,6 @@
+{% extends 'borkle/base.html' %}
+{% block main_content %}
 {% include 'session_manager/generic_form.html' with form=form submit_text='Log in' %}
 
 <div>Don't have an account? <a href="{% url 'session_manager_register' %}">Register here</a>.
+{% endblock %}

@@ -1,0 +1,48 @@
+{% load static apptags %}
+
+<input type="hidden" value="{% url 'game_board_check_game_changed' game_uuid=game.uuid%}?initial_action_count={{initial_action_count}}" id="checkhistory" />
+
+{% if rolled_dice %}
+	<input type="hidden" id="borkle" value="{{borkle}}" />
+	{% if active_roll and borkle %}
+		<b>You borkled!</b>
+	{% endif %}
+	<div class="row">
+		<div class="col">Rolled dice:</div>
+		<div class="col"><b>You have {{game.current_player.current_turn.available_dice_count}} available dice</b></div>
+	</div>
+	<div class="row">
+		<div class="col-5">
+			{% for field, value in rolled_dice.items %}
+				{% if is_current_player and has_score %}
+					<input class="selected-dice" type="hidden" id="{{field}}" name="{{field}}" value=""/> 
+					<img class="dice dice_selectable" id="{{field}}"  src="{% static value|dice_image %}" width="100rem"/>
+				{% else %}
+					<img class="dice" src="{% static value|dice_image %}" id="{{field}}" width="100rem"/>
+				{% endif %}
+			{% endfor %}
+		</div>
+		<div class="col">
+		{% if is_current_player and has_score %}
+				<button class="btn btn-primary" id="makeselection" data-checkscore-url="{% url 'game_board_check_score_selection' game_uuid=game.uuid %}" data-set-selection-url="{% url 'game_board_make_score_selection' game_uuid=game.uuid %}">Make selection</button>
+		{% endif %}
+
+		{% if scoresets %}
+			<br /><br />
+			<b>Current score for this turn: {{game.current_player.current_turn.current_score}}</b>
+			<br /><br />
+			<b>Scored sets: </b>
+			{% for scoreset in scoresets %}
+				<br />
+				{% for score in scoreset.scorable_values %}
+					<img src="{% static score|dice_image %}" width="20rem"/>&nbsp;
+				{% endfor %}
+				= {{scoreset.score}}
+				{% if is_current_player and can_undo and forloop.first %}
+					<button class="btn btn-sm btn-primary" id="undo-selection" target-url="{% url 'game_board_undo_selection' game_uuid=game.uuid selection_id=scoreset.pk %}">Undo</button>
+				{% endif %}
+			{% endfor %}
+		{% endif %}
+		</div>	
+	</div>
+{% endif %}

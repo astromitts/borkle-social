@@ -1,0 +1,43 @@
+#main-content {
+	margin-top: 2rem;
+}
+
+img.dice {
+	border: 1px solid #ffffff;
+}
+
+img.dice_selectable:hover {
+	border: 1px solid orange;
+}
+
+img.dice_selected {
+	border: 1px solid orange;
+}
+
+tr.scoreboard_myscore {
+	font-weight: bold;
+}
+
+tr.scoreboard_currentplayer {
+	background-color: #FEF9E7;
+}
+
+div#roll-button {
+	margin-bottom: 7rem;
+}
+
+.dashboard-row {
+	margin-bottom: 3rem;
+}
+
+#dashboard-game-categories .card {
+	margin-bottom: .75rem;
+}
+
+.margin_t75 {
+	margin-top: .75rem;
+}
+
+.btn-long {
+	min-width: 25rem;
+}

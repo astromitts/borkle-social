@@ -1,0 +1,13 @@
+<div class="col">
+	<h3>Players</h3>
+	<table class="table">
+	{% for player in game.gameplayer_set.all %}
+		<tr class="{% if player == game.current_player %}scoreboard_currentplayer {% endif %}{% if player == gameplayer %}scoreboard_myscore {% endif %}">
+			<td>{{player.player.user.username}}:</td>
+			<td>{{player.total_score}}</td>
+			<td>/</td>
+			<td>{{game.max_score}}</td>
+		</tr>
+	{% endfor %}
+	</table>
+</div>

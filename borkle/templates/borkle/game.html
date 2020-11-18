@@ -1,0 +1,53 @@
+{% extends 'borkle/base.html' %}
+{% load static %}
+{% block extra_js %}
+	<script src="{% static 'js/game.js' %}"></script>
+{% endblock %}
+{% block main_content %}
+	<div class="row">
+		<div class="col"><h2>Game codename: {{game.code_name}}</h2></div>
+		{% if is_owner %}
+			<div class="col">
+				<div id="gametools">
+					<a href="{% url 'game_cancel' game_uuid=game.uuid %}"><button class="btn btn-danger">Cancel game</button></a>
+				</div>
+			</div>
+		{% endif %}
+	</div>
+	<div id="messages" class="alert alert-danger" style="visibility: hidden;"></div>
+
+	{% if game.get_status == 'waiting' %}
+		<div>We are still waiting on the rest of the players, though</div>
+		<h3>Players</h3>
+		{% for gameplayer in game.gameplayer_set.all %}
+			{% if gameplayer.ready %}
+				{{gameplayer.player.user.username}}: ready!
+			{% else %}
+				{{gameplayer.player.user.username}}: waiting
+			{% endif %}
+			<br />
+		{% endfor %}
+
+	{% elif game.get_status == 'active' %}
+		<input type="hidden" value="{{autorefresh}}" id="autorefresh" />
+		<input type="hidden" value="{% url 'game_board_check_player_status' game_uuid=game.uuid%}" id="status-check-url" />
+		<div class="row">
+			<div class="col">
+				<div class="autorefresh" id="scoreboard" data-target-url="{% url 'game_board_scoreboard' game_uuid=game.uuid %}">
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-2">
+				<div class="autorefresh" id="gameboard" data-target-url="{% url 'game_board_refresh' game_uuid=game.uuid %}" ></div>
+			</div>
+			<div class="col">
+				<div class="autorefresh" id="diceboard" data-target-url="{% url 'game_board_view_rolled_dice' game_uuid=game.uuid %}">
+				</div>
+			</div>
+		</div>
+		
+		<div class="autorefresh" id="historyboard" data-target-url="{% url 'game_board_turn_history' game_uuid=game.uuid %}"></div>
+
+	{% endif %}
+{% endblock %}

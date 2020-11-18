@@ -1,0 +1,71 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="description" content="">
+	<meta name="keywords" content="">
+	<meta name="author" content="Bo Morin">
+	<title>{% block page_title %}Borkle! It's a lot like Farkle.{% endblock %}</title>
+	<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
+	<link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+	<link href= 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/ui-lightness/jquery-ui.css' rel='stylesheet'> 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js" > </script> 
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" > </script>
+	<script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+	<link href="{% static 'css/app.css' %}" rel="stylesheet">
+	{% block extra_js %}
+	{% endblock %}
+</head>
+<body>
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+		<div class="container">
+			<a class="navbar-brand" href="{% url 'dashboard' %}">Borkle!</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarText">
+				<ul class="navbar-nav mr-auto">
+					{% if user.is_authenticated %}
+						<li class="nav-item active">
+							<a class="nav-link" href="{% url 'dashboard' %}">Dashboard <span class="sr-only">(current)</span></a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="{% url 'initialize_game' %}">New game</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="{%url 'session_manager_logout' %}">Log out</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="{%url 'score_chart' %}">How to score</a>
+						</li>
+					{% else %}
+						<li class="nav-item">
+							<a class="nav-link" href="{% url 'session_manager_register' %}">Register</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="{%url 'session_manager_login' %}">Log in</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="{%url 'about' %}">About</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="{%url 'score_chart' %}">How to score</a>
+						</li>
+					{% endif %}
+				</ul>
+				<span class="navbar-text">Logged in as: {{user.username}}</span>
+			</div>
+		</div>
+	</nav>
+
+	<div class="container">
+		<div id="main-content">
+			<div id="game-container">
+				{% block main_content %}{% endblock %}
+			</div>
+		</div>
+	</div>
+</body>

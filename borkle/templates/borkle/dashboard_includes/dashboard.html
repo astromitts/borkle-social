@@ -1,0 +1,84 @@
+{% load apptags %}
+
+{% with player.all_games as games %}
+	<div id="dashboard-game-categories" class="row dashboard-row">
+		<div class="col">	
+			
+			<h3>Active Games</h3>
+			{% if games.active %}
+				{% for game in games.active %}
+					<div class="card" style="width: 18rem;">
+					  <div class="card-body">
+					    <h5 class="card-title">codename: {{game.code_name}}</h5>
+					    <h6 class="card-subtitle mb-2 text-muted">{{game.current_player.username}}'s turn</h6>
+					    <a href="{% url 'game_board' game_uuid=game.uuid %}" class="card-link">Go to game</a>
+					  </div>
+					</div>
+				{% endfor %}
+			{% else %}
+				<div class="card" style="width: 18rem;">
+				  <div class="card-body">
+				    <h5 class="card-title">No active games</h5>
+				    <p><a href="{% url 'initialize_game' %}"><button class="btn btn-success">Start a game</button></a></p>
+				  </div>
+				</div>
+			{% endif %}
+
+		</div>
+
+		{% if games.pending %}
+			<div class="col">
+				<h3>Pending Games</h3>
+					{% for game in games.pending %}
+						<div class="card" style="width: 18rem;">
+						  <div class="card-body">
+						    <h5 class="card-title">codename: {{game.code_name}}</h5>
+
+							{% for gp in game.gameplayer_set.all %}
+								{% if gp.ready %}
+									<h6 class="card-subtitle mb-2 text-muted">{{gp.player.user.username}}: ready!</h6>
+								{% else %}
+									<h6 class="card-subtitle mb-2 text-muted">{{gp.player.user.username}}: waiting</h6>
+								{% endif %}
+							{% endfor %}
+							{% if player == game.created_by %}
+								<a href="{% url 'game_cancel' game_uuid=game.uuid %}"><button class="btn btn-danger">Cancel game</button>
+							{% endif %}
+						  </div>
+						</div>
+					{% endfor %}
+			</div>
+		{% endif %}
+		{% if games.invitations %}
+			<div class="col">
+				<h3>Game Invitations</h3>
+				{% for game in games.invitations %}
+					<div class="card" style="width: 18rem;">
+					  <div class="card-body">
+					    <h5 class="card-title">codename: {{game.code_name}}</h5>
+					    <h6 class="card-subtitle mb-2 text-muted">Invited by {{game.created_by.user.username}}</h6>
+					    <a href="{% url 'game_accept_invitation_link' game_uuid=game.uuid %}" class="card-link">Join Game</a>
+					    <a href="{% url 'game_decline_invitation_link' game_uuid=game.uuid %}" class="card-link">Decline Game</a>
+					  </div>
+					</div>
+				{% endfor %}
+			</div>
+		{% endif %}
+		{% if games.completed %}
+			<div class="col">
+				<h3>Game History</h3>
+				{% for game in games.completed %}
+					<div class="card" style="width: 18rem;">
+					  <div class="card-body">
+					  		<h5 class="card-title">codename: {{game.code_name}}</h5>
+							{% for winner in game.winner %}
+					    		<h6 class="card-subtitle mb-2 text-muted">winner: {{winner.username}} {{winner.total_score}} points</h6>
+					    	{% endfor %}
+					    	<a href="{% url 'game_history' game_uuid=game.uuid %}" class="card-link">Score card</a>
+						</div>
+					</div>
+				{% endfor %}
+			</div>
+		{% endif %}
+	</div>
+{% endwith %}
