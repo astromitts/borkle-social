@@ -336,6 +336,7 @@ class Turn(models.Model):
         self.save()
 
     def roll_dice(self):
+        self.scoreset_set.all().update(locked=True)
         if self.available_dice_count == 0:
             self.available_dice_count = 6
         for dice_field in self.dice_fields:
@@ -442,6 +443,7 @@ class ScoreSet(models.Model):
     scored_dice_4_value = models.IntegerField(blank=True, null=True)
     scored_dice_5_value = models.IntegerField(blank=True, null=True)
     scored_dice_6_value = models.IntegerField(blank=True, null=True)
+    locked = models.BooleanField(default=False)
 
     def __str__(self):
         return '{} Score set: {}'.format(self.turn, self.pk)

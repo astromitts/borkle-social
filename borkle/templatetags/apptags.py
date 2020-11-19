@@ -1,5 +1,7 @@
 from django import template
 
+from borkle.utils import get_dice_image_path
+
 register = template.Library()
 
 @register.filter
@@ -9,20 +11,7 @@ def pdb(item):
 
 @register.filter
 def dice_image(dice_value):
-    if dice_value == 1:
-        return 'images/dice/1.png'
-    elif dice_value == 2:
-        return 'images/dice/2.png'
-    elif dice_value == 3:
-        return 'images/dice/3.png'
-    elif dice_value == 4:
-        return 'images/dice/4.png'
-    elif dice_value == 5:
-        return 'images/dice/5.png'
-    elif dice_value == 6:
-        return 'images/dice/6.png'
-    else:
-        return 'images/dice/0.png'
+    return get_dice_image_path(dice_value)
 
 @register.filter
 def rules_set(foo):

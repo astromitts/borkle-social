@@ -130,4 +130,4 @@ PW_RESET_SUCCESS_REDIRECT = 'session_manager_index'
 
 HOST = '127.0.0.1:8000'
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '10.0.0.132']

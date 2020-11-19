@@ -2,16 +2,48 @@
 	margin-top: 2rem;
 }
 
-img.dice {
-	border: 1px solid #ffffff;
+#winner-data {
+	font-weight: bold;
+	text-align:center;
+	padding-top: 2rem;
+	padding-bottom: 4rem;
 }
 
-img.dice_selectable:hover {
-	border: 1px solid orange;
+button.game-btn {
+	color: #EAEDED;
+	background-color: #45B39D;
+	border: 1px solid #45B39D;
+	border-radius: 1rem;
+}
+button.game-btn:hover {
+	color: #EAEDED;
+	background-color: #0E6655;
+	border: 1px solid #45B39D;
+	border-radius: 1rem;
 }
 
-img.dice_selected {
-	border: 1px solid orange;
+img.rolled-dice {
+	border: 2px solid #ffffff;
+	width: 5rem;
+}
+
+img.rolled-dice_selected {
+	border: 2px solid green;
+	width: 5rem;
+}
+
+img.rolled-dice_selectable:hover {
+	border: 2px solid orange;
+}
+
+div.selected-dice-slot_active {
+	background-color: #FCF3CF;
+	border-radius: 1rem;
+	padding: 1rem;
+}
+
+div.scored-sets-slots {
+	padding-top: 1rem;
 }
 
 tr.scoreboard_myscore {

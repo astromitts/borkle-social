@@ -1,0 +1,92 @@
+{% extends 'borkle/base.html' %}
+{% load static apptags %}
+{% block extra_js %}
+	<script src="{% static 'js/api_game.js' %}"></script>
+{% endblock %}
+
+{% block main_content %}
+	<input type="hidden" id="static-url" value="{% static '' %}" />
+	<input type="hidden" id="api-gameinfo-url" value="{% url 'game_api' game_uuid=game.uuid api_target='gameinfo' %}" />
+	<input type="hidden" id="api-diceboard-url" value="{% url 'game_api' game_uuid=game.uuid  api_target='diceboard' %}" />
+	<input type="hidden" id="api-scorecard-url" value="{% url 'game_api' game_uuid=game.uuid api_target='scorecard' %}" />
+	<input type="hidden" id="api-scoreboard-url" value="{% url 'game_api' game_uuid=game.uuid api_target='scoreboard' %}" />
+	<input type="hidden" id="api-scoredice-url" value="{% url 'game_api' game_uuid=game.uuid api_target='scoredice' %}" />
+	<input type="hidden" id="api-undoselection-url" value="{% url 'game_api' game_uuid=game.uuid api_target='undoselection' %}" />
+	<input type="hidden" id="api-rolldice-url" value="{% url 'game_api' game_uuid=game.uuid api_target='rolldice' %}" />
+	<input type="hidden" id="api-endturn-url" value="{% url 'game_api' game_uuid=game.uuid api_target='endturn' %}" />
+	<input type="hidden" id="latest-scorecard-turn" value="0" />
+
+	<div class="row" id="scoreboard">
+		<div class="col">
+			<h3>Players</h3>
+			<table class="table" id="scoreboard">
+				{% for player in game.gameplayer_set.all %}
+				<tr id="scoreboard-player_{{player.pk}}" class="{% if player == gameplayer %}scoreboard_myscore {% endif %}">
+					<td>{{player.player.user.username}}:</td>
+					<td class="scoreboard-player-score" id="scoreboard-player-score_{{player.pk}}">{{player.total_score}}</td>
+					<td>/</td>
+					<td>{{game.max_score}}</td>
+				</tr>
+			{% endfor %}
+			</table>
+		</div>
+	</div>
+	<div id="diceboard">
+		<div class="row">
+			<div class="col" id="current-score"></div>
+			<div class="col" id="available-dice"></div>
+		</div>
+		<div class="row" id="game-tools">
+			<div class="col" id="roll-dice-btn">
+				<button class="game-btn" id="rolldice" style="display: none">Roll dice</button>
+			</div>
+			<div class="col" id="advance-player-btn">
+				<button class="game-btn" id="advanceplater" style="display: none">End turn</button>
+				<div id="borkle-message" style="display: none">
+					Oh no! You rolled a borkle! Your turn is over :(
+				</div>
+			</div>
+			<div class="col">
+			</div>
+		</div>
+		<div class="row">
+			<div class="col" id="rolled-dice"></div>
+		</div>
+		<div class="row" id="selected-dice-slot" class="selected-dice-slot_active">
+			<div class="col-1">
+				<button class="game-btn" id="score-selected-dice" style="display: none;">Score selected dice</button>
+			</div>
+			<div class="col" id="selected-dice">
+			</div>
+		</div>
+		<div class="row" id="scored-sets-slots">
+			<div class="col" id="scored-sets">
+			</div>
+		</div>
+		<div class="row">
+			<div class="col">
+				<div id="opponent-current-score"></div>
+				<div id="opponent-available-dice"></div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col" id="opponent-rolled-dice"></div>
+			<div class="col" id="opponent-scored-sets"></div>
+		</div>
+		<div class="row">
+			<div class="col" id="opponent-selected-dice"></div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col" id="winner-data"></div>
+	</div>
+	<div class="row" id="score-card-log">
+		{% for player in game.gameplayer_set.all %}
+		<div class="col">
+			{{player.username}}
+			<table class="table" id="scorecard_{{player.username}}">
+			</table>
+		</div>
+		{% endfor %}
+	</div>
+{% endblock %}
