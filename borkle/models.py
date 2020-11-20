@@ -78,13 +78,23 @@ class Game(models.Model):
     current_turn_index = models.IntegerField(default=1)
     action_count = models.IntegerField(default=1)
     last_turn = models.BooleanField(default=False)
+    game_type = models.CharField(
+        max_length=25,
+        choices=(('practice', 'practice'), ('normal', 'normal')),
+        default='normal'
+    )
 
     def __str__(self):
         return 'Game {}'.format(self.code_name)
 
     @classmethod
-    def create(cls, max_score, invited_players, initial_player, code_name_prefix=None):
-        game = cls(max_score=max_score, num_players=len(invited_players) + 1, created_by=initial_player)
+    def create(cls, max_score, invited_players, initial_player, code_name_prefix=None, game_type='normal'):
+        game = cls(
+            max_score=max_score,
+            num_players=len(invited_players) + 1,
+            created_by=initial_player,
+            game_type=game_type
+        )
         game.save()
         if code_name_prefix:
             game.code_name = '{}-{}'.format(code_name_prefix, game.code_name)

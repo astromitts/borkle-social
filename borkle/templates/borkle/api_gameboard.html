@@ -18,7 +18,12 @@
 
 	<div class="row" id="scoreboard">
 		<div class="col">
-			<h3>Players</h3>
+			{% if game.game_type == 'practice' %}
+				<h4>Practice Game: {{game.code_name}}</h4>
+			{% else %}
+				<h4>Game codename: {{game.code_name}}</h4>
+				<h5>Players</h5>
+			{% endif %}
 			<table class="table" id="scoreboard">
 				{% for player in game.gameplayer_set.all %}
 				<tr id="scoreboard-player_{{player.username}}" data-player-name="{{player.username}}" class="player-score {% if player == gameplayer %}scoreboard_myscore {% endif %}">
@@ -95,14 +100,15 @@
 
 	
 	<div class="row">
-		{% if is_game_owner and game.gameplayer_set.count > 1 %}
+		{% if game.game_type == 'practice' %}
 			<div class="col" id="leavegame">
 				<a href="{% url 'game_cancel' game_uuid=game.uuid %}?src=game"><button class="btn btn-danger">Cancel Game</button></a>
 			</div>
-		{% endif %}
+		{% else %}
 		<div class="col" id="leavegame">
 			<a href="{% url 'leave_game' game_uuid=game.uuid %}"><button class="btn btn-danger">Leave Game</button></a>
 		</div>
+		{% endif %}
 	</div>
 <div class="image-cache" id="rolled-dice-cache">
 	{% for img in rolled_dice_cache %}

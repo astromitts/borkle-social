@@ -146,7 +146,13 @@ class InitializeLocalGame(BorkleBaseView):
             max_score = int(request.POST['how_many_points_are_you_playing_to'])
             if max_score < 1:
                 max_score = 100
-            game, game_player = Game.create(max_score=max_score, invited_players=[], initial_player=self.player, code_name_prefix='practice')
+            game, game_player = Game.create(
+                max_score=max_score,
+                invited_players=[],
+                initial_player=self.player,
+                code_name_prefix='practice',
+                game_type='practice'
+            )
             game.get_status()
             return redirect(reverse('game_board', kwargs={'game_uuid': game.uuid}))
 
