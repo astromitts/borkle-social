@@ -40,11 +40,9 @@
 			<div class="col" id="roll-dice-btn">
 				<button class="game-btn" id="rolldice" style="display: none">Roll dice</button>
 			</div>
-			<div class="col" id="advance-player-btn">
+			<div class="col" id="game-tools-and-messages">
 				<button class="game-btn" id="advanceplater" style="display: none">End turn</button>
-				<div class="big-message" id="borkle-message" style="display: none">
-					Oh no! You rolled a borkle! Your turn is over :(
-				</div>
+				<div class="big-message" id="game-message" style="display: none"></div>				
 			</div>
 			<div class="col">
 			</div>
@@ -96,4 +94,14 @@
 		</div>
 		{% endfor %}
 	</div>
+<div class="image-cache" id="rolled-dice-cache">
+	{% for img in rolled_dice_cache %}
+		{{img|safe}}
+	{% endfor %}
+</div>
+<div class="image-cache" id="scored-dice-cache">
+	{% for img in scored_dice_cache %}
+		{{img|safe}}
+	{% endfor %}
+</div>
 {% endblock %}

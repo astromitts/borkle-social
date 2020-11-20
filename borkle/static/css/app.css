@@ -9,6 +9,10 @@
 	padding-bottom: 4rem;
 }
 
+.image-cache {
+	visibility: hidden;
+}
+
 button.game-btn {
 	color: #EAEDED;
 	background-color: #45B39D;
@@ -34,6 +38,10 @@ img.rolled-dice_selected {
 
 img.rolled-dice_selectable:hover {
 	border: 2px solid orange;
+}
+
+img.scored-dice {
+	width: 2rem;
 }
 
 div.selected-dice-slot_active {

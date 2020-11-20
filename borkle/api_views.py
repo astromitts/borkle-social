@@ -28,12 +28,12 @@ class GameStatusApi(BorkleProtectedGameView):
             scoreset_data = {
                 'score': scoreset.score,
                 'score_type': scoreset.score_type,
-                'scoreable_value_images': [get_dice_image_path(val) for val in scoreset.scorable_values],
+                'scoreable_value_images': [str(val) for val in scoreset.scorable_values],
                 'locked': scoreset.locked,
                 'pk': scoreset.pk,
             }
             if scoreset.score_type == 'borkle!':
-                scoreset_data['scoreable_value_images'] = [get_dice_image_path(0), ]
+                scoreset_data['scoreable_value_images'] = ['0', ]
             formatted_scoresets.append(scoreset_data)
         return formatted_scoresets
 
@@ -233,8 +233,15 @@ class GameStatusApi(BorkleProtectedGameView):
 class GameBoardApiVersion(BorkleProtectedGameView):
     def get(self, request, *args, **kwargs):
         template = loader.get_template('borkle/api_gameboard.html')
+        rolled_dice_cache = []
+        scored_dice_cache = []
+        for i in range(0, 7):
+            rolled_dice_cache.append('<img src="{}" class="rolled-dice" id="rolled-dice-cache_{}" />'.format(get_dice_image_path(i), i))
+            scored_dice_cache.append('<img src="{}" class="scored-dice" id="scored-dice-cache_{}" />'.format(get_dice_image_path(i), i))
         context = {
             'game': self.game,
-            'gameplayer': self.gameplayer
+            'gameplayer': self.gameplayer,
+            'rolled_dice_cache': rolled_dice_cache,
+            'scored_dice_cache': scored_dice_cache,
         }
         return HttpResponse(template.render(context, request))

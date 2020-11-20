@@ -1,3 +1,10 @@
+function getImageFromCache(imageId) {
+	var imgSource = document.getElementById(imageId);
+	var imgClone = imgSource.cloneNode();
+	return imgClone;
+}
+
+
 function refreshScoreCard() {
 	var refreshScoreCardUrl = $('input#api-scorecard-url').val();
 	var latestScoreCardTurn = $('input#latest-scorecard-turn').val();
@@ -27,11 +34,8 @@ function refreshScoreCard() {
 							var scoreSetTD = document.createElement('td');
 							turn['scoresets'].forEach(function(scoreset){
 								var scoreSetDiv = document.createElement('div');
-								scoreset['scoreable_value_images'].forEach(function(img){
-									var diceImage = document.createElement('img');
-									diceImage.setAttribute('src', img);
-									diceImage.setAttribute('width', '25px');
-
+								scoreset['scoreable_value_images'].forEach(function(value){
+									var diceImage = getImageFromCache('scored-dice-cache_' + value);
 									scoreSetDiv.append(diceImage);
 								});
 								var scoreSpan = document.createElement('span'); 
@@ -78,6 +82,9 @@ function bindUndoScoreSetSelection() {
 function setCurrentRollScoreSets(scoreSets, targetDiv, allowUndo) {
 	var scoreTableExists = $("table#scoreset_table");
 	if (scoreTableExists.length == 0 ) {
+		var header = document.createElement('h4');
+		header.innerHTML = 'Scored Sets';
+		targetDiv.append(header);
 		var scoreTable = document.createElement("table");
 		scoreTable.setAttribute('id', 'scoreset_table');
 	} else {
@@ -90,9 +97,7 @@ function setCurrentRollScoreSets(scoreSets, targetDiv, allowUndo) {
 			scoreRow.setAttribute('id', 'scoreset_' + scoreSet['pk']);
 			var diceImgCell = document.createElement("td");
 			scoreSet['scoreable_value_images'].forEach(function (imageValue, index) {
-				diceImage = document.createElement("img");
-				diceImage['src'] = imageValue;
-				diceImage.setAttribute('width', '30rem');
+				diceImage = getImageFromCache('scored-dice-cache_' + imageValue);
 				diceImgCell.append(diceImage);
 			});
 			var diceScoreCell = document.createElement("td");
@@ -216,7 +221,8 @@ function setRolledDice(data, targetDiv){
 	]
 	rolledDiceFieldNames.forEach(function (rolledDiceId, index) {
 		var needs_refresh;
-		if (data[rolledDiceId]['value'] != null) {
+		var value = data[rolledDiceId]['value'];
+		if (value != null) {
 			var dice_already_exists = $('img#' + rolledDiceId);
 			if (dice_already_exists.length > 0) {
 				var current_image = dice_already_exists.attr('src');
@@ -231,8 +237,8 @@ function setRolledDice(data, targetDiv){
 				} else {
 					diceClass = 'rolled-dice';
 				}
-				var diceImage = document.createElement('IMG');
-				diceImage['src'] = data[rolledDiceId]['image'];
+				var cacheImageId = 'rolled-dice-cache_' + value;
+				var diceImage = getImageFromCache(cacheImageId)
 				diceImage.setAttribute('class', diceClass);
 				diceImage.setAttribute('id', rolledDiceId);
 				targetDiv.append(diceImage);
@@ -260,11 +266,22 @@ function toggleDiceButton(visibility) {
 }
 
 function toggleBorkleMessage(visibility) {
-	if (visibility == 'on') {
-		$('div#borkle-message').css('display', '');
-		toggleEndTurnButton('on');
+	if( visibility == 'on' ){
+		$('div#game-message').html("Oh no you borkled! Your turn is over :( :(");
+		$('div#game-message').css('display', '');
 	} else {
-		$('div#borkle-message').css('display', 'none');
+		$('div#game-message').css('display', 'none');
+		$('div#game-message').html('');
+	}
+}
+
+function toggleLastTurn(visibility) {
+	if( visibility == 'on' ){
+		$('div#game-message').html("It's your last turn!!!");
+		$('div#game-message').css('display', '');
+	} else {
+		$('div#game-message').css('display', 'none');
+		$('div#game-message').html('');
 	}
 }
 
@@ -422,16 +439,6 @@ function refreshGameTools(bypass_has_rolled) {
 		if ( gameData['is_current_player'] == false ){
 			toggleLastTurn('off');
 		}
-	}
-}
-
-function toggleLastTurn(status) {
-	if( status == 'on' ){
-		$('div#borkle-message').html("It's your last turn!!!");
-		$('div#borkle-message').css('display', '');
-	} else {
-		$('div#borkle-message').css('display', 'none');
-		$('div#borkle-message').html('');
 	}
 }
 
