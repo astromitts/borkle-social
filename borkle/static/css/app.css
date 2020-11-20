@@ -25,6 +25,14 @@ button.game-btn:hover {
 	border: 1px solid #45B39D;
 	border-radius: 1rem;
 }
+button.game-btn_red {
+	background-color: #F95545;
+	border: 1px solid #442522;
+}
+button.game-btn_red:hover {
+	background-color: #ff838f;
+	border: 1px solid #442522;
+}
 
 button#score-selected-dice {
 	width: 5rem;

@@ -173,8 +173,10 @@ function bindSelectDice() {
 		}
 		if ($('img.selected').length > 0) {
 			toggleSelectedDiceSlot('on');
+			toggleEndTurnButton('off');
 		} else {
 			toggleSelectedDiceSlot('off');
+			toggleEndTurnButton('on');
 		}
 	});
 }
@@ -209,6 +211,7 @@ function bindRollDice() {
 						bindSelectDice();
 					} else {
 						toggleBorkleMessage('on');
+						toggleEndTurnButton('on');
 					}
 				}
 			}
