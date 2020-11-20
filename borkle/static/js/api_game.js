@@ -333,6 +333,7 @@ function clearOpponentBoard() {
 	$('div#opponent-current-score').html('');
 	$('div#opponent-available-dice').html('');
 	$('div#opponent-scored-sets').html('');
+	$('div#opponent-last-turn').html('');
 }
 
 function refreshScoreboard() {
@@ -346,7 +347,7 @@ function refreshScoreboard() {
 				var playerPK = player['pk'];
 				var playerScore = player['score'];
 				var playerIsCurrent = player['current_player'];
-				$('scoreboard-player-score_' + playerPK).html(playerScore);
+				$('td#scoreboard-player-score_' + playerPK).html(playerScore);
 				var playerRow = $('tr#scoreboard-player_' + playerPK);
 				if( playerIsCurrent == true ){
 					playerRow.addClass('scoreboard_currentplayer');
@@ -368,6 +369,9 @@ function refreshOpponentBoard() {
 			var targetRolledDiceDiv = $('div#opponent-rolled-dice');
 			var targetSelectedDiceDiv = $('div#opponent-scored-sets');
 			if (data['is_current_player'] == false) {
+				if ( data['last_turn'] ){
+					$('div#opponent-last-turn').html("<b>It's "+data['current_player']+"'s last turn!!");
+				}
 				$('div#opponent-current-score').html('<b>'+data['current_player']+'\'s score for this turn: ' + data['current_score'] + '</b>');
 				$('div#opponent-available-dice').html('<b>'+data['current_player']+' has ' + data['available_dice'] + ' dice left.</b>');
 				setRolledDice(data, targetRolledDiceDiv);
@@ -387,9 +391,6 @@ function checkGameData() {
 		async: false,
 		success: function setData(data) {
 			resultData = data;
-		},
-		error: function () {
-			alert('messed up game data');
 		}
 	});
 	return resultData;
@@ -403,6 +404,8 @@ function refreshGameTools(bypass_has_rolled) {
 		toggleDiceBoard('off');
 		clearOpponentBoard();
 		toggleBorkleMessage('off');
+		displayWinner(gameData['winners']);
+		toggleLastTurn('off');
 	} else {
 		if (gameData['is_current_player'] == true && gameData['has_rolled'] == false) {
 			if(gameData['can_end_turn'] == true){
@@ -413,6 +416,22 @@ function refreshGameTools(bypass_has_rolled) {
 			clearOpponentBoard();
 			toggleBorkleMessage('off');
 		}
+		if (gameData['is_current_player'] == true && gameData['last_turn'] == true ) {
+			toggleLastTurn('on');
+		}
+		if ( gameData['is_current_player'] == false ){
+			toggleLastTurn('off');
+		}
+	}
+}
+
+function toggleLastTurn(status) {
+	if( status == 'on' ){
+		$('div#borkle-message').html("It's your last turn!!!");
+		$('div#borkle-message').css('display', '');
+	} else {
+		$('div#borkle-message').css('display', 'none');
+		$('div#borkle-message').html('');
 	}
 }
 
@@ -464,6 +483,7 @@ $(document).ready(function playGame(){
 			refreshGameTools();
 			refreshOpponentBoard();
 			refreshScoreCard();
+			refreshScoreboard();
 		}, 1000)
 	}
 });

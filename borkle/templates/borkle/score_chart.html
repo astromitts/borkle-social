@@ -1,0 +1,27 @@
+{% extends 'borkle/base.html' %}
+{% load static apptags %}
+
+{% block main_content %}
+<div class="row">
+	{% with ''|rules_set as rule_sets %}
+		{% for rules in rule_sets %}
+		<div class="col-6">
+			<table class="table">
+				<tr><th>Rule</th><th>example</th><th>score</th></tr>
+				{% for rule_name, info in rules.items %}
+					<tr>
+						<td>{{rule_name}}</td>
+						<td>
+							{% for img_path in info.example_images %}
+								<img src="{{ img_path }}" width="25rem"/>&nbsp;
+							{% endfor %}
+						</td>
+						<td>{{info.score}}</td>
+					</tr>
+				{% endfor%}
+			</table>
+			</div>
+		{% endfor %}
+	{% endwith %}
+</div>
+{% endblock %}

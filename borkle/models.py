@@ -307,6 +307,7 @@ class Turn(models.Model):
     rolled_dice_4_value = models.IntegerField(blank=True, null=True)
     rolled_dice_5_value = models.IntegerField(blank=True, null=True)
     rolled_dice_6_value = models.IntegerField(blank=True, null=True)
+    borkle = models.BooleanField(default=False)
 
     def __str__(self):
         if self.active:
@@ -333,6 +334,7 @@ class Turn(models.Model):
 
     def end_turn(self):
         self.active = False
+        self.scoreset_set.all().update(locked=True)
         self.save()
 
     def roll_dice(self):
@@ -345,16 +347,16 @@ class Turn(models.Model):
             else:
                 setattr(self, dice_field['field'], None)
         self.has_rolled = True
+        if not self.has_score:
+            self.borkle = True
+            self.scoreset_set.all().delete()
+            borkle_score = ScoreSet(
+                turn=self,
+                score=0,
+                score_type='borkle!'
+            )
+            borkle_score.save()
         self.save()
-
-    def borkle(self):
-        self.scoreset_set.all().delete()
-        borkle_score = ScoreSet(
-            turn=self,
-            score=0,
-            score_type='borkle!'
-        )
-        borkle_score.save()
 
     @property
     def dice_values(self):

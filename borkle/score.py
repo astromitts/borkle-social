@@ -1,5 +1,6 @@
 class Score(object):
     score = 0
+    score_type = 'borkle!'
 
     def get_sets(self):
         sets = {}
@@ -105,9 +106,6 @@ class Score(object):
 
     def __init__(self, selection):
         self.selection = selection
-        self.score = 0
-        self.score_type = 'farkle'
-        self.score_type = ''
         if self.is_four_of_kind_and_pair:
             self.score = 2500
             self.score_type = 'Four of a kind & a pair'
@@ -141,3 +139,6 @@ class Score(object):
         elif self.is_all_ones:
             self.score = len(self.selection) * 100
             self.score_type = 'Ones'
+        else:
+            self.score = 0
+            self.score_type = 'borkle!'

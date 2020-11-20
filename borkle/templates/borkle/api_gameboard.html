@@ -42,11 +42,17 @@
 			</div>
 			<div class="col" id="advance-player-btn">
 				<button class="game-btn" id="advanceplater" style="display: none">End turn</button>
-				<div id="borkle-message" style="display: none">
+				<div class="big-message" id="borkle-message" style="display: none">
 					Oh no! You rolled a borkle! Your turn is over :(
 				</div>
 			</div>
 			<div class="col">
+			</div>
+		</div>
+		<div class="row" id="current-player-lastturn" style="display: none">
+			<div class="col">
+				<div class="big-message" id="borkle-message" style="display: none">
+				</div>
 			</div>
 		</div>
 		<div class="row">
@@ -65,6 +71,7 @@
 		</div>
 		<div class="row">
 			<div class="col">
+				<div id="opponent-last-turn"></div>
 				<div id="opponent-current-score"></div>
 				<div id="opponent-available-dice"></div>
 			</div>
@@ -78,7 +85,7 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="col" id="winner-data"></div>
+		<div class="big-message col" id="winner-data"></div>
 	</div>
 	<div class="row" id="score-card-log">
 		{% for player in game.gameplayer_set.all %}
