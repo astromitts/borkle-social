@@ -3,13 +3,13 @@
 
 {% block main_content %}
 	<div class="row justify-content-center">
-		<div class="col-6">
-			<a href="{% url 'initialize_distributed_game' %}"><button class="btn btn-primary btn-lg btn-long">Start a game with friends</button></a>
+		<div class="col">
+			<a href="{% url 'initialize_distributed_game' %}"><button class="btn btn-primary btn-lg">Start a game with friends</button></a>
 		</div>
 	</div>
 	<div class="margin_t75 row justify-content-center">
-		<div class="col-6">
-			<a href="{% url 'initialize_local_game' %}"><button class="btn btn-primary btn-lg btn-long">Start a practice game</button></a>
+		<div class="col">
+			<a href="{% url 'initialize_local_game' %}"><button class="btn btn-primary btn-lg">Start a practice game</button></a>
 		</div>
 	</div>
 {% endblock %}

@@ -173,9 +173,43 @@ class DeclineGameView(BorkleProtectedGameView):
 class CancelGameView(BorkleProtectedGameView):
     def get(self, request, *args, **kwargs):
         if self.game.created_by == self.player:
+            if request.GET.get('src', '') == 'game':
+                cancel_url = reverse('game_board', kwargs={'game_uuid': self.game.uuid})
+            else:
+                cancel_url = reverse('dashboard')
+
+            template = loader.get_template('borkle/confirm_action.html')
+            context = {
+                'cancel_url': cancel_url,
+                'form_header': 'Are you sure you want to cancel the game?'
+            }
+            return HttpResponse(template.render(context, request))
+        else:
+            messages.error(request, 'Permission denied. Contact game owner for help.')
+
+    def post(self, request, *args, **kwargs):
+        if self.game.created_by == self.player:
+            messages.success(request, 'Game cancelled.')
             self.game.delete()
         else:
             messages.error(request, 'Permission denied. Contact game owner for help.')
+        return redirect(reverse('dashboard'))
+
+
+class LeaveGameView(BorkleProtectedGameView):
+    def get(self, request, *args, **kwargs):
+        template = loader.get_template('borkle/confirm_action.html')
+        context = {
+            'cancel_url': reverse('game_board', kwargs={'game_uuid': self.game.uuid}),
+            'form_header': 'Are you sure you want to leave the game?'
+        }
+        return HttpResponse(template.render(context, request))
+
+    def post(self, request, *args, **kwargs):
+        self.game.boot_player(self.gameplayer)
+        messages.success(request, 'Successfully left game.')
+        if self.game.gameplayer_set.count() == 0:
+            self.game.delete()
         return redirect(reverse('dashboard'))
 
 

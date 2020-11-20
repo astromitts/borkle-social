@@ -27,6 +27,7 @@ urlpatterns = [
     path('startgame/distributed', app_views.InitializeDistributedGame.as_view(), name='initialize_distributed_game'),
     path('startgame/practice/', app_views.InitializeLocalGame.as_view(), name='initialize_local_game'),
     path('game/<str:game_uuid>/history/', api_views.GameBoardApiVersion.as_view(), name='game_history'),
+    path('game/<str:game_uuid>/leave/', app_views.LeaveGameView.as_view(), name='leave_game'),
     path('game/<str:game_uuid>/play/', api_views.GameBoardApiVersion.as_view(), name='game_board'),
     path('game/<str:game_uuid>/api/<str:api_target>/', csrf_exempt(api_views.GameStatusApi.as_view()), name='game_api'),
     path('game/<str:game_uuid>/cancel/', app_views.CancelGameView.as_view(), name='game_cancel'),

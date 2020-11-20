@@ -66,8 +66,6 @@ function bindUndoScoreSetSelection() {
 				if (data['status'] == 'error' ) {
 					alert(data['message']);
 				} else {
-					var targetSelectedDiceDiv = $('div#selected-dice');
-					targetSelectedDiceDiv.html('');
 					var targetRolledDice = $('div#rolled-dice');
 					targetRolledDice.html('');
 					$('tr#scoreset_' + scoreSetID).remove()
@@ -140,9 +138,10 @@ function bindScoreDice() {
 				} else {
 					var targetSelectedDiceDiv = $('div#selected-dice');
 					var targetScoredDiveDiv = $('div#scored-sets');
-					targetSelectedDiceDiv.html('');
+					$('img.selected').each(function(){
+						$(this).remove();
+					});
 					setCurrentRollScoreSets(data['scoresets'], targetScoredDiveDiv, true);
-					targetSelectedDiceDiv.html('');
 					toggleEndTurnButton('on');
 					if( data['can_select_more'] == false ) {
 						toggleSelectedDiceSlot('off');
@@ -158,12 +157,19 @@ function bindSelectDice() {
 	$('img.rolled-dice_selectable').click(function(){
 		var diceId = $(this).attr('id');
 		var diceElement = document.getElementById(diceId);
-		if ( diceElement.parentNode.id == 'selected-dice') {
+		if ( diceElement.parentNode.id == 'selected-dice-slot') {
 			document.getElementById('rolled-dice').appendChild(diceElement);
 			$(this).removeClass('selected');
 		} else {
-			document.getElementById('selected-dice').appendChild(diceElement); 
 			$(this).addClass('selected');
+			var colDiv = document.createElement('div');
+			var selectedDiceRow = document.getElementById('selected-dice-slot');
+			colDiv.setAttribute('class', 'col');
+			colDiv.setAttribute('id', 'selected-dice_' + diceId);
+			
+			colDiv.appendChild(diceElement);
+
+			selectedDiceRow.appendChild(diceElement); 
 		}
 		if ($('img.selected').length > 0) {
 			toggleSelectedDiceSlot('on');
@@ -320,7 +326,6 @@ function bindEndTurn() {
 					alert(data['message']);
 				} else {
 					$('div#rolled-dice').html('');
-					$('div#selected-dice').html('');
 					$('div#scored-sets').html('');
 					toggleDiceButton('off');
 					toggleSelectedDiceSlot('off');
@@ -360,12 +365,21 @@ function refreshScoreboard() {
 		url: refreshScoreboardUrl,
 		dataType: 'json',
 		success: function (data) {
+			$('tr.player-score').each(function(){
+				var playerName = $(this).attr('data-player-name');
+				if( !data['player_names'].includes(playerName) ) {
+					var playerRow = $('tr#scoreboard-player_' + playerName);
+					playerRow.html('<td colspan="100%">'+playerName+' left the game</td>');
+					playerRow.addClass('player-left-game');
+				}
+			});
+
 			data['scoreboard'].forEach(function(player){
-				var playerPK = player['pk'];
+				var playerName = player['username'];
 				var playerScore = player['score'];
 				var playerIsCurrent = player['current_player'];
-				$('td#scoreboard-player-score_' + playerPK).html(playerScore);
-				var playerRow = $('tr#scoreboard-player_' + playerPK);
+				$('td#scoreboard-player-score_' + playerName).html(playerScore);
+				var playerRow = $('tr#scoreboard-player_' + playerName);
 				if( playerIsCurrent == true ){
 					playerRow.addClass('scoreboard_currentplayer');
 				} else {
@@ -455,6 +469,7 @@ function displayWinner(winnerData) {
 			});
 		}
 	}
+	winnerDiv.css('display', '');
 }
 
 

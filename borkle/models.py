@@ -215,6 +215,11 @@ class Game(models.Model):
         super(Game, self).save(*args, **kwargs)
 
 
+    def boot_player(self, gameplayer):
+        if gameplayer.is_current_player:
+            self.advance_player()
+        gameplayer.delete()
+
 
 class GamePlayer(models.Model):
     player = models.ForeignKey(Player, null=True, on_delete=models.CASCADE)

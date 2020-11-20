@@ -21,9 +21,9 @@
 			<h3>Players</h3>
 			<table class="table" id="scoreboard">
 				{% for player in game.gameplayer_set.all %}
-				<tr id="scoreboard-player_{{player.pk}}" class="{% if player == gameplayer %}scoreboard_myscore {% endif %}">
+				<tr id="scoreboard-player_{{player.username}}" data-player-name="{{player.username}}" class="player-score {% if player == gameplayer %}scoreboard_myscore {% endif %}">
 					<td>{{player.player.user.username}}:</td>
-					<td class="scoreboard-player-score" id="scoreboard-player-score_{{player.pk}}">{{player.total_score}}</td>
+					<td class="scoreboard-player-score" id="scoreboard-player-score_{{player.username}}">{{player.total_score}}</td>
 					<td>/</td>
 					<td>{{game.max_score}}</td>
 				</tr>
@@ -57,10 +57,8 @@
 			<div class="col" id="rolled-dice"></div>
 		</div>
 		<div class="row" id="selected-dice-slot" class="selected-dice-slot_active">
-			<div class="col-1">
+			<div class="col">
 				<button class="game-btn" id="score-selected-dice" style="display: none;">Score selected dice</button>
-			</div>
-			<div class="col" id="selected-dice">
 			</div>
 		</div>
 		<div class="row" id="scored-sets-slots">
@@ -83,7 +81,7 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="big-message col" id="winner-data"></div>
+		<div class="big-message col" id="winner-data" style="display: none;"></div>
 	</div>
 	<div class="row" id="score-card-log">
 		{% for player in game.gameplayer_set.all %}
@@ -93,6 +91,18 @@
 			</table>
 		</div>
 		{% endfor %}
+	</div>
+
+	
+	<div class="row">
+		{% if is_game_owner and game.gameplayer_set.count > 1 %}
+			<div class="col" id="leavegame">
+				<a href="{% url 'game_cancel' game_uuid=game.uuid %}?src=game"><button class="btn btn-danger">Cancel Game</button></a>
+			</div>
+		{% endif %}
+		<div class="col" id="leavegame">
+			<a href="{% url 'leave_game' game_uuid=game.uuid %}"><button class="btn btn-danger">Leave Game</button></a>
+		</div>
 	</div>
 <div class="image-cache" id="rolled-dice-cache">
 	{% for img in rolled_dice_cache %}

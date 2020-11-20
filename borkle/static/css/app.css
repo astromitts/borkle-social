@@ -26,6 +26,10 @@ button.game-btn:hover {
 	border-radius: 1rem;
 }
 
+button#score-selected-dice {
+	width: 5rem;
+}
+
 img.rolled-dice {
 	border: 2px solid #ffffff;
 	width: 5rem;
@@ -61,6 +65,10 @@ tr.scoreboard_myscore {
 tr.scoreboard_currentplayer {
 	background-color: #FEF9E7;
 }
+tr.player-left-game {
+	background-color: #FADBD8;
+	text-align: center;
+}
 
 div#roll-button {
 	margin-bottom: 7rem;
@@ -74,7 +82,7 @@ div#roll-button {
 	margin-bottom: .75rem;
 }
 
-.margin_t75 {
+. {
 	margin-top: .75rem;
 }
 

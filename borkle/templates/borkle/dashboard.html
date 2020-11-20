@@ -8,15 +8,6 @@
 {% block main_content %}
 	<input type="hidden" id="refreshurl" value="{% url 'dashboard_refresh' %}" />
 	<h2>Welcome, {{user.username}}</h2>
-	{% block messages %}
-		{% if messages %}
-			{% for message in messages %}
-			<b>{{message.level_tag}}:</b> {{message}}<br />
-			{% endfor %}
-		{% endif %}
-	{% endblock %}
-
-
 	<div id="dashboard-games">
 		{% include 'borkle/dashboard_includes/dashboard.html' with player=player %}
 	</div>

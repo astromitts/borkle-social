@@ -22,6 +22,9 @@ class GameStatusApi(BorkleProtectedGameView):
             )
         return scoreboard
 
+    def _players_name_list(self):
+        return [player.username for player in self.game.gameplayer_set.all()]
+
     def _format_scoresets(self, scoresets):
         formatted_scoresets = []
         for scoreset in scoresets:
@@ -147,7 +150,7 @@ class GameStatusApi(BorkleProtectedGameView):
                     'current_score_sets': self._format_scoresets(self.game.current_player.current_turn.scoreset_set.order_by('-pk').all())
                 }
         elif kwargs['api_target'] == 'scoreboard':
-            data = {'scoreboard': self._scoreboard()}
+            data = {'scoreboard': self._scoreboard(), 'player_names': self._players_name_list()}
         elif kwargs['api_target'] == 'scorecard':
             if request.GET.get('latest_turn'):
                 latest_turn = int(request.GET['latest_turn'])
@@ -243,5 +246,6 @@ class GameBoardApiVersion(BorkleProtectedGameView):
             'gameplayer': self.gameplayer,
             'rolled_dice_cache': rolled_dice_cache,
             'scored_dice_cache': scored_dice_cache,
+            'is_game_owner': self.game.created_by == self.player
         }
         return HttpResponse(template.render(context, request))
