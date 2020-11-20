@@ -157,10 +157,16 @@ class LoginUserView(View):
         # standard Django form handling here
         form = LoginUserForm(request.POST)
         if form.is_valid():
-            user, error_reason = SessionManager.check_user_login(
-                email=request.POST['email'],
-                password=request.POST['password']
-            )
+            if '@' in request.POST['username_or_email']:
+                user, error_reason = SessionManager.check_user_login_by_email(
+                    email=request.POST['username_or_email'],
+                    password=request.POST['password']
+                )
+            else:
+                user, error_reason = SessionManager.check_user_login_by_username(
+                    username=request.POST['username_or_email'],
+                    password=request.POST['password']
+                )
             if not user:
                 messages.error(request, error_reason)
                 self.context.update({

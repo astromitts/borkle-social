@@ -87,9 +87,10 @@ class ResetPasswordForm(ModelForm):
 
 
 class LoginUserForm(ModelForm):
+    username_or_email = CharField(required=True)
     class Meta:
         model = User
-        fields = ['email', 'password']
+        fields = ['username_or_email', 'password']
         widgets = {
             'password': PasswordInput(),
         }

@@ -52,7 +52,7 @@ class SessionManager(models.Model):
         return new_user
 
     @classmethod
-    def check_user_login(cls, email, password):
+    def check_user_login_by_email(cls, email, password):
         """ Checks password for given email and password combination if the email has a User
             Returns tuple
                 (
@@ -60,7 +60,25 @@ class SessionManager(models.Model):
                     string: error message if user not found or password incorrect
                 )
         """
-        user = User.objects.filter(email=email).first()
+        user = User.objects.filter(email__iexact=email).first()
+        if not user:
+            return (None, 'User matching email does not exist.')
+        else:
+            if user.check_password(password):
+                return (user, None)
+            else:
+                return (None, 'Password incorrect.')
+
+    @classmethod
+    def check_user_login_by_username(cls, username, password):
+        """ Checks password for given username and password combination if the email has a User
+            Returns tuple
+                (
+                    object: User if it is found and the password is correct,
+                    string: error message if user not found or password incorrect
+                )
+        """
+        user = User.objects.filter(username__iexact=username).first()
         if not user:
             return (None, 'User matching email does not exist.')
         else:
