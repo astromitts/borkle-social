@@ -41,11 +41,13 @@ button#score-selected-dice {
 img.rolled-dice {
 	border: 2px solid #ffffff;
 	width: 5rem;
+	height: 5rem;
 }
 
 img.rolled-dice_selected {
 	border: 2px solid green;
 	width: 5rem;
+	height: 5rem;
 }
 
 img.rolled-dice_selectable:hover {
@@ -54,6 +56,7 @@ img.rolled-dice_selectable:hover {
 
 img.scored-dice {
 	width: 2rem;
+	height: 5rem;
 }
 
 div.selected-dice-slot_active {
