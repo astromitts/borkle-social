@@ -38,9 +38,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'session_manager',
     'borkle',
     'namer',
+    'allauth',   # <--
+    'allauth.account',   # <--
+    'allauth.socialaccount',   # <--
+    'allauth.socialaccount.providers.google',   # <--
 ]
 
 MIDDLEWARE = [
@@ -128,7 +133,23 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'borkle/static')
 
 LOGIN_SUCCESS_REDIRECT = 'dashboard'
 PW_RESET_SUCCESS_REDIRECT = 'session_manager_index'
+LOGIN_REDIRECT_URL = '/dashboard/'
 
 HOST = '127.0.0.1:8000'
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '10.0.0.132']
+
+
+SITE_ID = 1
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}

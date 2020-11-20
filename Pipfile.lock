@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "6056f5e06ef67cdac03995159c6b9551da6f8104090a073745929f67b0ceda9c"
+            "sha256": "ddf67a6a149ff99ec010eac1c069c6333d2e2102373ba010f779fe1d61c41bbe"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -89,6 +89,14 @@
             "index": "pypi",
             "version": "==1.3.7"
         },
+        "oauthlib": {
+            "hashes": [
+                "sha256:bee41cc35fcca6e988463cacc3bcb8a96224f470ca547e697b604cc697b2f889",
+                "sha256:df884cd6cbe20e32633f1db1072e9356f53638e4361bef4e8b03c9127c9328ea"
+            ],
+            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
+            "version": "==3.1.0"
+        },
         "psycopg2-binary": {
             "hashes": [
                 "sha256:0deac2af1a587ae12836aa07970f5cb91964f05a7c6cdb69d8425ff4c15d4e2c",
@@ -145,6 +153,15 @@
             ],
             "index": "pypi",
             "version": "==2.25.0"
+        },
+        "requests-oauthlib": {
+            "hashes": [
+                "sha256:7f71572defaecd16372f9006f33c2ec8c077c3cfa6f5911a9a90202beb513f3d",
+                "sha256:b4261601a71fd721a8bd6d7aa1cc1d6a8a93b4a9f5e96626f8e4d91e8beeaa6a",
+                "sha256:fa6c47b933f01060936d87ae9327fead68768b69c6c9ea2109c48be30f2d4dbc"
+            ],
+            "index": "pypi",
+            "version": "==1.3.0"
         },
         "soupsieve": {
             "hashes": [

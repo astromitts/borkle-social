@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.base import TemplateView
 
@@ -11,6 +11,7 @@ handler404 = app_views.handler404
 handler500 = app_views.handler500
 
 urlpatterns = [
+    path('accounts/', include('allauth.urls')),
     path('dashboard/', app_views.Dashboard.as_view(), name='dashboard'),
     path('dashboard/refresh/', app_views.Dashboard.as_view(), name='dashboard_refresh'),
     path('', TemplateView.as_view(template_name='borkle/about.html'), name='about'),
