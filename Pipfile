@@ -22,6 +22,7 @@ sqlparse = "==0.4.1"
 urllib3 = "==1.26.2"
 whitenoise = "==5.2.0"
 psycopg2-binary = "2.8.5"
+gunicorn = "==19.9.0"
 
 [requires]
 python_version = "3.7"
