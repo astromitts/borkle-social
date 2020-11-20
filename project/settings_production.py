@@ -1,5 +1,5 @@
 import os
-from app.settings import *  # noqa
+from project.settings import *  # noqa
 
 DEBUG = True
 
