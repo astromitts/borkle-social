@@ -278,8 +278,10 @@ function toggleBorkleMessage(visibility) {
 	if( visibility == 'on' ){
 		$('div#game-message').html("Oh no you borkled! Your turn is over :( :(");
 		$('div#game-message').css('display', '');
+		$('div#row-game-message').css('display', '');
 	} else {
 		$('div#game-message').css('display', 'none');
+		$('div#row-game-message').css('display', 'none');
 		$('div#game-message').html('');
 	}
 }
@@ -288,8 +290,10 @@ function toggleLastTurn(visibility) {
 	if( visibility == 'on' ){
 		$('div#game-message').html("It's your last turn!!!");
 		$('div#game-message').css('display', '');
+		$('div#row-game-message').css('display', '');
 	} else {
 		$('div#game-message').css('display', 'none');
+		$('div#row-game-message').css('display', 'none');
 		$('div#game-message').html('');
 	}
 }
