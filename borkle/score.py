@@ -88,9 +88,21 @@ class Score(object):
         return len(set(self.selection)) == 1 and self.selection[0] == 1
 
     @property
+    def is_all_ones_or_fives(self):
+        if len(self.selection) > 0:
+            for dice in self.selection:
+                if dice not in[1, 5]:
+                    return False
+            return True
+        return False
+
+
+    @property
     def has_score(self):
         has_score = False
         if self.has_one_or_five:
+            has_score = True
+        if self.is_all_ones_or_fives:
             has_score = True
         if self.has_any_of_a_kind:
             has_score = True
@@ -139,6 +151,14 @@ class Score(object):
         elif self.is_all_ones:
             self.score = len(self.selection) * 100
             self.score_type = 'Ones'
+        elif self.is_all_ones_or_fives:
+            self.score_type = 'Ones and Fives'
+            self.score = 0
+            for dice in self.selection:
+                if dice == 5:
+                    self.score += 50
+                elif dice == 1:
+                    self.score += 100
         else:
             self.score = 0
             self.score_type = 'borkle!'

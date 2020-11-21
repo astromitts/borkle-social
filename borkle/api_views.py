@@ -35,7 +35,7 @@ class GameStatusApi(BorkleProtectedGameView):
                 'locked': scoreset.locked,
                 'pk': scoreset.pk,
             }
-            if scoreset.score_type == 'borkle!':
+            if scoreset.score == 0:
                 scoreset_data['scoreable_value_images'] = ['0', ]
             formatted_scoresets.append(scoreset_data)
         return formatted_scoresets

@@ -196,16 +196,19 @@ function clearUndoButtons() {
 	});
 }
 
+function clearRolledDice(targetDivPrefix){
+	rolledDiceFieldNames.forEach(function (rolledDiceId, index) {
+		$('div#' + targetDivPrefix + rolledDiceId).html('');
+	});}
+
 function bindRollDice() {
 	var rollDiceUrl = $('input#api-rolldice-url').val();
 	var targetDivPrefix =  'slot-';
 	
 	$('button#rolldice').click(function(){
+		clearRolledDice(targetDivPrefix);
 		toggleBorkleMessage('off');
 		toggleDiceButton('off');
-		rolledDiceFieldNames.forEach(function (rolledDiceId, index) {
-			$('div#' + targetDivPrefix + rolledDiceId).html('');
-		});
 		$.ajax({
 			method: 'POST',
 			url: rollDiceUrl,
@@ -340,7 +343,7 @@ function bindEndTurn() {
 				if (data['status'] == 'error' ) {
 					alert(data['message']);
 				} else {
-					$('div#rolled-dice').html('');
+					clearRolledDice('slot-');
 					$('div#scored-sets').html('');
 					toggleDiceButton('off');
 					toggleSelectedDiceSlot('off');
@@ -351,6 +354,7 @@ function bindEndTurn() {
 		});
 	});
 }
+
 
 function clearOpponentBoard() {
 	$('div#opponent-rolled-dice').html('');
