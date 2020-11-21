@@ -393,7 +393,7 @@ function toggleBorkleMessage(visibility) {
 	if( visibility == 'on' ){
 		setGameMessage("Oh no you borkled! Your turn is over :( :(", 'borkle');
 	} else {
-		clearGameMessage();
+		clearGameMessage('borkle');
 	}
 	return visibility;
 }
@@ -402,7 +402,7 @@ function toggleLastTurn(visibility) {
 	if( visibility == 'on' ){
 		setGameMessage("It's your last turn!!!", 'last-turn');
 	} else {
-		clearGameMessage();
+		clearGameMessage('last-turn');
 	}
 }
 
@@ -417,10 +417,10 @@ function setGameMessage(messageText, selector) {
 	return 'on';
 }
 
-function clearGameMessage() {
-	var gameMessageRow = $('div#row-game-message');
-	var gameMessageDiv = $('div#game-message');
-	$('div#game-message').html('');
+function clearGameMessage(selectId) {
+	var gameMessageRow = $('div#row-'+selectId+'-message');
+	var gameMessageDiv = $('div#'+selectId+'-message');
+	$('div#'+selectId+'-message').html('');
 	toggleElementVisibility(gameMessageDiv, 'off');
 	toggleElementVisibility(gameMessageRow, 'off');
 	return 'off';
