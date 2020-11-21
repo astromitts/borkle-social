@@ -16,7 +16,8 @@ function getImageFromCache(imageId) {
 
 function refreshScoreCard() {
 	var refreshScoreCardUrl = $('input#api-scorecard-url').val();
-	var latestScoreCardTurn = $('input#latest-scorecard-turn').val();
+	var latestScoreCardInput = document.getElementById('latest-scorecard-turn');
+	var latestScoreCardTurn = latestScoreCardInput.value;
 	$.ajax({
 		method: 'GET',
 		url: refreshScoreCardUrl + '?latest_turn=' + latestScoreCardTurn,
@@ -28,7 +29,9 @@ function refreshScoreCard() {
 				var playerTable = document.getElementById('scorecard_' + playerName);
 				player['turns'].forEach(function(turn){
 					if( turn['scoresets'].length > 0 ) {
-						latestScoreCardTurn = turn['turn_index'];
+						if ( latestScoreCardTurn < turn['turn_index'] ) {
+							latestScoreCardTurn = turn['turn_index'];
+						}
 						var rowId = 'scorecard-set_' + playerName + '_' + turn['turn_index'];
 						scoreCardRowExists = $('tr#' + rowId);
 						if (scoreCardRowExists.length == 0) {
@@ -59,7 +62,7 @@ function refreshScoreCard() {
 			});
 		}
 	});
-	$('input#atest-scorecard-turn').val(latestScoreCardTurn);
+	latestScoreCardInput.setAttribute('value', latestScoreCardTurn);
 }
 
 function bindUndoScoreSetSelection() {
@@ -75,8 +78,7 @@ function bindUndoScoreSetSelection() {
 				if (data['status'] == 'error' ) {
 					alert(data['message']);
 				} else {
-					var targetRolledDice = $('div#rolled-dice');
-					targetRolledDice.html('');
+					clearRolledDice();
 					$('tr#scoreset_' + scoreSetID).remove()
 					setRolledDice(data['current_rolled_dice'], 'slot-');
 					bindSelectDice();
@@ -152,10 +154,8 @@ function bindScoreDice() {
 					});
 					setCurrentRollScoreSets(data['scoresets'], targetScoredDiveDiv, true);
 					toggleEndTurnButton('on');
-					if( data['can_select_more'] == false ) {
-						toggleSelectedDiceSlot('off');
-					}
 					toggleDiceButton('on');
+					toggleSelectedDiceSlot('off');
 				}
 			}
 		});
@@ -183,6 +183,7 @@ function bindSelectDice() {
 		if ($('img.selected').length > 0) {
 			toggleSelectedDiceSlot('on');
 			toggleEndTurnButton('off');
+			toggleDiceButton('off');
 		} else {
 			toggleSelectedDiceSlot('off');
 			toggleEndTurnButton('on');
@@ -200,6 +201,14 @@ function clearRolledDice(targetDivPrefix){
 	rolledDiceFieldNames.forEach(function (rolledDiceId, index) {
 		$('div#' + targetDivPrefix + rolledDiceId).html('');
 	});}
+
+function countRolledDice(targetDivPrefix){
+	var rolledDiceCount = 0
+	rolledDiceFieldNames.forEach(function (rolledDiceId, index) {
+		rolledDiceCount += $('img#' + targetDivPrefix + rolledDiceId).length;
+	});
+	return rolledDiceCount;
+}
 
 function bindRollDice() {
 	var rollDiceUrl = $('input#api-rolldice-url').val();
@@ -265,72 +274,6 @@ function setRolledDice(data, targetDivPrefix){
 	});
 }
 
-function toggleDiceButton(visibility) {
-	if (visibility == 'on') {
-		$('button#rolldice').css('display', '');
-	} else {
-		$('button#rolldice').css('display', 'none');
-	}
-}
-
-function toggleBorkleMessage(visibility) {
-	if( visibility == 'on' ){
-		$('div#game-message').html("Oh no you borkled! Your turn is over :( :(");
-		$('div#game-message').css('display', '');
-		$('div#row-game-message').css('display', '');
-	} else {
-		$('div#game-message').css('display', 'none');
-		$('div#row-game-message').css('display', 'none');
-		$('div#game-message').html('');
-	}
-}
-
-function toggleLastTurn(visibility) {
-	if( visibility == 'on' ){
-		$('div#game-message').html("It's your last turn!!!");
-		$('div#game-message').css('display', '');
-		$('div#row-game-message').css('display', '');
-	} else {
-		$('div#game-message').css('display', 'none');
-		$('div#row-game-message').css('display', 'none');
-		$('div#game-message').html('');
-	}
-}
-
-function toggleSelectedDiceSlot(visibility) {
-	var targetDiv = $('div#selected-dice-slot');
-	var targetBtn = $('button#score-selected-dice');
-	if (visibility == 'on') {
-		targetDiv.css('display', '');
-		targetBtn.css('display', '');
-		targetDiv.addClass('selected-dice-slot_active')
-	} else {
-		targetDiv.css('display', 'none');
-		targetBtn.css('display', 'none');
-		targetDiv.removeClass('selected-dice-slot_active');
-	}
-}
-
-function toggleEndTurnButton(visibility) {
-	if (visibility == 'on') {
-		$('button#advanceplater').css('display', '');
-	} else {
-		$('button#advanceplater').css('display', 'none');
-	}
-}
-
-function toggleDiceBoard(visibility) {
-	var targetRolledDiceDiv = $('div#rolled-dice');
-	var targetSelectedDiceDiv = $('div#selected-dice');
-	if (visibility == 'on') {
-		targetSelectedDiceDiv.css('display', '');
-		targetRolledDiceDiv.css('display', '');
-	} else {
-		targetSelectedDiceDiv.css('display', 'none');
-		targetRolledDiceDiv.css('display', 'none');
-	}
-}
-
 function bindEndTurn() {
 	var endTurnUrl = $('input#api-endturn-url').val();
 	$('button#advanceplater').click(function(){
@@ -357,12 +300,13 @@ function bindEndTurn() {
 
 
 function clearOpponentBoard() {
-	$('div#opponent-rolled-dice').html('');
+	clearRolledDice('opponent-')
 	$('div#opponent-selected-dice').html('');
 	$('div#opponent-current-score').html('');
 	$('div#opponent-available-dice').html('');
 	$('div#opponent-scored-sets').html('');
 	$('div#opponent-last-turn').html('');
+	toggleElementVisibility($('div#opponent-scored-sets'), 'off');
 }
 
 function refreshScoreboard() {
@@ -432,78 +376,108 @@ function displayWinner(winnerData) {
 			});
 		}
 	}
-	winnerDiv.css('display', '');
+	toggleElementVisibility(winnerDiv, 'on');
 }
 
 function toggleDiceButton(visibility) {
+	var rollDiceButton = $('button#rolldice');
 	if (visibility == 'on') {
-		$('button#rolldice').css('display', '');
+		toggleElementVisibility(rollDiceButton, 'on');
 	} else {
-		$('button#rolldice').css('display', 'none');
+		toggleElementVisibility(rollDiceButton, 'off');
 	}
+	return visibility;
 }
 
 function toggleBorkleMessage(visibility) {
 	if( visibility == 'on' ){
-		$('div#game-message').html("Oh no you borkled! Your turn is over :( :(");
-		$('div#game-message').css('display', '');
-		$('div#row-game-message').css('display', '');
+		setGameMessage("Oh no you borkled! Your turn is over :( :(", 'borkle');
 	} else {
-		$('div#game-message').css('display', 'none');
-		$('div#row-game-message').css('display', 'none');
-		$('div#game-message').html('');
+		clearGameMessage();
 	}
+	return visibility;
 }
 
 function toggleLastTurn(visibility) {
 	if( visibility == 'on' ){
-		$('div#game-message').html("It's your last turn!!!");
-		$('div#game-message').css('display', '');
-		$('div#row-game-message').css('display', '');
+		setGameMessage("It's your last turn!!!", 'last-turn');
 	} else {
-		$('div#game-message').css('display', 'none');
-		$('div#row-game-message').css('display', 'none');
-		$('div#game-message').html('');
+		clearGameMessage();
 	}
+}
+
+function setGameMessage(messageText, selector) {
+	var gameMessageRow = $('div#row-'+selector+'-message');
+	var gameMessageDiv = $('div#'+selector+'-message');
+	if (gameMessageDiv.html() != messageText ){
+		gameMessageDiv.html(messageText);
+	}
+	toggleElementVisibility(gameMessageDiv, 'on');
+	toggleElementVisibility(gameMessageRow, 'on');
+	return 'on';
+}
+
+function clearGameMessage() {
+	var gameMessageRow = $('div#row-game-message');
+	var gameMessageDiv = $('div#game-message');
+	$('div#game-message').html('');
+	toggleElementVisibility(gameMessageDiv, 'off');
+	toggleElementVisibility(gameMessageRow, 'off');
+	return 'off';
 }
 
 function toggleSelectedDiceSlot(visibility) {
 	var targetDiv = $('div#selected-dice-slot');
 	var targetBtn = $('button#score-selected-dice');
 	if (visibility == 'on') {
-		targetDiv.css('display', '');
-		targetBtn.css('display', '');
+		toggleElementVisibility(targetDiv, 'on');
+		toggleElementVisibility(targetBtn, 'on');
 		targetDiv.addClass('selected-dice-slot_active')
 	} else {
-		targetDiv.css('display', 'none');
-		targetBtn.css('display', 'none');
+		toggleElementVisibility(targetDiv, 'off');
+		toggleElementVisibility(targetBtn, 'off');
 		targetDiv.removeClass('selected-dice-slot_active');
 	}
 }
 
 function toggleEndTurnButton(visibility) {
+	var endTurnButton = $('button#advanceplater');
 	if (visibility == 'on') {
-		$('button#advanceplater').css('display', '');
+		toggleElementVisibility(endTurnButton, 'on')
 	} else {
-		$('button#advanceplater').css('display', 'none');
+		toggleElementVisibility(endTurnButton, 'off')
 	}
+	return visibility;
 }
 
 function toggleDiceBoard(visibility) {
 	var targetRolledDiceDiv = $('div#rolled-dice');
 	var targetSelectedDiceDiv = $('div#selected-dice');
 	if (visibility == 'on') {
-		targetSelectedDiceDiv.css('display', '');
-		targetRolledDiceDiv.css('display', '');
+		toggleElementVisibility(targetRolledDiceDiv, 'on');
+		toggleElementVisibility(targetSelectedDiceDiv, 'on');
 	} else {
-		targetSelectedDiceDiv.css('display', 'none');
-		targetRolledDiceDiv.css('display', 'none');
+		toggleElementVisibility(targetRolledDiceDiv, 'off');
+		toggleElementVisibility(targetSelectedDiceDiv, 'off');
 	}
+}
+
+function toggleElementVisibility(target, visibility) {
+	if (visibility == 'on' && target.hasClass('hidden')) {
+		target.removeClass('hidden');
+	} else if (visibility == 'off' && !target.hasClass('hidden')) {
+		target.addClass('hidden');
+	}
+}
+
+function hasSelectedDice() {
+	return $('img.selected').length > 0;
 }
 
 function refreshGameTools(bypass_has_rolled) {
 	var gameData = checkGameData();
 	var refreshGameInfoUrl = $('input#api-gameinfo-url').val();
+	// If the game ended, turn off all the game play tools and display the winner
 	if(gameData['game_over']) {
 		toggleDiceButton('off');
 		toggleDiceBoard('off');
@@ -512,18 +486,33 @@ function refreshGameTools(bypass_has_rolled) {
 		displayWinner(gameData['winners']);
 		toggleLastTurn('off');
 	} else {
-		if (gameData['is_current_player'] == true && gameData['has_rolled'] == false) {
-			if(gameData['can_end_turn'] == true){
-				toggleEndTurnButton('on');
+		// If it's my turn, turn on game play tools
+		if (gameData['is_current_player'] == true) {
+			if (gameData['can_roll'] &&! hasSelectedDice()) {
+				toggleDiceButton('on');
+			} else {
+				toggleDiceButton('off');
 			}
-			toggleDiceButton('on');
-			toggleDiceBoard('on');
+			if(gameData['can_end_turn'] && !hasSelectedDice()) {
+				toggleEndTurnButton('on');
+			} else {
+				toggleEndTurnButton('off');
+			}
+			if(gameData['has_rolled']) {
+				toggleDiceBoard('on');
+			}
 			clearOpponentBoard();
-			toggleBorkleMessage('off');
+			if (!gameData['borkled']) {
+				toggleBorkleMessage('off');
+			} else {
+				toggleBorkleMessage('on');
+			}
 		}
+		// If it's my last turn, let me know
 		if (gameData['is_current_player'] == true && gameData['last_turn'] == true ) {
 			toggleLastTurn('on');
 		}
+		// If it's not my turn, turn off the last turn game message
 		if ( gameData['is_current_player'] == false ){
 			toggleLastTurn('off');
 		}
@@ -531,6 +520,7 @@ function refreshGameTools(bypass_has_rolled) {
 }
 
 function checkGameData() {
+	// Call the gameinfo API and return the data
 	var refreshGameInfoUrl = $('input#api-gameinfo-url').val();
 	var resultData = {};
 	$.ajax({
@@ -545,11 +535,8 @@ function checkGameData() {
 	return resultData;
 }
 
-function hasSelectedDice() {
-	return $('.selected').length > 0;
-}
-
 $(document).ready(function playGame(){
+	// Just turn off the refresh is the game is over
 	var data = checkGameData();
 	if ( data['game_over'] ) {
 		var autorefresh = false;
@@ -558,17 +545,21 @@ $(document).ready(function playGame(){
 		var autorefresh = true;
 	}
 
+	// Set up game tools if it's my turn
 	if (data['is_current_player']) {
 		toggleDiceBoard('on');
-		toggleDiceButton('on');
-		setRolledDice(data['current_rolled_dice'], 'slot-');
-		setCurrentRollScoreSets(data['current_score_sets'], $('div#scored-sets'), true);
-		if(data['can_end_turn']) {
-			toggleEndTurnButton('on');
-		}
-		if(data['has_rolled'] && hasSelectedDice()) {
+		if (data['can_roll']) {
+			toggleDiceButton('on');
+		} else {
 			toggleDiceButton('off');
 		}
+		if(data['can_end_turn']) {
+			toggleEndTurnButton('on');
+		} else {
+			toggleEndTurnButton('off');
+		}
+		setRolledDice(data['current_rolled_dice'], 'slot-');
+		setCurrentRollScoreSets(data['current_score_sets'], $('div#scored-sets'), true);
 	}
 	refreshScoreboard();
 	bindRollDice();
@@ -578,7 +569,7 @@ $(document).ready(function playGame(){
 	refreshScoreCard();
 	refreshGameTools();
 
-	
+	// Set game play functions to refresh
 	if (autorefresh) {
 		window.setInterval(function(){
 			refreshGameTools();

@@ -124,12 +124,6 @@ class GameStatusApi(BorkleProtectedGameView):
             else:
                 has_rolled = self.game.current_player.current_turn.has_rolled == True
                 borkled = self.game.current_player.current_turn.borkle
-                if has_rolled and not borkled:
-                    can_end_turn = self.game.current_player.current_turn.scoreset_set.count() > 0
-                elif borkled:
-                    can_end_turn = True
-                else:
-                    can_end_turn = False
 
                 data = {
                     'code_name': self.game.code_name,
@@ -138,7 +132,6 @@ class GameStatusApi(BorkleProtectedGameView):
                     'is_current_player': self.is_current_player,
                     'last_turn': self.game.last_turn and not self.gameplayer.had_last_turn,
                     'has_rolled': has_rolled,
-                    'can_end_turn': can_end_turn,
                     'borkled': borkled,
                     'current_player': {
                         'player_id': self.game.current_player.pk,
@@ -147,7 +140,12 @@ class GameStatusApi(BorkleProtectedGameView):
                     'players': self._players(),
                     'max_score': self.game.max_score,
                     'current_rolled_dice': self._diceboard(),
-                    'current_score_sets': self._format_scoresets(self.game.current_player.current_turn.scoreset_set.order_by('-pk').all())
+                    'current_score_sets': self._format_scoresets(self.game.current_player.current_turn.scoreset_set.order_by('-pk').all()),
+                    'available_dice_count': self.game.current_player.current_turn.available_dice_count,
+                    'current_turn': self.game.current_player.current_turn.turn_index,
+                    'current_roll': self.game.current_player.current_turn.roll_count,
+                    'can_end_turn': self.game.current_player.current_turn.can_end_turn,
+                    'can_roll': self.game.current_player.current_turn.can_roll,
                 }
         elif kwargs['api_target'] == 'scoreboard':
             data = {'scoreboard': self._scoreboard(), 'player_names': self._players_name_list()}

@@ -13,6 +13,10 @@
 	visibility: hidden;
 }
 
+.hidden {
+	display: none;
+}
+
 button.game-btn {
 	color: #EAEDED;
 	background-color: #45B39D;

@@ -43,16 +43,22 @@
 		</div>
 		<div class="row" id="game-tools">
 			<div class="col" id="roll-dice-btn">
-				<button class="game-btn" id="rolldice" style="display: none">Roll dice</button>
+				<button class="game-btn hidden" id="rolldice">Roll dice</button>
 			</div>
 			<div class="col-6"></div>
 			<div class="col" id="game-tools-and-messages">
-				<button class="game-btn game-btn_red" id="advanceplater" style="display: none">End turn</button>		
+				<button class="game-btn game-btn_red hidden" id="advanceplater">End turn</button>		
 			</div>
 		</div>
-		<div class="row" id="row-game-message" style="display: none">
+		<div class="row hidden" id="row-last-turn-message">
 			<div class="col">
-				<div class="big-message" id="game-message" style="display: none">
+				<div class="big-message hidden" id="last-turn-message">
+				</div>
+			</div>
+		</div>
+		<div class="row hidden" id="row-borkle-message">
+			<div class="col">
+				<div class="big-message hidden" id="borkle-message">
 				</div>
 			</div>
 		</div>
@@ -76,7 +82,7 @@
 		</div>
 		<div class="row" id="selected-dice-slot" class="selected-dice-slot_active">
 			<div class="col">
-				<button class="game-btn" id="score-selected-dice" style="display: none;">Score selected dice</button>
+				<button class="game-btn hidden" id="score-selected-dice">Score selected dice</button>
 			</div>
 		</div>
 		<div class="row" id="scored-sets-slots">
@@ -112,10 +118,12 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="big-message col" id="winner-data" style="display: none;"></div>
+		<div class="big-message col hidden" id="winner-data"></div>
 	</div>
 	<div class="row" id="score-card-log">
 		{% for player in game.gameplayer_set.all %}
+		<input type="hidden" id="player-turn-index_{{player.username}}" value="0" />
+		<input type="hidden" id="player-turn-roll_{{player.username}}" value="1" />
 		<div class="col">
 			{{player.username}}
 			<table class="table" id="scorecard_{{player.username}}">
@@ -136,12 +144,12 @@
 		</div>
 		{% endif %}
 	</div>
-<div class="image-cache" id="rolled-dice-cache">
+<div class="image-cache" id="rolled-dice-cache" style="display: none;">
 	{% for img in rolled_dice_cache %}
 		{{img|safe}}
 	{% endfor %}
 </div>
-<div class="image-cache" id="scored-dice-cache">
+<div class="image-cache" id="scored-dice-cache" style="display: none;">
 	{% for img in scored_dice_cache %}
 		{{img|safe}}
 	{% endfor %}

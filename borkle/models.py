@@ -316,6 +316,7 @@ class Turn(models.Model):
     active = models.BooleanField(default=False)
     turn_index = models.IntegerField(default=1)
     has_rolled = models.BooleanField(default=False)
+    roll_count = models.IntegerField(default=0)
     rolled_dice_1_value = models.IntegerField(blank=True, null=True)
     rolled_dice_2_value = models.IntegerField(blank=True, null=True)
     rolled_dice_3_value = models.IntegerField(blank=True, null=True)
@@ -342,8 +343,25 @@ class Turn(models.Model):
             {'field': 'rolled_dice_6_value', 'min_needed': 6},
         ]
 
+    @property
+    def can_roll(self):
+        if self.borkle:
+            return False
+        if self.has_rolled and self.scoreset_set.filter(roll=self.roll_count).count() == 0:
+            return False
+        return True
+
+    @property
+    def can_end_turn(self):
+        if self.borkle:
+            return True
+        if self.has_rolled and self.scoreset_set.count() > 0:
+            return True
+        return False
+
     def set_score(self):
         self.score = self.current_score
+        self.has_rolled = False
         self.save()
 
 
@@ -356,12 +374,14 @@ class Turn(models.Model):
         self.scoreset_set.all().update(locked=True)
         if self.available_dice_count == 0:
             self.available_dice_count = 6
+            self.has_rolled = False
         for dice_field in self.dice_fields:
             if self.available_dice_count >= dice_field['min_needed']:
                 setattr(self, dice_field['field'], random.choice([1, 2, 3, 4, 5, 6]))
             else:
                 setattr(self, dice_field['field'], None)
         self.has_rolled = True
+        self.roll_count += 1
         if not self.has_score:
             self.borkle = True
             self.scoreset_set.all().delete()
@@ -403,7 +423,8 @@ class Turn(models.Model):
 
     def make_selection(self, fields):
         score_set = ScoreSet(
-            turn=self
+            turn=self,
+            roll=self.roll_count,
         )
         dice_index = 1
         for field in fields:
@@ -452,6 +473,7 @@ class Turn(models.Model):
 
 class ScoreSet(models.Model):
     turn = models.ForeignKey(Turn, on_delete=models.CASCADE)
+    roll = models.IntegerField(default=1)
     score = models.IntegerField(default=0)
     score_type = models.CharField(max_length=150)
     scored_dice_1_value = models.IntegerField(blank=True, null=True)
