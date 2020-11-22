@@ -370,6 +370,11 @@ class Turn(models.Model):
         self.scoreset_set.all().update(locked=True)
         self.save()
 
+    def set_roll_dice(self, rolled_dice):
+        for dice_field, value in rolled_dice.items():
+            setattr(self, dice_field, value)
+        self.save()
+
     def roll_dice(self):
         self.scoreset_set.all().update(locked=True)
         if self.available_dice_count == 0:
@@ -392,6 +397,16 @@ class Turn(models.Model):
             )
             borkle_score.save()
         self.save()
+
+    def borkle_turn(self):
+        self.borkle = True
+        self.scoreset_set.all().delete()
+        borkle_score = ScoreSet(
+            turn=self,
+            score=0,
+            score_type='borkle!'
+        )
+        borkle_score.save()
 
     @property
     def dice_values(self):
@@ -488,6 +503,17 @@ class ScoreSet(models.Model):
         return '{} Score set: {}'.format(self.turn, self.pk)
 
     @property
+    def score_field_strings(self):
+        return [
+            'scored_dice_1_value',
+            'scored_dice_2_value',
+            'scored_dice_3_value',
+            'scored_dice_4_value',
+            'scored_dice_5_value',
+            'scored_dice_6_value',
+        ]
+
+    @property
     def score_fields(self):
         return [
             self.scored_dice_1_value,
@@ -506,6 +532,15 @@ class ScoreSet(models.Model):
             if field:
                 scorable_values.append(field)
         return scorable_values
+
+    @property
+    def scorable_fields(self):
+        scorable_fields = []
+
+        for field in self.score_field_strings:
+            if getattr(self, field):
+                scorable_fields.append(field)
+        return scorable_fields
 
     def save(self, *args, **kwargs):
         score = Score(self.scorable_values)

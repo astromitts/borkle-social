@@ -1,7 +1,12 @@
 {% extends 'borkle/base.html' %}
 {% load static apptags %}
 {% block extra_js %}
-	<script src="{% static 'js/api_game.js' %}"></script>
+	<script src="{% static 'js/utils.js' %}"></script>
+	<script src="{% static 'js/dice.js' %}"></script>
+	<script src="{% static 'js/elementToggle.js' %}"></script>
+	<script src="{% static 'js/rollDice.js' %}"></script>
+	<script src="{% static 'js/gameFunctions.js' %}"></script>
+	<script src="{% static 'js/play.js' %}"></script>
 {% endblock %}
 
 {% block main_content %}
@@ -13,6 +18,7 @@
 	<input type="hidden" id="api-scoredice-url" value="{% url 'game_api' game_uuid=game.uuid api_target='scoredice' %}" />
 	<input type="hidden" id="api-undoselection-url" value="{% url 'game_api' game_uuid=game.uuid api_target='undoselection' %}" />
 	<input type="hidden" id="api-rolldice-url" value="{% url 'game_api' game_uuid=game.uuid api_target='rolldice' %}" />
+	<input type="hidden" id="api-borkle-url" value="{% url 'game_api' game_uuid=game.uuid api_target='borkle' %}" />
 	<input type="hidden" id="api-endturn-url" value="{% url 'game_api' game_uuid=game.uuid api_target='endturn' %}" />
 	<input type="hidden" id="latest-scorecard-turn" value="0" />
 
@@ -38,20 +44,26 @@
 	</div>
 	<div id="diceboard">
 		<div class="row">
-			<div class="col hidden centered" id="current-score">You have <span id="current-score-value"></span> points this turn</div>
+			<div class="col hidden centered" id="current-score">You have <span id="current-score-value">0</span> points this turn</div>
 		</div>
 		<div class="row">
-			<div class="col hidden  centered" id="available-dice">You have <span id="available-dice-value"></span> dice to roll</div>
+			<div class="col hidden centered" id="available-dice">You have <span id="available-dice-value"></span> dice to roll</div>
+		</div>
+		<div class="row hidden" id="row-borkle-message">
+			<div class="col">
+				<div class="big-message hidden" id="borkle-message">
+				</div>
+			</div>
 		</div>
 		<div class="row" id="game-tools">
 			<div class="col-3"></div>
 			<div class="col-8">
 				<div class="row">
 					<div class="col-5" id="roll-dice-btn">
-						<button class="game-btn hidden" id="rolldice">Roll<br />dice</button>
+						<button class="game-btn  game-btn_square hidden" data-dice-count="6" id="rolldice">Roll<br />dice</button>
 					</div>
 					<div class="col-5" id="game-tools-and-messages">
-						<button class="game-btn game-btn_red hidden" id="advanceplater">End<br />turn</button>		
+						<button class="game-btn game-btn_red game-btn_square hidden" id="advanceplater">End<br />turn</button>		
 					</div>
 				</div>
 			</div>
@@ -59,12 +71,6 @@
 		<div class="row hidden" id="row-last-turn-message">
 			<div class="col">
 				<div class="big-message hidden" id="last-turn-message">
-				</div>
-			</div>
-		</div>
-		<div class="row hidden" id="row-borkle-message">
-			<div class="col">
-				<div class="big-message hidden" id="borkle-message">
 				</div>
 			</div>
 		</div>
@@ -87,10 +93,16 @@
 			<div class="col"></div>
 		</div>
 		<div class="row" id="selected-dice-slot" class="selected-dice-slot_active">
-			<div class="col">
-				<button class="game-btn hidden" id="score-selected-dice">Score selected dice</button>
+			<div class="col-4">
+				<div id="selected-dice-score" class=""></div>
 			</div>
+			<div class="col" id="selected-dice-images"></div>
 		</div>
+
+		<div class="row hidden" id="score-dice-btn-row">
+			<button class="game-btn game-btn_long" id="score-selected-dice">Score selected dice</button>
+		</div>
+
 		<div class="row" id="scored-sets-slots">
 			<div class="col" id="scored-sets">
 			</div>

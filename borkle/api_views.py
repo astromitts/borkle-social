@@ -29,11 +29,11 @@ class GameStatusApi(BorkleProtectedGameView):
         formatted_scoresets = []
         for scoreset in scoresets:
             scoreset_data = {
-                'score': scoreset.score,
-                'score_type': scoreset.score_type,
-                'scoreable_value_images': [str(val) for val in scoreset.scorable_values],
+                'scoreValue': scoreset.score,
+                'scoreType': scoreset.score_type,
                 'locked': scoreset.locked,
-                'pk': scoreset.pk,
+                'scorableValues': scoreset.scorable_values,
+                'scorableFields': scoreset.scorable_fields,
             }
             if scoreset.score == 0:
                 scoreset_data['scoreable_value_images'] = ['0', ]
@@ -80,12 +80,14 @@ class GameStatusApi(BorkleProtectedGameView):
             'available_score': self.game.current_player.current_turn.has_score,
             'last_turn': self.game.last_turn and not self.game.current_player.had_last_turn,
             'scoresets': self._format_scoresets(current_turn.scoreset_set.order_by('-pk').all()),
-            'rolled_dice_1_value': self._diceinfo(current_turn.rolled_dice_1_value),
-            'rolled_dice_2_value': self._diceinfo(current_turn.rolled_dice_2_value),
-            'rolled_dice_3_value': self._diceinfo(current_turn.rolled_dice_3_value),
-            'rolled_dice_4_value': self._diceinfo(current_turn.rolled_dice_4_value),
-            'rolled_dice_5_value': self._diceinfo(current_turn.rolled_dice_5_value),
-            'rolled_dice_6_value': self._diceinfo(current_turn.rolled_dice_6_value),
+            'rolled_values': [
+                current_turn.rolled_dice_1_value,
+                current_turn.rolled_dice_2_value,
+                current_turn.rolled_dice_3_value,
+                current_turn.rolled_dice_4_value,
+                current_turn.rolled_dice_5_value,
+                current_turn.rolled_dice_6_value,
+            ]
         }
         return data
 
@@ -163,21 +165,10 @@ class GameStatusApi(BorkleProtectedGameView):
                     if field.startswith('rolled_dice'):
                         dice_value_fields.append(field)
                 has_score = self.game.current_player.current_turn.check_score(dice_value_fields)
-                if not has_score:
-                    data = {
-                        'status': 'error',
-                        'message': 'Not a scoring set. Try something else.'
-                    }
-                else:
-                    self.game.current_player.current_turn.make_selection(dice_value_fields)
-                    scoresets = self._format_scoresets(self.game.current_player.current_turn.scoreset_set.order_by('-pk').all())
-                    data = {
-                        'status': 'success',
-                        'scoresets': scoresets,
-                        'available_dice_count': self.game.current_player.current_turn.available_dice_count,
-                        'can_select_more': self.game.current_player.current_turn.has_score,
-                        'turn_score': self.game.current_player.current_turn.current_score,
-                    }
+                self.game.current_player.current_turn.make_selection(dice_value_fields)
+                data = {
+                    'status': 'success',
+                }
             else:
                 data = {
                     'status': 'error',
@@ -211,9 +202,17 @@ class GameStatusApi(BorkleProtectedGameView):
                     'message': "Hey! It's not your turn!"
                 }
         elif kwargs['api_target'] == 'rolldice':
+            dice_vals = {}
+            for i in range(0, 6):
+                dice_val = request.POST.get('rolled_dice_{}'.format(i), None)
+                dice_vals['rolled_dice_{}_value'.format(i + 1)] = dice_val
             if self.is_current_player:
-                self.gameplayer.roll_dice()
-                data = self._diceboard()
+                self.game.current_player.current_turn.set_roll_dice(dice_vals);
+        elif kwargs['api_target'] == 'borkle':
+            self.game.current_player.current_turn.borkle_turn()
+            data = {
+                'status': 'success'
+            }
         else:
             data = {
                 'status': 'error',
@@ -228,8 +227,8 @@ class GameBoardApiVersion(BorkleProtectedGameView):
         rolled_dice_cache = []
         scored_dice_cache = []
         for i in range(0, 7):
-            rolled_dice_cache.append('<img src="{}" class="rolled-dice" id="rolled-dice-cache_{}" />'.format(get_dice_image_path(i), i))
-            scored_dice_cache.append('<img src="{}" class="scored-dice" id="scored-dice-cache_{}" />'.format(get_dice_image_path(i), i))
+            rolled_dice_cache.append('<img src="{}" class="rolled-dice" data-value="{}" id="rolled-dice-cache_{}" />'.format(get_dice_image_path(i), i, i))
+            scored_dice_cache.append('<img src="{}" class="scored-dice" data-value="{}" id="scored-dice-cache_{}" />'.format(get_dice_image_path(i), i, i))
         context = {
             'game': self.game,
             'gameplayer': self.gameplayer,

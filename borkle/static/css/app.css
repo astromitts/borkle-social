@@ -5,8 +5,6 @@
 .big-message {
 	font-weight: bold;
 	text-align:center;
-	padding-top: 2rem;
-	padding-bottom: 4rem;
 }
 
 .image-cache {
@@ -25,13 +23,11 @@
 	margin-bottom: 1rem;
 }
 
-button.game-btn {
+.game-btn {
 	color: #EAEDED;
 	background-color: #45B39D;
 	border: 1px solid #45B39D;
 	border-radius: 1rem;
-	width: 4.8rem;
-	height: 4.8rem;
 	font-weight: bold;
 }
 button.game-btn:hover {
@@ -39,6 +35,11 @@ button.game-btn:hover {
 	background-color: #0E6655;
 	border: 1px solid #45B39D;
 	border-radius: 1rem;
+}
+
+button.game-btn_square {
+	width: 4.8rem;
+	height: 4.8rem;
 }
 button.game-btn_red {
 	background-color: #F95545;
@@ -49,8 +50,10 @@ button.game-btn_red:hover {
 	border: 1px solid #442522;
 }
 
-button#score-selected-dice {
-	width: 5rem;
+button.game-btn_long {
+	margin: 0 auto;
+	width: 13rem;
+	height: 4rem;
 }
 
 img.rolled-dice {
@@ -67,6 +70,13 @@ img.rolled-dice_selected {
 
 img.rolled-dice_selectable:hover {
 	border: 2px solid orange;
+}
+
+#selected-dice-score {
+	font-weight: bold;
+	margin: 0 auto;
+	text-align: center;
+	margin-top: 1.6rem;
 }
 
 img.scored-dice {
