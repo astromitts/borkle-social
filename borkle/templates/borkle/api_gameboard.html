@@ -38,16 +38,22 @@
 	</div>
 	<div id="diceboard">
 		<div class="row">
-			<div class="col" id="current-score"></div>
-			<div class="col" id="available-dice"></div>
+			<div class="col hidden centered" id="current-score">You have <span id="current-score-value"></span> points this turn</div>
+		</div>
+		<div class="row">
+			<div class="col hidden  centered" id="available-dice">You have <span id="available-dice-value"></span> dice to roll</div>
 		</div>
 		<div class="row" id="game-tools">
-			<div class="col" id="roll-dice-btn">
-				<button class="game-btn hidden" id="rolldice">Roll dice</button>
-			</div>
-			<div class="col-6"></div>
-			<div class="col" id="game-tools-and-messages">
-				<button class="game-btn game-btn_red hidden" id="advanceplater">End turn</button>		
+			<div class="col-3"></div>
+			<div class="col-8">
+				<div class="row">
+					<div class="col-5" id="roll-dice-btn">
+						<button class="game-btn hidden" id="rolldice">Roll<br />dice</button>
+					</div>
+					<div class="col-5" id="game-tools-and-messages">
+						<button class="game-btn game-btn_red hidden" id="advanceplater">End<br />turn</button>		
+					</div>
+				</div>
 			</div>
 		</div>
 		<div class="row hidden" id="row-last-turn-message">
@@ -63,19 +69,19 @@
 			</div>
 		</div>
 		<div class="row">
-			<div class="col"></div>
+			<div class="col-3"></div>
 			<div class="col-8" id="rolled-dice">
 				<div class="row">
-					<div class="col-4" id="slot-rolled_dice_1_value"></div>
-					<div class="col-4" id="slot-rolled_dice_2_value"></div>
+					<div class="col-5" id="slot-rolled_dice_1_value"></div>
+					<div class="col-5" id="slot-rolled_dice_2_value"></div>
 				</div>
 				<div class="row">
-					<div class="col-4" id="slot-rolled_dice_3_value"></div>
-					<div class="col-4" id="slot-rolled_dice_4_value"></div>
+					<div class="col-5" id="slot-rolled_dice_3_value"></div>
+					<div class="col-5" id="slot-rolled_dice_4_value"></div>
 				</div>
 				<div class="row">
-					<div class="col-4" id="slot-rolled_dice_5_value"></div>
-					<div class="col-4" id="slot-rolled_dice_6_value"></div>
+					<div class="col-5" id="slot-rolled_dice_5_value"></div>
+					<div class="col-5" id="slot-rolled_dice_6_value"></div>
 				</div>
 			</div>
 			<div class="col"></div>
@@ -119,6 +125,12 @@
 	</div>
 	<div class="row">
 		<div class="big-message col hidden" id="winner-data"></div>
+	</div>
+	<div class="row">
+		<div class="col"><hr /></div>
+	</div>
+	<div class="row">
+		<div class="col"><h5>Score Cards</h5></div>
 	</div>
 	<div class="row" id="score-card-log">
 		{% for player in game.gameplayer_set.all %}

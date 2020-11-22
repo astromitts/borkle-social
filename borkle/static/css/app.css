@@ -16,12 +16,23 @@
 .hidden {
 	display: none;
 }
+.centered {
+	text-align: center;
+}
+
+#game-tools {
+	margin-top: 1rem;
+	margin-bottom: 1rem;
+}
 
 button.game-btn {
 	color: #EAEDED;
 	background-color: #45B39D;
 	border: 1px solid #45B39D;
 	border-radius: 1rem;
+	width: 4.8rem;
+	height: 4.8rem;
+	font-weight: bold;
 }
 button.game-btn:hover {
 	color: #EAEDED;

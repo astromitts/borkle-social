@@ -76,7 +76,7 @@ class GameStatusApi(BorkleProtectedGameView):
             'is_current_player': self.is_current_player,
             'current_player': self.game.current_player.username,
             'current_score': current_turn.current_score,
-            'available_dice': current_turn.available_dice_count,
+            'available_dice_count': current_turn.available_dice_count,
             'available_score': self.game.current_player.current_turn.has_score,
             'last_turn': self.game.last_turn and not self.game.current_player.had_last_turn,
             'scoresets': self._format_scoresets(current_turn.scoreset_set.order_by('-pk').all()),
@@ -114,11 +114,7 @@ class GameStatusApi(BorkleProtectedGameView):
         if kwargs['api_target'] == 'gameinfo':
             if self.game.status == 'over':
                 data = {
-                    'code_name': self.game.code_name,
                     'game_over': self.game.status == 'over',
-                    'uuid': self.game.uuid,
-                    'max_score': self.game.max_score,
-                    'players': self._players(),
                     'winners': self._format_winner(),
                 }
             else:
@@ -126,26 +122,19 @@ class GameStatusApi(BorkleProtectedGameView):
                 borkled = self.game.current_player.current_turn.borkle
 
                 data = {
-                    'code_name': self.game.code_name,
                     'game_over': self.game.status == 'over',
-                    'uuid': self.game.uuid,
                     'is_current_player': self.is_current_player,
                     'last_turn': self.game.last_turn and not self.gameplayer.had_last_turn,
-                    'has_rolled': has_rolled,
                     'borkled': borkled,
                     'current_player': {
                         'player_id': self.game.current_player.pk,
                         'player_name': self.game.current_player.username,
                     },
-                    'players': self._players(),
-                    'max_score': self.game.max_score,
                     'current_rolled_dice': self._diceboard(),
                     'current_score_sets': self._format_scoresets(self.game.current_player.current_turn.scoreset_set.order_by('-pk').all()),
-                    'available_dice_count': self.game.current_player.current_turn.available_dice_count,
-                    'current_turn': self.game.current_player.current_turn.turn_index,
-                    'current_roll': self.game.current_player.current_turn.roll_count,
                     'can_end_turn': self.game.current_player.current_turn.can_end_turn,
                     'can_roll': self.game.current_player.current_turn.can_roll,
+                    'available_dice_count': self.game.current_player.current_turn.available_dice_count,
                 }
         elif kwargs['api_target'] == 'scoreboard':
             data = {'scoreboard': self._scoreboard(), 'player_names': self._players_name_list()}
@@ -185,7 +174,9 @@ class GameStatusApi(BorkleProtectedGameView):
                     data = {
                         'status': 'success',
                         'scoresets': scoresets,
+                        'available_dice_count': self.game.current_player.current_turn.available_dice_count,
                         'can_select_more': self.game.current_player.current_turn.has_score,
+                        'turn_score': self.game.current_player.current_turn.current_score,
                     }
             else:
                 data = {
