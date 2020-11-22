@@ -40,7 +40,8 @@ $(document).ready(function playGame(){
 							overrideRollButton = false;
 						}
 					} else {
-						currentPlayerTriggered = false;		
+						currentPlayerTriggered = false;	
+						toggleCurrentTurnToolsOff();	
 						buildAlreadyRolledDice(data['current_rolled_dice']['rolledValues'], false);
 						setCurrentRollScoreSets(data['current_rolled_dice']['scoresets'], false);
 					}

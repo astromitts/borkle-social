@@ -29,12 +29,7 @@ function bindEndTurn() {
 				} else {
 					clearRolledDice('slot-');
 					$('div#scored-sets').html('');
-					toggleRollDiceButton('off');
-					toggleSelectedDiceSlot('off');
-					toggleBorkleMessage('off');
-					toggleEndTurnButton('off');
-					toggleAvailableDice('off');
-					toggleCurrentScore('off');
+					toggleCurrentTurnToolsOff();
 					clearGameMessage();
 					refreshScoreboard();
 					updateTurnScore(0);

@@ -59,7 +59,9 @@ function setRolledDice(rolledDice, targetDivPrefix, setSelectable, rollHasScore)
 			diceImage.setAttribute('id', rolledDiceID);
 			targetDiv.append(diceImage);
 			bindSelectDice($('img#' + rolledDiceID));
-		} 
+		} else if (diceValue == null ) {
+			existingImageInSlot.remove();
+		}
 	}
 }
 

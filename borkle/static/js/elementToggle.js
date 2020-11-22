@@ -89,6 +89,15 @@ function toggleDiceBoard(visibility) {
 	}
 }
 
+function toggleCurrentTurnToolsOff() {
+	toggleRollDiceButton('off');
+	toggleSelectedDiceSlot('off');
+	toggleBorkleMessage('off');
+	toggleEndTurnButton('off');
+	toggleAvailableDice('off');
+	toggleCurrentScore('off');
+}
+
 
 function toggleOpponentScoreSet(visibility) {
 	var targetDiv = $('div#opponent-scored-sets');
