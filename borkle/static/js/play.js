@@ -7,9 +7,10 @@ $(document).ready(function playGame(){
 		refreshScoreCard();
 	} else {
 		var autorefresh = true;
+		var practiceGame = data['practice_game'];
 		bindRollDice();
 		bindScoreDice();
-		bindEndTurn();
+		bindEndTurn(practiceGame);
 		refreshScoreCard();
 		var overrideRollButton = false;
 		if (data['current_rolled_dice']['rolledValues'].length > 0 && !isAllNull(data['current_rolled_dice']['rolledValues'])) {

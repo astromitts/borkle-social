@@ -177,7 +177,7 @@ function endTurn() {
 	updateTurnScore(0);
 }
 
-function bindEndTurn() {
+function bindEndTurn(practiceGame) {
 	var endTurnUrl = $('input#api-endturn-url').val();
 	$('button#advanceplater').click(function(){
 		$.ajax({
@@ -190,6 +190,9 @@ function bindEndTurn() {
 					alert(data['message']);
 				} else {
 					endTurn();
+					if( practiceGame ) {
+						initiateTurn();
+					}
 				}
 			}
 		});

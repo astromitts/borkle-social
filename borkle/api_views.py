@@ -116,6 +116,7 @@ class GameStatusApi(BorkleProtectedGameView):
             else:
                 data = {
                     'game_over': self.game.status == 'over',
+                    'practice_game': self.game.game_type == 'practice',
                     'is_current_player': self.is_current_player,
                     'last_turn': self.game.last_turn,
                     'current_player': {
