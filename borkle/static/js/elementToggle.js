@@ -88,13 +88,17 @@ function toggleEndTurnButton(visibility) {
 function toggleDiceBoard(visibility) {
 	var targetRolledDiceDiv = $('div#rolled-dice');
 	var targetSelectedDiceDiv = $('div#selected-dice');
+	var targetSelectedDiceDiv = $('div#diceboard');
 	if (visibility == 'on') {
 		toggleElementVisibility(targetRolledDiceDiv, 'on');
+		toggleElementVisibility(targetSelectedDiceDiv, 'on');
 		toggleElementVisibility(targetSelectedDiceDiv, 'on');
 	} else {
 		toggleElementVisibility(targetRolledDiceDiv, 'off');
 		toggleElementVisibility(targetSelectedDiceDiv, 'off');
+		toggleElementVisibility(targetSelectedDiceDiv, 'off');
 	}
+	return visibility;
 }
 
 function toggleCurrentTurnToolsOff() {

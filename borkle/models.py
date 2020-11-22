@@ -260,11 +260,6 @@ class GamePlayer(models.Model):
         self.ready = True
         self.save()
 
-    def roll_dice(self):
-        self.current_turn.roll_dice()
-        self.game.update_action_count()
-        return self.current_turn.dice_values
-
     @property
     def rolled_dice(self):
         if self.current_turn:
@@ -315,15 +310,12 @@ class Turn(models.Model):
     available_dice_count = models.IntegerField(default=6)
     active = models.BooleanField(default=False)
     turn_index = models.IntegerField(default=1)
-    has_rolled = models.BooleanField(default=False)
-    roll_count = models.IntegerField(default=0)
     rolled_dice_1_value = models.IntegerField(blank=True, null=True)
     rolled_dice_2_value = models.IntegerField(blank=True, null=True)
     rolled_dice_3_value = models.IntegerField(blank=True, null=True)
     rolled_dice_4_value = models.IntegerField(blank=True, null=True)
     rolled_dice_5_value = models.IntegerField(blank=True, null=True)
     rolled_dice_6_value = models.IntegerField(blank=True, null=True)
-    borkle = models.BooleanField(default=False)
 
     def __str__(self):
         if self.active:
@@ -355,25 +347,9 @@ class Turn(models.Model):
             {'field': 'rolled_dice_6_value', 'min_needed': 6},
         ]
 
-    @property
-    def can_roll(self):
-        if self.borkle:
-            return False
-        if self.has_rolled and self.scoreset_set.filter(roll=self.roll_count).count() == 0:
-            return False
-        return True
-
-    @property
-    def can_end_turn(self):
-        if self.borkle:
-            return True
-        if self.has_rolled and self.scoreset_set.count() > 0:
-            return True
-        return False
 
     def set_score(self):
         self.score = self.current_score
-        self.has_rolled = False
         self.save()
 
 
@@ -391,16 +367,12 @@ class Turn(models.Model):
         self.scoreset_set.all().update(locked=True)
         if self.available_dice_count == 0:
             self.available_dice_count = 6
-            self.has_rolled = False
         for dice_field in self.dice_fields:
             if self.available_dice_count >= dice_field['min_needed']:
                 setattr(self, dice_field['field'], random.choice([1, 2, 3, 4, 5, 6]))
             else:
                 setattr(self, dice_field['field'], None)
-        self.has_rolled = True
-        self.roll_count += 1
         if not self.has_score:
-            self.borkle = True
             self.scoreset_set.all().delete()
             borkle_score = ScoreSet(
                 turn=self,
@@ -411,7 +383,6 @@ class Turn(models.Model):
         self.save()
 
     def borkle_turn(self):
-        self.borkle = True
         self.scoreset_set.all().delete()
         borkle_score = ScoreSet(
             turn=self,
@@ -451,21 +422,9 @@ class Turn(models.Model):
                 scorable_fields.append(None)
         return scorable_fields
 
-    @property
-    def has_score(self):
-        value_set = [value for field, value in self.dice_values.items()]
-        test_score = Score(value_set)
-        return test_score.has_score
-
-    def check_score(self, fields):
-        dice_values = [getattr(self, field) for field in fields]
-        test_score = Score(dice_values)
-        return test_score.score > 0
-
     def make_selection(self, fields):
         score_set = ScoreSet(
             turn=self,
-            roll=self.roll_count,
         )
         dice_index = 1
         for field in fields:

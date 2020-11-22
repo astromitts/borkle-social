@@ -78,7 +78,6 @@ class GameStatusApi(BorkleProtectedGameView):
             'current_player': self.game.current_player.username,
             'current_score': current_turn.current_score,
             'available_dice_count': current_turn.available_dice_count,
-            'available_score': self.game.current_player.current_turn.has_score,
             'last_turn': self.game.last_turn and not self.game.current_player.had_last_turn,
             'scoresets': self._format_scoresets(current_turn.scoreset_set.order_by('-pk').all()),
             'rolledValues': current_turn.scorable_values,
@@ -115,14 +114,10 @@ class GameStatusApi(BorkleProtectedGameView):
                     'winners': self._format_winner(),
                 }
             else:
-                has_rolled = self.game.current_player.current_turn.has_rolled == True
-                borkled = self.game.current_player.current_turn.borkle
-
                 data = {
                     'game_over': self.game.status == 'over',
                     'is_current_player': self.is_current_player,
                     'last_turn': self.game.last_turn,
-                    'borkled': borkled,
                     'current_player': {
                         'player_id': self.game.current_player.pk,
                         'player_name': self.game.current_player.username,
@@ -130,8 +125,6 @@ class GameStatusApi(BorkleProtectedGameView):
                     },
                     'current_rolled_dice': self._diceboard(),
                     'current_score_sets': self._format_scoresets(self.game.current_player.current_turn.scoreset_set.order_by('-pk').all()),
-                    'can_end_turn': self.game.current_player.current_turn.can_end_turn,
-                    'can_roll': self.game.current_player.current_turn.can_roll,
                     'available_dice_count': self.game.current_player.current_turn.available_dice_count,
                 }
         elif kwargs['api_target'] == 'scoreboard':
@@ -160,7 +153,6 @@ class GameStatusApi(BorkleProtectedGameView):
                 for field in request.POST.keys():
                     if field.startswith('rolled_dice'):
                         dice_value_fields.append(field)
-                has_score = self.game.current_player.current_turn.check_score(dice_value_fields)
                 self.game.current_player.current_turn.make_selection(dice_value_fields)
                 data = {
                     'status': 'success',

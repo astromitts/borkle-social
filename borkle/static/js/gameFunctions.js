@@ -44,6 +44,7 @@ function bindEndTurn() {
 
 function displayWinner(winnerData) {
 	var winnerDiv = $('div#winner-data');
+	toggleDiceBoard('off');
 	if( winnerDiv.length > 0 ){
 		if( winnerData['winner_count'] == 1) {
 			var winnerHtml = 'The winner is ' + winnerData['winners'][0]['username'] + '! ' + winnerData['winners'][0]['score'] + ' points to '+winnerData['winners'][0]['username'] +'!'

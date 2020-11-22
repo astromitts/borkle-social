@@ -1,9 +1,10 @@
 $(document).ready(function playGame(){
 	// Just turn off the refresh is the game is over
 	var data = checkGameData(false);
-	if ( data['game_over'] ) {
+	if ( data['game_over'] == true ) {
 		var autorefresh = false;
 		displayWinner(data['winners']);
+		refreshScoreCard();
 	} else {
 		var autorefresh = true;
 		bindRollDice();
@@ -17,7 +18,6 @@ $(document).ready(function playGame(){
 		}
 	}
 	// Set game play functions to refresh
-	autorefresh = true;
 	var currentPlayerTriggered = false;
 	if (autorefresh) {
 		window.setInterval(function(){
