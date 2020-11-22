@@ -111,12 +111,17 @@ function refreshScoreCard() {
 							var scoreSetTD = document.createElement('td');
 							turn['scoresets'].forEach(function(scoreset){
 								var scoreSetDiv = document.createElement('div');
-								scoreset['scoreable_value_images'].forEach(function(value){
-									var diceImage = getImageFromCache('scored-dice-cache_' + value);
+								if( scoreset['scoreValue'] == 0 ) {
+									var diceImage = getImageFromCache('scored-dice-cache_0');
 									scoreSetDiv.append(diceImage);
-								});
+								} else {
+									scoreset['scorableValues'].forEach(function(value){
+										var diceImage = getImageFromCache('scored-dice-cache_' + value);
+										scoreSetDiv.append(diceImage);
+									});
+								}
 								var scoreSpan = document.createElement('span'); 
-								scoreSpan.innerHTML = '=' + scoreset['score'];
+								scoreSpan.innerHTML = '=' + scoreset['scoreValue'];
 								scoreSetDiv.append(scoreSpan);
 								scoreSetTD.append(scoreSetDiv);
 							});
@@ -130,72 +135,30 @@ function refreshScoreCard() {
 	latestScoreCardInput.setAttribute('value', latestScoreCardTurn);
 }
 
-
-
-function refreshGameTools(bypass_has_rolled) {
-	var gameData = checkGameData();
-	var refreshGameInfoUrl = $('input#api-gameinfo-url').val();
-	// If the game ended, turn off all the game play tools and display the winner
-	if(gameData['game_over']) {
-		toggleRollDiceButton('off');
-		toggleDiceBoard('off');
-		clearOpponentBoard();
-		toggleBorkleMessage('off');
-		displayWinner(gameData['winners']);
-		toggleLastTurn('off');
-	} else {
-		// If it's my turn, turn on game play tools
-		if (gameData['is_current_player'] == true) {
-			toggleAvailableDice('on');
-			toggleCurrentScore('on');
-			toggleOpponentScoreSet('off');
-			if (gameData['can_roll'] &&! hasSelectedDice()) {
-				toggleRollDiceButton('on');
-			} else {
-				toggleRollDiceButton('off');
-			}
-			if(gameData['can_end_turn'] && !hasSelectedDice()) {
-				toggleEndTurnButton('on');
-			} else {
-				toggleEndTurnButton('off');
-			}
-			if(gameData['has_rolled']) {
-				toggleDiceBoard('on');
-			}
-			clearOpponentBoard();
-			if (!gameData['borkled']) {
-				toggleBorkleMessage('off');
-			} else {
-				toggleBorkleMessage('on');
-			}
-		} else {
-			toggleOpponentScoreSet('on');
-			toggleAvailableDice('off');
-			toggleCurrentScore('off');
-		}
-		// If it's my last turn, let me know
-		if (gameData['is_current_player'] == true && gameData['last_turn'] == true ) {
-			toggleLastTurn('on');
-		}
-		// If it's not my turn, turn off the last turn game message
-		if ( gameData['is_current_player'] == false ){
-			toggleLastTurn('off');
-		}
-	}
-}
-
-function initiateTurn() {
+function initiateTurn(overrideRollButton) {
+	clearScoreSetTable();
 	updateDiceCount(6);
 	toggleAvailableDice('on');
 	toggleCurrentScore('on');
 	toggleAvailableDice('on');
 	toggleCurrentScore('on');
-	toggleRollDiceButton('on');
+	if (!overrideRollButton) {
+		clearRolledDice('slot-');
+		toggleRollDiceButton('on');
+	}
+	refreshScoreCard();
 }
 
+function buildAlreadyRolledDice(rolledValues, allowUndo) {
+	if (rolledValues.length > 0 && !isAllNull(rolledValues)) {
+		var rolledDice = stripNulls(rolledValues);
+		var rollHasScore = hasScore(rolledDice);
+		setRolledDice(rolledDice, 'slot-', allowUndo, rollHasScore);
+	}
+}
 
 function setCurrentRollScoreSets(scoreSets, allowUndo) {
 	for (var key of Object.keys(scoreSets)) {
-		buildScoreSetTable(scoreSets[key], scoreSets[key]['scorableFields'], true);
+		buildScoreSetTable(scoreSets[key], scoreSets[key]['scorableFields'], allowUndo, scoreSets[key]['scoreSetPk']);
 	}
 }

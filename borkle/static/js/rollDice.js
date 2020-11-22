@@ -38,23 +38,28 @@ function setRolledDice(rolledDice, targetDivPrefix, setSelectable, rollHasScore)
 		var diceSlotId = parseInt(key) + 1;
 		var diceCacheID = 'rolled-dice-cache_' + diceValue;
 		var rolledDiceID = 'rolled_dice_'+diceSlotId+'_value';
+		var diceImage = getImageFromCache(diceCacheID);
 		var existingImageInSlot = $('img#'+rolledDiceID);
-		if (existingImageInSlot.length > 0) {
-			existingImageInSlot.remove();
+		if (existingImageInSlot.length > 0 && !diceImage['src'].includes(existingImageInSlot.attr('src'))) {
+			var needsRefresh = true;
+		} else if (diceValue && existingImageInSlot.length == 0) {
+			var needsRefresh = true;
+		} else {
+			var needsRefresh = false;
 		}
-		if (diceValue != null) {
+		if (diceValue != null && needsRefresh) {
+			existingImageInSlot.remove();
 			var targetDiv = document.getElementById(targetDivPrefix + rolledDiceID);
 			if (setSelectable && rollHasScore) {
 				diceClass = 'rolled-dice rolled-dice_selectable';
 			} else {
 				diceClass = 'rolled-dice';
 			}
-			var diceImage = getImageFromCache(diceCacheID);
 			diceImage.setAttribute('class', diceClass);
 			diceImage.setAttribute('id', rolledDiceID);
 			targetDiv.append(diceImage);
 			bindSelectDice($('img#' + rolledDiceID));
-		}
+		} 
 	}
 }
 

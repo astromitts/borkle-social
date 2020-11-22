@@ -48,6 +48,9 @@ function bindEndTurn() {
 					toggleAvailableDice('off');
 					toggleCurrentScore('off');
 					toggleEndTurnButton('off');
+					if (data['current_rolled_dice']['rolled_values'].length > 0) {
+						alert('you have rolled dice');
+					}
 				}
 			}
 		});

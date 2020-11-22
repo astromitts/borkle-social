@@ -9,6 +9,12 @@ $(document).ready(function playGame(){
 		bindRollDice();
 		bindScoreDice();
 		bindEndTurn();
+		refreshScoreCard();
+		var overrideRollButton = false;
+		if (data['current_rolled_dice']['rolledValues'].length > 0 && !isAllNull(data['current_rolled_dice']['rolledValues'])) {
+			buildAlreadyRolledDice(data['current_rolled_dice']['rolledValues'], true)
+			var overrideRollButton = false;
+		}
 	}
 	// Set game play functions to refresh
 	autorefresh = true;
@@ -29,11 +35,14 @@ $(document).ready(function playGame(){
 					if (isCurrentPlayer) {
 						if (!currentPlayerTriggered) {
 							refreshScoreboard();
-							initiateTurn();
+							initiateTurn(overrideRollButton);
 							currentPlayerTriggered = true;
+							overrideRollButton = false;
 						}
 					} else {
-						currentPlayerTriggered = false;
+						currentPlayerTriggered = false;		
+						buildAlreadyRolledDice(data['current_rolled_dice']['rolledValues'], false);
+						setCurrentRollScoreSets(data['current_rolled_dice']['scoresets'], false);
 					}
 				}
 			});

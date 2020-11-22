@@ -34,6 +34,7 @@ class GameStatusApi(BorkleProtectedGameView):
                 'locked': scoreset.locked,
                 'scorableValues': scoreset.scorable_values,
                 'scorableFields': scoreset.scorable_fields,
+                'scoreSetPk': scoreset.pk,
             }
             if scoreset.score == 0:
                 scoreset_data['scoreable_value_images'] = ['0', ]
@@ -80,14 +81,8 @@ class GameStatusApi(BorkleProtectedGameView):
             'available_score': self.game.current_player.current_turn.has_score,
             'last_turn': self.game.last_turn and not self.game.current_player.had_last_turn,
             'scoresets': self._format_scoresets(current_turn.scoreset_set.order_by('-pk').all()),
-            'rolled_values': [
-                current_turn.rolled_dice_1_value,
-                current_turn.rolled_dice_2_value,
-                current_turn.rolled_dice_3_value,
-                current_turn.rolled_dice_4_value,
-                current_turn.rolled_dice_5_value,
-                current_turn.rolled_dice_6_value,
-            ]
+            'rolledValues': current_turn.scorable_values,
+            'scoredFields': current_turn.scorable_fields
         }
         return data
 

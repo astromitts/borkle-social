@@ -332,6 +332,18 @@ class Turn(models.Model):
             active_str = ''
         return '{} turn: {}{}'.format(self.gameplayer, self.pk, active_str)
 
+
+    @property
+    def dice_field_strings(self):
+        return [
+            'rolled_dice_1_value',
+            'rolled_dice_2_value',
+            'rolled_dice_3_value',
+            'rolled_dice_4_value',
+            'rolled_dice_5_value',
+            'rolled_dice_6_value'
+        ]
+
     @property
     def dice_fields(self):
         return [
@@ -411,19 +423,33 @@ class Turn(models.Model):
     @property
     def dice_values(self):
         dice_values = {}
-        dice_fields = [
-            'rolled_dice_1_value',
-            'rolled_dice_2_value',
-            'rolled_dice_3_value',
-            'rolled_dice_4_value',
-            'rolled_dice_5_value',
-            'rolled_dice_6_value'
-        ]
-        for field in dice_fields:
+        for field in self.dice_field_strings:
             value = getattr(self, field)
             if value:
                 dice_values[field] = value
         return dice_values
+
+    @property
+    def scorable_values(self):
+        dice_values = []
+        for field in self.dice_field_strings:
+            rolled_value = getattr(self, field)
+            if rolled_value:
+                dice_values.append(rolled_value)
+            else:
+                dice_values.append(None)
+        return dice_values
+
+
+    @property
+    def scorable_fields(self):
+        scorable_fields = []
+        for field in self.dice_field_strings:
+            if getattr(self, field):
+                scorable_fields.append(field)
+            else:
+                scorable_fields.append(None)
+        return scorable_fields
 
     @property
     def has_score(self):
@@ -540,6 +566,8 @@ class ScoreSet(models.Model):
         for field in self.score_field_strings:
             if getattr(self, field):
                 scorable_fields.append(field)
+            else:
+                scorable_fields.append(None)
         return scorable_fields
 
     def save(self, *args, **kwargs):
