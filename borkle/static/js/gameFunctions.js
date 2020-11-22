@@ -14,6 +14,14 @@ function checkGameData(isAsync) {
 	return resultData;
 }
 
+function endTurn() {
+	clearRolledDice('slot-');
+	$('div#scored-sets').html('');
+	toggleCurrentTurnToolsOff();
+	clearGameMessage();
+	refreshScoreboard();
+	updateTurnScore(0);
+}
 
 function bindEndTurn() {
 	var endTurnUrl = $('input#api-endturn-url').val();
@@ -27,16 +35,27 @@ function bindEndTurn() {
 				if (data['status'] == 'error' ) {
 					alert(data['message']);
 				} else {
-					clearRolledDice('slot-');
-					$('div#scored-sets').html('');
-					toggleCurrentTurnToolsOff();
-					clearGameMessage();
-					refreshScoreboard();
-					updateTurnScore(0);
+					endTurn();
 				}
 			}
 		});
 	});
+}
+
+function displayWinner(winnerData) {
+	var winnerDiv = $('div#winner-data');
+	if( winnerDiv.length > 0 ){
+		if( winnerData['winner_count'] == 1) {
+			var winnerHtml = 'The winner is ' + winnerData['winners'][0]['username'] + '! ' + winnerData['winners'][0]['score'] + ' points to '+winnerData['winners'][0]['username'] +'!'
+			winnerDiv.html(winnerHtml);
+		} else {
+			var winnerHtml = "It's a tie!! The winners are: "
+			winnerData['winners'].forEach(function(winner){
+				winnerHtml = winnerHtml + '<br />'+ winner['username'] + '! ' + winner['score'] + ' points to '+ winner['username'] +'!'
+			});
+		}
+	}
+	toggleElementVisibility(winnerDiv, 'on');
 }
 
 
@@ -148,7 +167,7 @@ function buildAlreadyRolledDice(rolledValues, allowUndo) {
 	if (rolledValues.length > 0 && !isAllNull(rolledValues)) {
 		var rolledDice = stripNulls(rolledValues);
 		var rollHasScore = hasScore(rolledDice);
-		setRolledDice(rolledDice, 'slot-', allowUndo, rollHasScore);
+		setRolledDice(rolledDice, allowUndo, rollHasScore);
 	}
 }
 

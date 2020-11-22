@@ -45,6 +45,14 @@ function toggleLastTurn(visibility) {
 	}
 }
 
+function toggleOpponentTurn(visibility, playername) {
+	if( visibility == 'on' ){
+		setGameMessage("It's "+playername+"'s' last turn!!!", 'last-turn');
+	} else {
+		clearGameMessage('last-turn');
+	}
+}
+
 function toggleSelectedDiceButton(visibility) {
 	var targetBtn = $('div#score-dice-btn-row');
 	if (visibility == 'on') {

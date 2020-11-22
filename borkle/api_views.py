@@ -121,11 +121,12 @@ class GameStatusApi(BorkleProtectedGameView):
                 data = {
                     'game_over': self.game.status == 'over',
                     'is_current_player': self.is_current_player,
-                    'last_turn': self.game.last_turn and not self.gameplayer.had_last_turn,
+                    'last_turn': self.game.last_turn,
                     'borkled': borkled,
                     'current_player': {
                         'player_id': self.game.current_player.pk,
                         'player_name': self.game.current_player.username,
+                        'last_turn': self.game.last_turn,
                     },
                     'current_rolled_dice': self._diceboard(),
                     'current_score_sets': self._format_scoresets(self.game.current_player.current_turn.scoreset_set.order_by('-pk').all()),

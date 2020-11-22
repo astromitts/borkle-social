@@ -56,6 +56,11 @@ button.game-btn_long {
 	height: 4rem;
 }
 
+span.span-undo-btn {
+	display: inline-block;
+	width: 4rem;
+}
+
 img.rolled-dice {
 	border: 2px solid #ffffff;
 	width: 5rem;

@@ -126,11 +126,18 @@ function buildScoreSetTable(selectedDiceScore, sourceIds, allowUndo, scoreSetPk)
 	if ( needsBuild ) {
 		var diceImgCell = document.createElement('td');
 		if ( allowUndo && selectedDiceScore['locked'] == false) {
+			var undoSpan = document.createElement('span');
+			undoSpan.setAttribute('class', 'span-undo-btn');
 			var undoButton = document.createElement('button');
 			undoButton.innerHTML = 'undo';
 			undoButton.setAttribute('class', 'game-btn undo-score-selection');
-			diceImgCell.append(undoButton);
+			undoSpan.append(undoButton);
+			diceImgCell.append(undoSpan);
 			bindUndoScoreSetSelection(undoButton);
+		} else if (allowUndo) {
+			var undoSpan = document.createElement('span');
+			undoSpan.setAttribute('class', 'span-undo-btn');
+			diceImgCell.append(undoSpan);
 		}
 		var scoreText = document.createTextNode(selectedDiceScore['scoreValue'] + ' = ');
 		diceImgCell.append(scoreText);

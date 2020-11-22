@@ -30,20 +30,34 @@ $(document).ready(function playGame(){
 				url: refreshGameInfoUrl,
 				dataType: 'json',
 				success: function setData(data) {
-					resultData = data;
-					var isCurrentPlayer = data['is_current_player'];
-					if (isCurrentPlayer) {
-						if (!currentPlayerTriggered) {
-							refreshScoreboard();
-							initiateTurn(overrideRollButton);
-							currentPlayerTriggered = true;
-							overrideRollButton = false;
-						}
+					resultData = data;	
+					if ( data['game_over'] ) {
+						var autorefresh = false;
+						endTurn();
+						displayWinner(data['winners']);
+						clearGameMessage('last-turn');
+						clearGameMessage('borkle');
 					} else {
-						currentPlayerTriggered = false;	
-						toggleCurrentTurnToolsOff();	
-						buildAlreadyRolledDice(data['current_rolled_dice']['rolledValues'], false);
-						setCurrentRollScoreSets(data['current_rolled_dice']['scoresets'], false);
+						var isCurrentPlayer = data['is_current_player'];
+						if (isCurrentPlayer) {
+							if (!currentPlayerTriggered) {
+								refreshScoreboard();
+								initiateTurn(overrideRollButton);
+								currentPlayerTriggered = true;
+								overrideRollButton = false;
+							}
+							if (data['last_turn']) {
+								toggleLastTurn('on');
+							}
+						} else {
+							currentPlayerTriggered = false;	
+							//toggleCurrentTurnToolsOff();	
+							buildAlreadyRolledDice(data['current_rolled_dice']['rolledValues'], false);
+							setCurrentRollScoreSets(data['current_rolled_dice']['scoresets'], false);
+							if ( data['last_turn'] ) {
+								toggleOpponentTurn('on', data['current_player']['player_name'])
+							}
+						}
 					}
 				}
 			});
