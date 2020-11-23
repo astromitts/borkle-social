@@ -68,6 +68,30 @@ function setRolledDice(rolledDice, setSelectable, rollHasScore){
 			}
 		}
 	}
+	closeDiceRowsIfEmpty();
+}
+
+function closeDiceRowsIfEmpty() {
+	closeDiceRowIfEmpty(['slot-rolled_dice_1_value', 'slot-rolled_dice_2_value']);
+	closeDiceRowIfEmpty(['slot-rolled_dice_5_value', 'slot-rolled_dice_6_value']);
+}
+
+function closeDiceRowIfEmpty(rowIds) {
+	var hasDice = false;
+	var parentId = null;
+	for (var key of Object.keys(rowIds)) { 
+		var diceTD = document.getElementById(rowIds[key]);
+		if (diceTD.hasChildNodes('img')) {
+			hasDice = true;
+		}
+		parentId = diceTD.parentElement.id;
+	}
+	var parentTR = $('tr#' + parentId);
+	if (hasDice == false) {
+		toggleElementVisibility(parentTR, 'off');
+	} else {
+		toggleElementVisibility(parentTR, 'on');
+	}
 }
 
 function hasSelectedDice() {
@@ -148,6 +172,7 @@ function bindScoreDice() {
 		} else {
 			alert('that is not a score, try something else');
 		}
+		closeDiceRowsIfEmpty();
 	});
 }
 

@@ -50,12 +50,38 @@
 		<div class="row">
 			<div class="col hidden centered" id="available-dice">You have <span id="available-dice-value"></span> dice to roll</div>
 		</div>
+		<div class="row hidden" id="row-last-turn-message">
+			<div class="col">
+				<div class="big-message hidden" id="last-turn-message">
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="auto-centered" id="rolled-dice">
+				<table id="dice-table">
+					<tr id="slots-6-5">
+						<td id="slot-rolled_dice_6_value"></td>
+						<td id="slot-rolled_dice_5_value"></td>
+					</tr>
+					<tr id="slots-4-3">
+						<td id="slot-rolled_dice_4_value"></td>
+						<td id="slot-rolled_dice_3_value"></td>
+					</tr>
+					<tr id="slots-2-1">
+						<td id="slot-rolled_dice_2_value"></td>
+						<td id="slot-rolled_dice_1_value"></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+
 		<div class="row hidden" id="row-borkle-message">
 			<div class="col">
 				<div class="big-message hidden" id="borkle-message">
 				</div>
 			</div>
 		</div>
+
 		<div class="row" id="game-tools">
 			<div class="auto-centered">
 				<table id="game-button-table" class="table_active">
@@ -70,30 +96,7 @@
 				</table>
 			</div>
 		</div>
-		<div class="row hidden" id="row-last-turn-message">
-			<div class="col">
-				<div class="big-message hidden" id="last-turn-message">
-				</div>
-			</div>
-		</div>
-		<div class="row">
-			<div class="auto-centered" id="rolled-dice">
-				<table id="dice-table">
-					<tr>
-						<td id="slot-rolled_dice_1_value"></td>
-						<td id="slot-rolled_dice_2_value"></td>
-					</tr>
-					<tr>
-						<td id="slot-rolled_dice_3_value"></td>
-						<td id="slot-rolled_dice_4_value"></td>
-					</tr>
-					<tr>
-						<td id="slot-rolled_dice_5_value"></td>
-						<td id="slot-rolled_dice_6_value"></td>
-					</tr>
-				</table>
-			</div>
-		</div>
+
 		<div class="row" id="selected-dice-slot" class="selected-dice-slot_active">
 			<div class="col" id="selected-dice-images"></div>
 			<div class="col-5">
