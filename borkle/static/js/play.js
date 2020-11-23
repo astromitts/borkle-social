@@ -66,6 +66,6 @@ $(document).ready(function playGame(){
 				}
 			});
 
-		}, 800)
+		}, 1000)
 	}
 });
