@@ -3,6 +3,7 @@ function bindRollDice() {
 	var targetDivPrefix =  'slot-';
 	
 	$('button#rolldice').click(function rollDiceClicked(){
+		$('table#dice-table').addClass('dice-table_active');
 		clearRolledDice(targetDivPrefix);
 		toggleBorkleMessage('off');
 		toggleRollDiceButton('off');

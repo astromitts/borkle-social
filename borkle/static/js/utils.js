@@ -95,8 +95,9 @@ function updateTurnScore(scoreIncrease) {
 }
 
 function clearRolledDice(targetDivPrefix){
+	$('table#dice-table').removeClass('dice-table_active');
 	rolledDiceFieldNames.forEach(function (rolledDiceId, index) {
-		$('div#' + targetDivPrefix + rolledDiceId).html('');
+		$('td#' + targetDivPrefix + rolledDiceId).html('');
 	});
 }
 

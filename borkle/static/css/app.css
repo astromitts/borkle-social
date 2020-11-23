@@ -83,6 +83,14 @@ span.span-score-value {
 	margin: auto;
 }
 
+table.dice-table_active tr {
+	height: 5.1rem;
+}
+
+table.dice-table_active td {
+	width: 5.1rem;
+}
+
 img.rolled-dice {
 	border: 2px solid #ffffff;
 	width: 5rem;
