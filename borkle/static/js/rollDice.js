@@ -73,6 +73,7 @@ function setRolledDice(rolledDice, setSelectable, rollHasScore){
 
 function closeDiceRowsIfEmpty() {
 	closeDiceRowIfEmpty(['slot-rolled_dice_1_value', 'slot-rolled_dice_2_value']);
+	closeDiceRowIfEmpty(['slot-rolled_dice_3_value', 'slot-rolled_dice_4_value']);
 	closeDiceRowIfEmpty(['slot-rolled_dice_5_value', 'slot-rolled_dice_6_value']);
 }
 
