@@ -53,6 +53,12 @@ button.game-btn_square {
 	width: 7rem;
 	height: 7rem;
 }
+
+button.game-btn_square_small {
+	width: 5rem;
+	height: 5rem;
+}
+
 button.game-btn_red {
 	background-color: #F95545;
 	border: 1px solid #442522;
@@ -83,12 +89,9 @@ span.span-score-value {
 	margin: auto;
 }
 
-table.dice-table_active tr {
-	height: 5.1rem;
-}
-
 table.dice-table_active td {
-	width: 5.1rem;
+	height: 8.15rem;
+	width: 8.15rem;
 }
 
 img.rolled-dice {
@@ -97,8 +100,7 @@ img.rolled-dice {
 	height: 8rem;
 }
 
-img.rolled-dice_selected {
-	border: 2px solid green;
+img.selected {
 	width: 5rem;
 	height: 5rem;
 }

@@ -58,14 +58,16 @@
 		</div>
 		<div class="row" id="game-tools">
 			<div class="auto-centered">
-				<div class="row">
-					<div class="col-5" id="roll-dice-btn">
-						<button class="game-btn  game-btn_square hidden" data-dice-count="6" id="rolldice">Roll<br />dice</button>
-					</div>
-					<div class="col-5" id="game-tools-and-messages">
-						<button class="game-btn game-btn_red game-btn_square hidden" id="advanceplater">End<br />turn</button>		
-					</div>
-				</div>
+				<table id="game-button-table" class="table_active">
+					<tr>
+						<td>
+							<button class="game-btn  game-btn_square hidden" data-dice-count="6" id="rolldice">Roll<br />dice</button>
+						</td>
+						<td>
+							<button class="game-btn game-btn_red game-btn_square hidden" id="advanceplater">End<br />turn</button>		
+						</td>
+					</tr>
+				</table>
 			</div>
 		</div>
 		<div class="row hidden" id="row-last-turn-message">
@@ -97,7 +99,7 @@
 			<div class="col-5">
                 <div class="row">
 			        <div class="col hidden" id="score-dice-btn-row">
-				        <button class="game-btn game-btn_square" id="score-selected-dice">Keep Dice</button>
+				        <button class="game-btn game-btn_square_small" id="score-selected-dice">Keep Dice</button>
 			        </div>
                 </div>
 			    <div class="row">

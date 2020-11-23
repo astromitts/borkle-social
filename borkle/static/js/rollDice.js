@@ -3,7 +3,6 @@ function bindRollDice() {
 	var targetDivPrefix =  'slot-';
 	
 	$('button#rolldice').click(function rollDiceClicked(){
-		$('table#dice-table').addClass('dice-table_active');
 		clearRolledDice(targetDivPrefix);
 		toggleBorkleMessage('off');
 		toggleRollDiceButton('off');
@@ -34,6 +33,7 @@ function bindRollDice() {
 }
 
 function setRolledDice(rolledDice, setSelectable, rollHasScore){
+	$('table#dice-table').addClass('dice-table_active');
 	for (var key of Object.keys(rolledDiceFieldNames)) {
 		var diceValue = rolledDice[key];
 		var diceSlotId = rolledDiceFieldNames[key];
