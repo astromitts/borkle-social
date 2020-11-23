@@ -18,6 +18,8 @@ $(document).ready(function playGame(){
 			var overrideRollButton = false;
 		}
 	}
+	getPlayerCardData();
+	bindScoreCardNav();
 	// Set game play functions to refresh
 	var currentPlayerTriggered = false;
 	if (autorefresh) {

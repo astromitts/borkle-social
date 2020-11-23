@@ -61,6 +61,11 @@ span.span-undo-btn {
 	width: 4rem;
 }
 
+span.span-score-value {
+	display: inline-block;
+	min-width: 4rem;
+}
+
 img.rolled-dice {
 	border: 2px solid #ffffff;
 	width: 5rem;
@@ -75,6 +80,10 @@ img.rolled-dice_selected {
 
 img.rolled-dice_selectable:hover {
 	border: 2px solid orange;
+}
+
+table#scoreset_table {
+	width: 100%;
 }
 
 #selected-dice-score {
@@ -93,6 +102,8 @@ div.selected-dice-slot_active {
 	background-color: #FCF3CF;
 	border-radius: 1rem;
 	padding: 1rem;
+	margin-top: .5rem;
+    margin-bottom: .5rem;
 }
 
 div.scored-sets-slots {
@@ -130,3 +141,23 @@ div#roll-button {
 .btn-long {
 	min-width: 25rem;
 }
+
+button.scorecard-nav {
+	height: 16rem;
+	background-color: #B9E3FB;
+	border: none;
+}
+
+button.scorecard-nav_next {
+	border-top-right-radius: 5px;
+	border-bottom-right-radius: 5px;
+	border-right-color: #000000;
+	border-right-width: 1px;
+}
+
+button.scorecard-nav_prev {
+	border-top-left-radius: 5px;
+	border-bottom-left-radius: 5px;
+}
+}
+

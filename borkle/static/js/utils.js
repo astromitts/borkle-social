@@ -16,6 +16,20 @@ function doAsyncPost(targetUrl, postData) {
 	});
 }
 
+function doNonAsyncGet(targetUrl) {
+	var resultData;
+	$.ajax({
+		method: 'GET',
+		url: targetUrl,
+		dataType: 'json',
+		async: false,
+		success: function(data) {
+			resultData = data;
+		}
+	});
+	return resultData;
+}
+
 function setGameMessage(messageText, selector) {
 	var gameMessageRow = $('div#row-'+selector+'-message');
 	var gameMessageDiv = $('div#'+selector+'-message');
@@ -90,66 +104,6 @@ function clearUndoButtons() {
 	$('button.undo-score-selection').each(function(){
 		$(this).remove();
 	});
-}
-
-function buildScoreSetTable(selectedDiceScore, sourceIds, allowUndo, scoreSetPk) {
-	var targetSelectedDiceDiv = $('div#selected-dice');
-	var targetScoredDiveDiv = $('div#scored-sets');
-	var scoreTableExists = $("table#scoreset_table").length > 0;
-	if (!scoreTableExists ) {
-		var scoreTable = document.createElement("table");
-		scoreTable.setAttribute('id', 'scoreset_table');
-		if (allowUndo) {
-			targetScoredDiveDiv.append(document.createElement('hr'));
-		}
-		var header = document.createElement('h5');
-		header.innerHTML = 'Scored Sets';
-		targetScoredDiveDiv.append(header);
-		targetScoredDiveDiv.append(scoreTable);
-	} else {
-		var scoreTable = document.getElementById('scoreset_table')
-	}
-	if ( scoreSetPk ) {
-		var scoreRowExists = $('tr#scoreset_row_' + scoreSetPk).length > 0;
-		if ( scoreRowExists ) {
-			var scoreRow = document.getElementById('scoreset_row_' + scoreSetPk);
-			var needsBuild = false;
-		} else {
-			var scoreRow = document.createElement('tr');
-			scoreRow.setAttribute('id', 'scoreset_row_' + scoreSetPk);
-			var needsBuild = true;
-		}
-	} else {
-		var scoreRow = document.createElement('tr');
-		var needsBuild = true;
-	}
-	if ( needsBuild ) {
-		var diceImgCell = document.createElement('td');
-		if ( allowUndo && selectedDiceScore['locked'] == false) {
-			var undoSpan = document.createElement('span');
-			undoSpan.setAttribute('class', 'span-undo-btn');
-			var undoButton = document.createElement('button');
-			undoButton.innerHTML = 'undo';
-			undoButton.setAttribute('class', 'game-btn undo-score-selection');
-			undoSpan.append(undoButton);
-			diceImgCell.append(undoSpan);
-			bindUndoScoreSetSelection(undoButton);
-		} else if (allowUndo) {
-			var undoSpan = document.createElement('span');
-			undoSpan.setAttribute('class', 'span-undo-btn');
-			diceImgCell.append(undoSpan);
-		}
-		var scoreText = document.createTextNode(selectedDiceScore['scoreValue'] + ' = ');
-		diceImgCell.append(scoreText);
-		for (var key of Object.keys(selectedDiceScore['scorableValues'])) {
-			var diceValue = selectedDiceScore['scorableValues'][key];
-			var diceImage = getImageFromCache('scored-dice-cache_' + diceValue);
-			diceImage.setAttribute('data-source-slot', sourceIds[key]);
-			diceImgCell.append(diceImage);
-		}
-		scoreRow.append(diceImgCell);
-		scoreTable.prepend(scoreRow);
-	}
 }
 
 function checkGameData(isAsync) {

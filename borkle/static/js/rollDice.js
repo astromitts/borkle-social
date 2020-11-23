@@ -73,6 +73,10 @@ function hasSelectedDice() {
 	return $('img.selected').length > 0;
 }
 
+function hasScoredDiceThisTurn() {
+	return $('button.undo-score-selection').length > 0;
+}
+
 function getSelectedDiceScore() {
 	selectedDiceIds = {};
 	selectedDiceValues = [];
@@ -118,7 +122,9 @@ function bindSelectDice(image) {
 		} else {
 			toggleSelectedDiceSlot('off');
 			toggleSelectedDiceButton('off');
-			toggleEndTurnButton('on');
+			if (hasScoredDiceThisTurn()) {
+				toggleEndTurnButton('on');
+			}
 		}
 	});
 }
@@ -180,4 +186,73 @@ function bindUndoScoreSetSelection(targetButton) {
 			addDice(addDiceCount);
 		});
 	});
+}
+
+function buildScoreSetTable(selectedDiceScore, sourceIds, allowUndo, scoreSetPk) {
+	var targetSelectedDiceDiv = $('div#selected-dice');
+	var targetScoredDiceDiv = $('div#scored-sets');
+	var scoreTableExists = $("table#scoreset_table").length > 0;
+	if (!scoreTableExists ) {
+		var scoreTable = document.createElement("table");
+		scoreTable.setAttribute('id', 'scoreset_table');
+		var header = document.createElement('h5');
+		header.innerHTML = 'Scored Sets';
+		targetScoredDiceDiv.append(header);
+		targetScoredDiceDiv.append(scoreTable);
+	} else {
+		var scoreTable = document.getElementById('scoreset_table')
+	}
+	if ( scoreSetPk ) {
+		var scoreRowExists = $('tr#scoreset_row_' + scoreSetPk).length > 0;
+		if ( scoreRowExists ) {
+			var scoreRow = document.getElementById('scoreset_row_' + scoreSetPk);
+			var needsBuild = false;
+		} else {
+			var scoreRow = document.createElement('tr');
+			scoreRow.setAttribute('id', 'scoreset_row_' + scoreSetPk);
+			var needsBuild = true;
+		}
+	} else {
+		var scoreRow = document.createElement('tr');
+		var needsBuild = true;
+	}
+	if ( needsBuild ) {
+		var diceImgCell = document.createElement('td');
+		diceImgCell.append(document.createElement('hr'));
+
+		if ( allowUndo && selectedDiceScore['locked'] == false) {
+			var undoSpan = document.createElement('span');
+			undoSpan.setAttribute('class', 'span-undo-btn');
+			var undoButton = document.createElement('button');
+			undoButton.innerHTML = 'undo';
+			undoButton.setAttribute('class', 'game-btn undo-score-selection');
+			undoSpan.append(undoButton);
+			diceImgCell.append(undoSpan);
+			bindUndoScoreSetSelection(undoButton);
+		} else if (allowUndo) {
+			var undoSpan = document.createElement('span');
+			undoSpan.setAttribute('class', 'span-undo-btn');
+			diceImgCell.append(undoSpan);
+		}
+
+		var scoredImagesSpan = document.createElement('span');
+		scoredImagesSpan.setAttribute('class', 'scored-dice-images');
+
+		var scoreTextSpan = document.createElement('span');
+		scoreTextSpan.setAttribute('class', 'span-score-value');
+		scoreTextSpan.innerHTML = selectedDiceScore['scoreValue'] + ' = ';
+		diceImgCell.append(scoreTextSpan);
+
+		for (var key of Object.keys(selectedDiceScore['scorableValues'])) {
+			var diceValue = selectedDiceScore['scorableValues'][key];
+			var diceImage = getImageFromCache('scored-dice-cache_' + diceValue);
+			diceImage.setAttribute('data-source-slot', sourceIds[key]);
+			scoredImagesSpan.append(diceImage);
+		}
+
+		diceImgCell.append(scoredImagesSpan);
+
+		scoreRow.append(diceImgCell);
+		scoreTable.prepend(scoreRow);
+	}
 }

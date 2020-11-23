@@ -2,6 +2,7 @@
 {% load static apptags %}
 {% block extra_js %}
 	<script src="{% static 'js/utils.js' %}"></script>
+	<script src="{% static 'js/nav.js' %}"></script>
 	<script src="{% static 'js/dice.js' %}"></script>
 	<script src="{% static 'js/elementToggle.js' %}"></script>
 	<script src="{% static 'js/rollDice.js' %}"></script>
@@ -19,6 +20,7 @@
 	<input type="hidden" id="api-rolldice-url" value="{% url 'game_api' game_uuid=game.uuid api_target='rolldice' %}" />
 	<input type="hidden" id="api-borkle-url" value="{% url 'game_api' game_uuid=game.uuid api_target='borkle' %}" />
 	<input type="hidden" id="api-endturn-url" value="{% url 'game_api' game_uuid=game.uuid api_target='endturn' %}" />
+	<input type="hidden" id="api-scorecardsetup-url" value="{% url 'game_api' game_uuid=game.uuid api_target='scorecardsetup' %}" />
 	<input type="hidden" id="latest-scorecard-turn" value="0" />
 
 	<div class="row" id="scoreboard">
@@ -137,15 +139,20 @@
 		<div class="col"><h5>Score Cards</h5></div>
 	</div>
 	<div class="row" id="score-card-log">
-		{% for player in game.gameplayer_set.all %}
-		<input type="hidden" id="player-turn-index_{{player.username}}" value="0" />
-		<input type="hidden" id="player-turn-roll_{{player.username}}" value="1" />
-		<div class="col">
-			{{player.username}}
-			<table class="table" id="scorecard_{{player.username}}">
-			</table>
+		<div class="col-2">
+			<button id="scorecard-nav_prev" class="scorecard-nav scorecard-nav_prev" data-target-attr='data-prev-player'><</button>
 		</div>
+		{% for player in game.gameplayer_set.all %}
+			<div id="score-card-log_{{player.username}}" class="col{% if forloop.first %} scorecard-nav_active{% else %} hidden{% endif %}" id="score-card-log_{{player.username}}" data-next-player="" data-prev-player="">
+				<input type="hidden" id="player-turn-index_{{player.username}}" value="0" />
+				<input type="hidden" id="player-turn-roll_{{player.username}}" value="1" />
+				{{player.username}}
+				<table class="table" id="scorecard_{{player.username}}">
+				</table>
+			</div>
 		{% endfor %}
+		<div class="col-2"><button id="scorecard-nav_next" class="scorecard-nav scorecard-nav_next" data-target-attr='data-next-player'>></button>
+		</div>
 	</div>
 
 	

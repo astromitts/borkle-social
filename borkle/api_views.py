@@ -98,6 +98,29 @@ class GameStatusApi(BorkleProtectedGameView):
             )
         return players
 
+    def _player_scorecards(self):
+        player_cards = {}
+        players = self.game.gameplayer_set.all()
+        for i in range(self.game.gameplayer_set.count()):
+            player = players[i]
+
+            if i != self.game.gameplayer_set.count() - 1:
+                next_player_card = players[i + 1].username
+            else:
+                next_player_card = players[0].username
+
+            if i != 0:
+                previous_player_card = players[i - 1].username
+            else:
+                previous_player_card = players[self.game.gameplayer_set.count() - 1].username
+
+            player_cards[player.username] = {
+                'next_player_card': next_player_card,
+                'previous_player_card': previous_player_card,
+            }
+        return player_cards
+
+
     def _format_winner(self):
         winners = self.game.winner
         data = {
@@ -128,6 +151,9 @@ class GameStatusApi(BorkleProtectedGameView):
                     'current_score_sets': self._format_scoresets(self.game.current_player.current_turn.scoreset_set.order_by('-pk').all()),
                     'available_dice_count': self.game.current_player.current_turn.available_dice_count,
                 }
+        elif kwargs['api_target'] == 'scorecardsetup':
+            data = {'scorecards': self._player_scorecards()}
+
         elif kwargs['api_target'] == 'scoreboard':
             data = {'scoreboard': self._scoreboard(), 'player_names': self._players_name_list()}
         elif kwargs['api_target'] == 'scorecard':
