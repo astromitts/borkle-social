@@ -23,7 +23,7 @@ $(document).ready(function playGame(){
 	// Set game play functions to refresh
 	var currentPlayerTriggered = false;
 	if (autorefresh) {
-		var gameLoop = window.setInterval(function(){
+		var gameLoop = window.setInterval(function startGameLoop(){
 
 			var needsInitiateTurn = false;
 			var refreshGameInfoUrl = $('input#api-gameinfo-url').val();
@@ -66,6 +66,6 @@ $(document).ready(function playGame(){
 				}
 			});
 
-		}, 1000)
+		}, 800)
 	}
 });

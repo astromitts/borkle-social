@@ -2,7 +2,7 @@ function bindRollDice() {
 	var rollDiceUrl = $('input#api-rolldice-url').val();
 	var targetDivPrefix =  'slot-';
 	
-	$('button#rolldice').click(function(){
+	$('button#rolldice').click(function rollDiceClicked(){
 		clearRolledDice(targetDivPrefix);
 		toggleBorkleMessage('off');
 		toggleRollDiceButton('off');
@@ -80,7 +80,7 @@ function hasScoredDiceThisTurn() {
 function getSelectedDiceScore() {
 	selectedDiceIds = {};
 	selectedDiceValues = [];
-	$('img.selected').each(function(){
+	$('img.selected').each(function gatherDiceImages(){
 		selectedDiceValues.push($(this).attr('data-value'));
 		selectedDiceIds[$(this).attr('id')] = 'select';
 	});
@@ -90,7 +90,7 @@ function getSelectedDiceScore() {
 }
 
 function bindSelectDice(image) {
-	image.click(function(){
+	image.click(function selectableDiceClicked(){
 		var diceId = $(this).attr('id');
 		var diceElement = document.getElementById(diceId);
 		if ( diceElement.parentNode.id == 'selected-dice-images') {
@@ -131,14 +131,14 @@ function bindSelectDice(image) {
 
 function bindScoreDice() {
 	var scoreDiceUrl = $('input#api-scoredice-url').val();
-	$('button#score-selected-dice').click(function(){
+	$('button#score-selected-dice').click(function scoreDiceClicked(){
 		var selectedDiceScore = getSelectedDiceScore();
 		if (selectedDiceScore.hasScore) {
 			postData = {
 				'score': selectedDiceScore.scoreValue,
 				'score_type': selectedDiceScore.scoreType,
 			}
-			$('img.selected').each(function(){
+			$('img.selected').each(function gatherSelectedDice(){
 				postData[$(this).attr('id')] = 'score';
 			});
 			doAsyncPost(scoreDiceUrl, postData);
@@ -152,7 +152,7 @@ function bindScoreDice() {
 
 function scoreSelection(selectedDiceScore, allowUndo) {
 	var sourceIds = [];
-	$('img.selected').each(function(){
+	$('img.selected').each(function gatherSelectedDice(){
 		sourceIds.push($(this).attr('id'));
 		$(this).remove();
 	});
@@ -166,10 +166,10 @@ function scoreSelection(selectedDiceScore, allowUndo) {
 
 function bindUndoScoreSetSelection(targetButton) {
 	var undoSelectionUrl = $('input#api-undoselection-url').val();
-	$(targetButton).click(function(){
+	$(targetButton).click(function undoButtonClicked(){
 		var rowToUndo = $(this).closest('tr');
 		var addDiceCount = 0;
-		rowToUndo.find('img').each(function(){
+		rowToUndo.find('img').each(function gatherUndoDice(){
 			var targetSlotId = $(this).attr('data-source-slot');
 			var targetSlot = $('div#slot-' + targetSlotId);
 			var diceValue = $(this).attr('data-value');

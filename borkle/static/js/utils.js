@@ -23,7 +23,7 @@ function doNonAsyncGet(targetUrl) {
 		url: targetUrl,
 		dataType: 'json',
 		async: false,
-		success: function(data) {
+		success: function successFunction(data) {
 			resultData = data;
 		}
 	});
@@ -101,7 +101,7 @@ function clearRolledDice(targetDivPrefix){
 }
 
 function clearUndoButtons() {
-	$('button.undo-score-selection').each(function(){
+	$('button.undo-score-selection').each(function clearUndoButton(){
 		$(this).remove();
 	});
 }
@@ -133,7 +133,7 @@ function endTurn() {
 
 function bindEndTurn(practiceGame) {
 	var endTurnUrl = $('input#api-endturn-url').val();
-	$('button#advanceplater').click(function(){
+	$('button#advanceplater').click(function endTurnClicked(){
 		$.ajax({
 			method: 'POST',
 			url: endTurnUrl,
@@ -160,7 +160,7 @@ function displayWinner(winnerData) {
 		var winnerHtml = 'The winner is ' + winnerData['winners'][0]['username'] + '! ' + winnerData['winners'][0]['score'] + ' points to '+winnerData['winners'][0]['username'] +'!';
 	} else {
 		var winnerHtml = "It's a tie!! The winners are: "
-		winnerData['winners'].forEach(function(winner){
+		winnerData['winners'].forEach(function addWinners(winner){
 			winnerHtml = winnerHtml + '<br />'+ winner['username'] + '! ' + winner['score'] + ' points to '+ winner['username'] +'!';
 		});
 	}
@@ -179,7 +179,7 @@ function refreshScoreboard() {
 		url: refreshScoreboardUrl,
 		dataType: 'json',
 		success: function (data) {
-			$('tr.player-score').each(function(){
+			$('tr.player-score').each(function checkIfPlayerLeft(){
 				var playerName = $(this).attr('data-player-name');
 				if( !data['player_names'].includes(playerName) ) {
 					var playerRow = $('tr#scoreboard-player_' + playerName);
@@ -188,7 +188,7 @@ function refreshScoreboard() {
 				}
 			});
 
-			data['scoreboard'].forEach(function(player){
+			data['scoreboard'].forEach(function updatePlayerScore(player){
 				var playerName = player['username'];
 				var playerScore = player['score'];
 				var playerIsCurrent = player['current_player'];
@@ -215,11 +215,11 @@ function refreshScoreCard() {
 		url: refreshScoreCardUrl + '?latest_turn=' + latestScoreCardTurn,
 		dataType: 'json',
 		success: function (data) {
-			data['players'].forEach(function(player){
+			data['players'].forEach(function refreshPlayerScoreCard(player){
 				var playerPK = player['pk'];
 				var playerName = player['username'];
 				var playerTable = document.getElementById('tbody-scorecard_' + playerName);
-				player['turns'].forEach(function(turn){
+				player['turns'].forEach(function updateTurn(turn){
 					if( turn['scoresets'].length > 0 ) {
 						if ( latestScoreCardTurn < turn['turn_index'] ) {
 							latestScoreCardTurn = turn['turn_index'];
@@ -236,13 +236,13 @@ function refreshScoreCard() {
 							scoreCardRow.append(turnScoreTD);
 
 							var scoreSetTD = document.createElement('td');
-							turn['scoresets'].forEach(function(scoreset){
+							turn['scoresets'].forEach(function addScoreset(scoreset){
 								var scoreSetDiv = document.createElement('div');
 								if( scoreset.scoreValue == 0 ) {
 									var diceImage = getImageFromCache('scored-dice-cache_0');
 									scoreSetDiv.append(diceImage);
 								} else {
-									scoreset.scorableValues.forEach(function(value){
+									scoreset.scorableValues.forEach(function addScoreableImages(value){
 										var diceImage = getImageFromCache('scored-dice-cache_' + value);
 										scoreSetDiv.append(diceImage);
 									});
@@ -297,7 +297,7 @@ function clearScoreSetTable(visibility) {
 
 function isAllNull(testList) {
 	var nullCount = 0;
-	testList.forEach(function(val){
+	testList.forEach(function checkIfNull(val){
 		if(val == null){
 			nullCount++;
 		}
@@ -307,7 +307,7 @@ function isAllNull(testList) {
 
 function stripNulls(diceSet) {
 	var nonNulls = [];
-	diceSet.forEach(function(val) {
+	diceSet.forEach(function removeNull(val) {
 		if(val == null == false){
 			nonNulls.push(val);
 		}
