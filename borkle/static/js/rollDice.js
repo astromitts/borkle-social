@@ -112,12 +112,12 @@ function bindSelectDice(image) {
 			toggleRollDiceButton('off');
 			toggleSelectedDiceSlot('on');
 			selectedDiceScore = getSelectedDiceScore()
-			if (selectedDiceScore['hasScore'] == true) {
+			if (selectedDiceScore.hasScore == true) {
 				toggleSelectedDiceButton('on');
-				$('#selected-dice-score').html(selectedDiceScore['scoreValue'] + ' = ');
+				$('#selected-dice-score').html(selectedDiceScore.scoreType + '<br />' + selectedDiceScore.scoreValue + ' Points');
 			} else {
 				toggleSelectedDiceButton('off');
-				$('#selected-dice-score').html('0 = ');
+				$('#selected-dice-score').html('No Score');
 			}
 		} else {
 			toggleSelectedDiceSlot('off');
@@ -133,17 +133,17 @@ function bindScoreDice() {
 	var scoreDiceUrl = $('input#api-scoredice-url').val();
 	$('button#score-selected-dice').click(function(){
 		var selectedDiceScore = getSelectedDiceScore();
-		if (selectedDiceScore['hasScore']) {
+		if (selectedDiceScore.hasScore) {
 			postData = {
-				'score': selectedDiceScore['scoreValue'],
-				'score_type': selectedDiceScore['scoreType'],
+				'score': selectedDiceScore.scoreValue,
+				'score_type': selectedDiceScore.scoreType,
 			}
 			$('img.selected').each(function(){
 				postData[$(this).attr('id')] = 'score';
 			});
 			doAsyncPost(scoreDiceUrl, postData);
 			scoreSelection(selectedDiceScore, true);
-			updateTurnScore(selectedDiceScore['scoreValue']);
+			updateTurnScore(selectedDiceScore.scoreValue);
 		} else {
 			alert('that is not a score, try something else');
 		}
@@ -161,7 +161,7 @@ function scoreSelection(selectedDiceScore, allowUndo) {
 	toggleSelectedDiceButton('off');
 	toggleEndTurnButton('on');
 	toggleRollDiceButton('on');
-	subtractDice(selectedDiceScore['scorableValues'].length);
+	subtractDice(selectedDiceScore.scorableValues.length);
 }
 
 function bindUndoScoreSetSelection(targetButton) {
@@ -220,7 +220,7 @@ function buildScoreSetTable(selectedDiceScore, sourceIds, allowUndo, scoreSetPk)
 		var diceImgCell = document.createElement('td');
 		diceImgCell.append(document.createElement('hr'));
 
-		if ( allowUndo && selectedDiceScore['locked'] == false) {
+		if ( allowUndo && selectedDiceScore.locked == false) {
 			var undoSpan = document.createElement('span');
 			undoSpan.setAttribute('class', 'span-undo-btn');
 			var undoButton = document.createElement('button');
@@ -240,11 +240,11 @@ function buildScoreSetTable(selectedDiceScore, sourceIds, allowUndo, scoreSetPk)
 
 		var scoreTextSpan = document.createElement('span');
 		scoreTextSpan.setAttribute('class', 'span-score-value');
-		scoreTextSpan.innerHTML = selectedDiceScore['scoreValue'] + ' = ';
+		scoreTextSpan.innerHTML = selectedDiceScore.scoreValue + ' = ';
 		diceImgCell.append(scoreTextSpan);
 
-		for (var key of Object.keys(selectedDiceScore['scorableValues'])) {
-			var diceValue = selectedDiceScore['scorableValues'][key];
+		for (var key of Object.keys(selectedDiceScore.scorableValues)) {
+			var diceValue = selectedDiceScore.scorableValues[key];
 			var diceImage = getImageFromCache('scored-dice-cache_' + diceValue);
 			diceImage.setAttribute('data-source-slot', sourceIds[key]);
 			scoredImagesSpan.append(diceImage);

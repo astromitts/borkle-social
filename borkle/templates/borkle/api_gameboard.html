@@ -57,8 +57,7 @@
 			</div>
 		</div>
 		<div class="row" id="game-tools">
-			<div class="col-3"></div>
-			<div class="col-8">
+			<div class="auto-centered">
 				<div class="row">
 					<div class="col-5" id="roll-dice-btn">
 						<button class="game-btn  game-btn_square hidden" data-dice-count="6" id="rolldice">Roll<br />dice</button>
@@ -76,8 +75,7 @@
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-3"></div>
-			<div class="col-8" id="rolled-dice">
+			<div class="auto-centered" id="rolled-dice">
 				<div class="row">
 					<div class="col-5" id="slot-rolled_dice_1_value"></div>
 					<div class="col-5" id="slot-rolled_dice_2_value"></div>
@@ -91,17 +89,21 @@
 					<div class="col-5" id="slot-rolled_dice_6_value"></div>
 				</div>
 			</div>
-			<div class="col"></div>
 		</div>
 		<div class="row" id="selected-dice-slot" class="selected-dice-slot_active">
-			<div class="col-4">
-				<div id="selected-dice-score" class=""></div>
-			</div>
 			<div class="col" id="selected-dice-images"></div>
-		</div>
-
-		<div class="row hidden" id="score-dice-btn-row">
-			<button class="game-btn game-btn_long" id="score-selected-dice">Score selected dice</button>
+			<div class="col-5">
+                <div class="row">
+			        <div class="col hidden" id="score-dice-btn-row">
+				        <button class="game-btn game-btn_square" id="score-selected-dice">Keep Dice</button>
+			        </div>
+                </div>
+			    <div class="row">
+			    	<div class="col">
+						<div id="selected-dice-score" class=""></div>
+					</div>
+				</div>
+			</div>
 		</div>
 
 		<div class="row" id="scored-sets-slots">
@@ -129,8 +131,8 @@
 			<div class="col" id="opponent-selected-dice"></div>
 		</div>
 	</div>
-	<div class="row">
-		<div class="big-message col hidden" id="winner-data"></div>
+	<div class="row winner-data hidden">
+		<div class="big-message col" id="winner-data"></div>
 	</div>
 	<div class="row">
 		<div class="col"><hr /></div>
@@ -146,8 +148,9 @@
 			<div id="score-card-log_{{player.username}}" class="col{% if forloop.first %} scorecard-nav_active{% else %} hidden{% endif %}" id="score-card-log_{{player.username}}" data-next-player="" data-prev-player="">
 				<input type="hidden" id="player-turn-index_{{player.username}}" value="0" />
 				<input type="hidden" id="player-turn-roll_{{player.username}}" value="1" />
-				{{player.username}}
 				<table class="table" id="scorecard_{{player.username}}">
+					<tr><td><th>{{player.username}}</th></td></tr>
+					<tbody id="tbody-scorecard_{{player.username}}"></tbody>
 				</table>
 			</div>
 		{% endfor %}

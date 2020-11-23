@@ -23,7 +23,7 @@ $(document).ready(function playGame(){
 	// Set game play functions to refresh
 	var currentPlayerTriggered = false;
 	if (autorefresh) {
-		window.setInterval(function(){
+		var gameLoop = window.setInterval(function(){
 
 			var needsInitiateTurn = false;
 			var refreshGameInfoUrl = $('input#api-gameinfo-url').val();
@@ -40,6 +40,7 @@ $(document).ready(function playGame(){
 						displayWinner(data['winners']);
 						clearGameMessage('last-turn');
 						clearGameMessage('borkle');
+						clearInterval(gameLoop);
 					} else {
 						var isCurrentPlayer = data['is_current_player'];
 						if (isCurrentPlayer) {

@@ -166,74 +166,82 @@ function hasThreeOrMoreKind(diceSet) {
 
 function scoreDiceSet(diceSet) {
 	var score = {}
-	score['locked'] = false;
+	score.locked = false;
+	score.scoreType = null;
+	score.scoreValue = null;
+	score.hasScore = false;
+	score.scorableValues = [];
+
 	if (diceSet.length == 0){
-		score['scoreType'] = 'none';
-		score['scoreValue'] = 0;
-		score['hasScore'] = false;
 		return score;
 	}
 	if (isFourAndPair(diceSet)) {
-		score['scoreType'] = 'Four of a kind and a pair';
-		score['scoreValue'] = 2500;
-		score['hasScore'] = true;
-		score['scorableValues'] = diceSet;
+		score.scoreType = 'Four of a kind and a pair';
+		score.scoreValue = 2500;
+		score.hasScore = true;
+		score.scorableValues = diceSet;
 	} else if (isTwoTriples(diceSet)) {
-		score['scoreType'] = 'Two triples';
-		score['scoreValue'] = 1500;
-		score['hasScore'] = true;
-		score['scorableValues'] = diceSet;
+		score.scoreType = 'Two triples';
+		score.scoreValue = 1500;
+		score.hasScore = true;
+		score.scorableValues = diceSet;
 	} else if (isStraight(diceSet)) {
-		score['scoreType'] = 'Straight';
-		score['scoreValue'] = 1500;
-		score['hasScore'] = true;
-		score['scorableValues'] = diceSet;
+		score.scoreType = 'Straight';
+		score.scoreValue = 1500;
+		score.hasScore = true;
+		score.scorableValues = diceSet;
 	} else if (isThreePairs(diceSet)) {
-		score['scoreType'] = 'Three pairs';
-		score['scoreValue'] = 1500;
-		score['hasScore'] = true;
-		score['scorableValues'] = diceSet;
+		score.scoreType = 'Three pairs';
+		score.scoreValue = 1500;
+		score.hasScore = true;
+		score.scorableValues = diceSet;
 	} else if (isSixOfKind(diceSet)) {
-		score['scoreType'] = 'Six of a kind';
-		score['scoreValue'] = 3000;
-		score['hasScore'] = true;
-		score['scorableValues'] = diceSet;
+		score.scoreType = 'Six of a kind';
+		score.scoreValue = 3000;
+		score.hasScore = true;
+		score.scorableValues = diceSet;
 	} else if (isFiveOfKind(diceSet)) {
-		score['scoreType'] = 'Five of a kind';
-		score['scoreValue'] = 2000;
-		score['hasScore'] = true;
-		score['scorableValues'] = diceSet;
+		score.scoreType = 'Five of a kind';
+		score.scoreValue = 2000;
+		score.hasScore = true;
+		score.scorableValues = diceSet;
 	} else if (isFourOfKind(diceSet)) {
-		score['scoreType'] = 'Five of a kind';
-		score['scoreValue'] = 1000;
-		score['hasScore'] = true;
-		score['scorableValues'] = diceSet;
+		score.scoreType = 'Four of a kind';
+		score.scoreValue = 1000;
+		score.hasScore = true;
+		score.scorableValues = diceSet;
 	} else if (isThreeOfKind(diceSet)) {
-		score['scoreType'] = 'Three of a kind';
+		score.scoreType = 'Three of a kind';
 		if(isAllOnes(diceSet)) {
-			score['scoreValue'] = 300;
+			score.scoreValue = 300;
 		} else {
-			score['scoreValue'] = diceSet[0] * 100;
+			score.scoreValue = diceSet[0] * 100;
 		}
-		score['hasScore'] = true;
-		score['scorableValues'] = diceSet;
+		score.hasScore = true;
+		score.scorableValues = diceSet;
 	} else if (isAllFivesOrOnes(diceSet)) {
-		score['scoreType'] = 'Ones and fives';
-		score['scoreValue'] = 0;
+		score.scoreValue = 0;
 		diceSet.forEach(function(value){
 			if (value == 1) {
-				score['scoreValue'] = score['scoreValue'] + 100;
+				score.scoreValue = score.scoreValue + 100;
 			} else if (value == 5) {
-				score['scoreValue'] = score['scoreValue'] + 50;
+				score.scoreValue = score.scoreValue + 50;
 			}
 		});
-		score['hasScore'] = true;
-		score['scorableValues'] = diceSet;
+		if(isAllOnes(diceSet)) {
+			score.scoreType = 'Ones'
+		} else if (isAllFives(diceSet)) {
+			score.scoreType = 'Fives'
+		} else {
+			score.scoreType = 'Ones and fives'
+		}
+		score.hasScore = true;
+		score.scorableValues = diceSet;
 	} else {
-		score['scoreType'] = 'Borkle';
-		score['scoreValue'] = 0;
-		score['hasScore'] = false;
-		score['scorableValues'] = null;
+		score.scoreType = 'Borkle';
+		score.scoreValue = 0;
+		score.hasScore = false;
+		score.scorableValues = null;
 	}
 	return score;
 }
@@ -241,7 +249,7 @@ function scoreDiceSet(diceSet) {
 function hasScore(diceSet) {
 	testScore = scoreDiceSet(diceSet);
 	_hasScore = false;
-	if ( testScore['hasScore'] == false) {
+	if ( testScore.hasScore == false) {
 		if (hasFivesOrOnes(diceSet) == true) {
 			_hasScore = true;
 		} else if (hasThreeOrMoreKind(diceSet) == true) {

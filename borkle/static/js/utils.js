@@ -156,18 +156,19 @@ function bindEndTurn(practiceGame) {
 function displayWinner(winnerData) {
 	var winnerDiv = $('div#winner-data');
 	toggleDiceBoard('off');
-	if( winnerDiv.length > 0 ){
-		if( winnerData['winner_count'] == 1) {
-			var winnerHtml = 'The winner is ' + winnerData['winners'][0]['username'] + '! ' + winnerData['winners'][0]['score'] + ' points to '+winnerData['winners'][0]['username'] +'!'
-			winnerDiv.html(winnerHtml);
-		} else {
-			var winnerHtml = "It's a tie!! The winners are: "
-			winnerData['winners'].forEach(function(winner){
-				winnerHtml = winnerHtml + '<br />'+ winner['username'] + '! ' + winner['score'] + ' points to '+ winner['username'] +'!'
-			});
-		}
+	if( winnerData['winner_count'] == 1) {
+		var winnerHtml = 'The winner is ' + winnerData['winners'][0]['username'] + '! ' + winnerData['winners'][0]['score'] + ' points to '+winnerData['winners'][0]['username'] +'!';
+	} else {
+		var winnerHtml = "It's a tie!! The winners are: "
+		winnerData['winners'].forEach(function(winner){
+			winnerHtml = winnerHtml + '<br />'+ winner['username'] + '! ' + winner['score'] + ' points to '+ winner['username'] +'!';
+		});
 	}
-	toggleElementVisibility(winnerDiv, 'on');
+	if (winnerDiv.html() != winnerHtml) {
+		winnerDiv.html(winnerHtml);
+	}
+	var winnerRow = $('.winner-data');
+	toggleElementVisibility(winnerRow, 'on');
 }
 
 
@@ -217,7 +218,7 @@ function refreshScoreCard() {
 			data['players'].forEach(function(player){
 				var playerPK = player['pk'];
 				var playerName = player['username'];
-				var playerTable = document.getElementById('scorecard_' + playerName);
+				var playerTable = document.getElementById('tbody-scorecard_' + playerName);
 				player['turns'].forEach(function(turn){
 					if( turn['scoresets'].length > 0 ) {
 						if ( latestScoreCardTurn < turn['turn_index'] ) {
@@ -237,17 +238,17 @@ function refreshScoreCard() {
 							var scoreSetTD = document.createElement('td');
 							turn['scoresets'].forEach(function(scoreset){
 								var scoreSetDiv = document.createElement('div');
-								if( scoreset['scoreValue'] == 0 ) {
+								if( scoreset.scoreValue == 0 ) {
 									var diceImage = getImageFromCache('scored-dice-cache_0');
 									scoreSetDiv.append(diceImage);
 								} else {
-									scoreset['scorableValues'].forEach(function(value){
+									scoreset.scorableValues.forEach(function(value){
 										var diceImage = getImageFromCache('scored-dice-cache_' + value);
 										scoreSetDiv.append(diceImage);
 									});
 								}
 								var scoreSpan = document.createElement('span'); 
-								scoreSpan.innerHTML = '=' + scoreset['scoreValue'];
+								scoreSpan.innerHTML = '=' + scoreset.scoreValue;
 								scoreSetDiv.append(scoreSpan);
 								scoreSetTD.append(scoreSetDiv);
 							});
