@@ -45,9 +45,15 @@ function toggleLastTurn(visibility) {
 	}
 }
 
-function toggleOpponentTurn(visibility, playername) {
+function toggleOpponentTurn(visibility, currentPlayer) {
+	var messageText;
 	if( visibility == 'on' ){
-		setGameMessage("It's "+playername+"'s' last turn!!!", 'last-turn');
+		if ( currentPlayer.last_turn ) {
+			messageText = "It's "+currentPlayer.player_name+"'s last turn!!!";
+		} else {
+			messageText = "It's "+currentPlayer.player_name+"'s turn!";
+		}
+		setGameMessage(messageText, 'last-turn');
 	} else {
 		clearGameMessage('last-turn');
 	}

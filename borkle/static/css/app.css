@@ -50,8 +50,8 @@ button.game-btn:hover {
 }
 
 button.game-btn_square {
-	width: 7rem;
-	height: 7rem;
+	width: 6rem;
+	height: 6rem;
 }
 
 button.game-btn_square_small {
@@ -90,14 +90,14 @@ span.span-score-value {
 }
 
 table.dice-table_active td {
-	height: 7.15rem;
-	width: 7.15rem;
+	height: 6rem;
+	width: 6rem;
 }
 
 img.rolled-dice {
 	border: 2px solid #ffffff;
-	width: 7rem;
-	height: 7rem;
+	width: 6rem;
+	height: 6rem;
 }
 
 img.selected {

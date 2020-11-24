@@ -56,6 +56,7 @@ $(document).ready(function playGame(){
 						} else {
 							currentPlayerTriggered = false;	
 							//toggleCurrentTurnToolsOff();	
+							toggleOpponentTurn('on', data['current_player']);
 							buildAlreadyRolledDice(data['current_rolled_dice']['rolledValues'], false);
 							setCurrentRollScoreSets(data['current_rolled_dice']['scoresets'], false);
 							if ( data['last_turn'] ) {
