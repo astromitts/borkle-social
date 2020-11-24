@@ -48,9 +48,6 @@ def rules_set(foo):
             'score': 500,
             'example_images': [dice_image(6), dice_image(6), dice_image(6), ]
         },
-    }
-
-    rule_set_2 = {
         'Straight': {
             'score': 1500,
             'example_images': [dice_image(1), dice_image(2), dice_image(3), dice_image(4), dice_image(5), dice_image(6), ]
@@ -84,4 +81,4 @@ def rules_set(foo):
             'example_images': [dice_image(2), dice_image(3), dice_image(3), dice_image(4), dice_image(6), dice_image(6), ]
         }
     }
-    return [rule_set_1, rule_set_2]
+    return [rule_set_1]
