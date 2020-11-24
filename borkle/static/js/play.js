@@ -12,6 +12,7 @@ $(document).ready(function playGame(){
 		bindScoreDice();
 		bindEndTurn(practiceGame);
 		refreshScoreCard();
+		toggleCurrentTurnToolsOff();
 		var overrideRollButton = false;
 		if (data['current_rolled_dice']['rolledValues'].length > 0 && !isAllNull(data['current_rolled_dice']['rolledValues'])) {
 			buildAlreadyRolledDice(data['current_rolled_dice']['rolledValues'], true)
