@@ -70,14 +70,16 @@
 
 	<div class="container">
 		<div id="main-content">
-			{% block messages %}
-				{% if messages %}
-					{% for message in messages %}
-					<b>{{message.level_tag}}:</b> {{message}}<br />
-					{% endfor %}
-				{% endif %}
-			{% endblock %}
 			<div id="game-container">
+				{% block messages %}
+					{% if messages %}
+						<div class="messages">
+							{% for message in messages %}
+							<b>{{message.level_tag}}:</b> {{message}}<br />
+							{% endfor %}
+						</div>
+					{% endif %}
+				{% endblock %}
 				{% block main_content %}{% endblock %}
 			</div>
 		</div>

@@ -1,4 +1,5 @@
 $nav-color: #608DAD;
+$header-font-color: #676767;
 
 $game-play-highlight: #FFCB47;
 $game-play-lowlight: #FFEBB8;
@@ -43,6 +44,31 @@ body {
 	text-align: right;
 }
 
+.messages {
+	background-color: $game-play-highlight;
+	border-radius: 5px;
+	padding: 1rem;
+	margin-right: .5rem;
+	margin-left: .5rem;
+}
+
+.how-to-score {
+	padding: 1rem;	
+}
+
+.dashboard {
+	padding: .5rem;
+	h2 { 
+		color: $header-font-color;
+		font-size: 1rem;
+		text-align: right;
+	}
+	h3 {
+		color: $header-font-color;
+		font-size: 1.1rem;
+	}
+}
+
 .start-game-buttons {
 	text-align: center;
 	padding: 3rem;
@@ -60,7 +86,7 @@ body {
     width: 100%;
     h1 {
 		font-size: 1rem;
-		color: #676767;
+		color: $header-font-color;
 	}
 }
 

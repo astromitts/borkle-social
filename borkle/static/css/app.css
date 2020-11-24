@@ -23,6 +23,31 @@ body {
   text-align: right;
 }
 
+.messages {
+  background-color: #FFCB47;
+  border-radius: 5px;
+  padding: 1rem;
+  margin-right: 0.5rem;
+  margin-left: 0.5rem;
+}
+
+.how-to-score {
+  padding: 1rem;
+}
+
+.dashboard {
+  padding: 0.5rem;
+}
+.dashboard h2 {
+  color: #676767;
+  font-size: 1rem;
+  text-align: right;
+}
+.dashboard h3 {
+  color: #676767;
+  font-size: 1.1rem;
+}
+
 .start-game-buttons {
   text-align: center;
   padding: 3rem;
