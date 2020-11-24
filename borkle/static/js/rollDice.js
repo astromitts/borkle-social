@@ -196,22 +196,25 @@ function bindUndoScoreSetSelection(targetButton) {
 	$(targetButton).click(function undoButtonClicked(){
 		var rowToUndo = $(this).closest('tr');
 		var addDiceCount = 0;
+		var scoreVal = parseInt(rowToUndo.find('span#score-value').html());
 		rowToUndo.find('img').each(function gatherUndoDice(){
-			var targetSlotId = $(this).attr('data-source-slot');
-			var targetSlot = $('div#slot-' + targetSlotId);
+			var rolledDiceImageID = $(this).attr('data-source-slot');
+			var targetBoardSlotID = 'td#slot-' + rolledDiceImageID;
+			var targetSlot = $(targetBoardSlotID);
 			var diceValue = $(this).attr('data-value');
 			var diceCacheID = 'rolled-dice-cache_' + diceValue;
 			var diceClass = 'rolled-dice rolled-dice_selectable';
 			var diceImage = getImageFromCache(diceCacheID);
 			diceImage.setAttribute('class', diceClass);
-			diceImage.setAttribute('id', targetSlotId);
+			diceImage.setAttribute('id', rolledDiceImageID);
 			targetSlot.append(diceImage);
-			bindSelectDice($('img#' + targetSlotId));
+			bindSelectDice($('img#' + rolledDiceImageID));
 			$(this).remove();
 			rowToUndo.remove();
 			addDiceCount += 1;
 			addDice(addDiceCount);
 		});
+		decreaseTurnScore(scoreVal);
 	});
 }
 
@@ -267,7 +270,7 @@ function buildScoreSetTable(selectedDiceScore, sourceIds, allowUndo, scoreSetPk)
 
 		var scoreTextSpan = document.createElement('span');
 		scoreTextSpan.setAttribute('class', 'span-score-value');
-		scoreTextSpan.innerHTML = selectedDiceScore.scoreValue + ' = ';
+		scoreTextSpan.innerHTML = '<span id="score-value">' + selectedDiceScore.scoreValue + '</span> = ';
 		diceImgCell.append(scoreTextSpan);
 
 		for (var key of Object.keys(selectedDiceScore.scorableValues)) {

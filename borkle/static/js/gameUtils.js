@@ -94,6 +94,17 @@ function updateTurnScore(scoreIncrease) {
 	return newScore;
 }
 
+function decreaseTurnScore(scoreDecrease) {
+	var currentScoreSpan = $('span#current-score-value');
+	var currentScoreValue = parseInt(currentScoreSpan.html());
+	var newScore = currentScoreValue - scoreDecrease;
+	if (newScore == 0) {
+		newScore = "0";
+	}
+	currentScoreSpan.html(newScore);
+	return newScore;
+}
+
 function clearRolledDice(targetDivPrefix){
 	$('table#dice-table').removeClass('dice-table_active');
 	rolledDiceFieldNames.forEach(function (rolledDiceId, index) {

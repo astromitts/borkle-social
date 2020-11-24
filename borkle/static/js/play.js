@@ -1,6 +1,8 @@
 $(document).ready(function playGame(){
 	// Just turn off the refresh is the game is over
 	var data = checkGameData(false);
+	var currentPlayerTriggered = false;
+	
 	if ( data['game_over'] == true ) {
 		var autorefresh = false;
 		displayWinner(data['winners']);
@@ -14,15 +16,17 @@ $(document).ready(function playGame(){
 		refreshScoreCard();
 		toggleCurrentTurnToolsOff();
 		var overrideRollButton = false;
-		if (data['current_rolled_dice']['rolledValues'].length > 0 && !isAllNull(data['current_rolled_dice']['rolledValues'])) {
-			buildAlreadyRolledDice(data['current_rolled_dice']['rolledValues'], true)
-			var overrideRollButton = false;
-		}
+		//if (data['current_rolled_dice']['rolledValues'].length > 0 && !isAllNull(data['current_rolled_dice']['rolledValues'])) {
+		//	buildAlreadyRolledDice(data['current_rolled_dice']['rolledValues'], true);
+		//	setCurrentRollScoreSets(data['current_rolled_dice']['scoresets'], true);
+		//	var overrideRollButton = false;
+		//	var currentPlayerTriggered = true;
+		//	//toggleCurrentTurnToolsOff();
+		//}
 	}
 	getPlayerCardData();
 	bindScoreCardNav();
 	// Set game play functions to refresh
-	var currentPlayerTriggered = false;
 	if (autorefresh) {
 		var gameLoop = window.setInterval(function startGameLoop(){
 
