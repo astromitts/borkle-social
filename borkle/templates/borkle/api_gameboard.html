@@ -56,8 +56,31 @@
 				</div>
 			</div>
 		</div>
+
+		<div class="row hidden" id="row-borkle-message">
+			<div class="col">
+				<div class="big-message hidden" id="borkle-message">
+				</div>
+			</div>
+		</div>
+
 		<div class="row">
-			<div class="auto-centered" id="rolled-dice">
+			<div class="col">
+				<table id="game-button-table" class="table_active">
+					<tr>
+						<td>
+							<button class="game-btn  game-btn_square hidden" data-dice-count="6" id="rolldice">Roll<br />dice</button>
+						</td>
+					</tr>
+					<tr><td></td></tr>
+					<tr>
+						<td>
+							<button class="game-btn game-btn_red game-btn_square hidden" id="advanceplater">End<br />turn</button>		
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div class="col" id="rolled-dice"> {# Dice Table #}
 				<table id="dice-table">
 					<tr id="slots-6-5">
 						<td id="slot-rolled_dice_6_value"></td>
@@ -75,25 +98,10 @@
 			</div>
 		</div>
 
-		<div class="row hidden" id="row-borkle-message">
-			<div class="col">
-				<div class="big-message hidden" id="borkle-message">
-				</div>
-			</div>
-		</div>
 
 		<div class="row" id="game-tools">
 			<div class="auto-centered">
-				<table id="game-button-table" class="table_active">
-					<tr>
-						<td>
-							<button class="game-btn  game-btn_square hidden" data-dice-count="6" id="rolldice">Roll<br />dice</button>
-						</td>
-						<td>
-							<button class="game-btn game-btn_red game-btn_square hidden" id="advanceplater">End<br />turn</button>		
-						</td>
-					</tr>
-				</table>
+				
 			</div>
 		</div>
 
