@@ -10,62 +10,68 @@
 {% endblock %}
 
 {% block main_content %}
-	<input type="hidden" id="static-url" value="{% static '' %}" />
-	<input type="hidden" id="api-gameinfo-url" value="{% url 'game_api' game_uuid=game.uuid api_target='gameinfo' %}" />
-	<input type="hidden" id="api-diceboard-url" value="{% url 'game_api' game_uuid=game.uuid  api_target='diceboard' %}" />
-	<input type="hidden" id="api-scorecard-url" value="{% url 'game_api' game_uuid=game.uuid api_target='scorecard' %}" />
-	<input type="hidden" id="api-scoreboard-url" value="{% url 'game_api' game_uuid=game.uuid api_target='scoreboard' %}" />
-	<input type="hidden" id="api-scoredice-url" value="{% url 'game_api' game_uuid=game.uuid api_target='scoredice' %}" />
-	<input type="hidden" id="api-undoselection-url" value="{% url 'game_api' game_uuid=game.uuid api_target='undoselection' %}" />
-	<input type="hidden" id="api-rolldice-url" value="{% url 'game_api' game_uuid=game.uuid api_target='rolldice' %}" />
-	<input type="hidden" id="api-borkle-url" value="{% url 'game_api' game_uuid=game.uuid api_target='borkle' %}" />
-	<input type="hidden" id="api-endturn-url" value="{% url 'game_api' game_uuid=game.uuid api_target='endturn' %}" />
-	<input type="hidden" id="api-scorecardsetup-url" value="{% url 'game_api' game_uuid=game.uuid api_target='scorecardsetup' %}" />
-	<input type="hidden" id="latest-scorecard-turn" value="0" />
-
+	<span id="js-api-urls">
+		<input type="hidden" id="static-url" value="{% static '' %}" />
+		<input type="hidden" id="api-gameinfo-url" value="{% url 'game_api' game_uuid=game.uuid api_target='gameinfo' %}" />
+		<input type="hidden" id="api-diceboard-url" value="{% url 'game_api' game_uuid=game.uuid  api_target='diceboard' %}" />
+		<input type="hidden" id="api-scorecard-url" value="{% url 'game_api' game_uuid=game.uuid api_target='scorecard' %}" />
+		<input type="hidden" id="api-scoreboard-url" value="{% url 'game_api' game_uuid=game.uuid api_target='scoreboard' %}" />
+		<input type="hidden" id="api-scoredice-url" value="{% url 'game_api' game_uuid=game.uuid api_target='scoredice' %}" />
+		<input type="hidden" id="api-undoselection-url" value="{% url 'game_api' game_uuid=game.uuid api_target='undoselection' %}" />
+		<input type="hidden" id="api-rolldice-url" value="{% url 'game_api' game_uuid=game.uuid api_target='rolldice' %}" />
+		<input type="hidden" id="api-borkle-url" value="{% url 'game_api' game_uuid=game.uuid api_target='borkle' %}" />
+		<input type="hidden" id="api-endturn-url" value="{% url 'game_api' game_uuid=game.uuid api_target='endturn' %}" />
+		<input type="hidden" id="api-scorecardsetup-url" value="{% url 'game_api' game_uuid=game.uuid api_target='scorecardsetup' %}" />
+		<input type="hidden" id="latest-scorecard-turn" value="0" />
+	</span>	
 	<div class="row" id="scoreboard">
-		<div class="col">
+		<div class="game-header">
 			{% if game.game_type == 'practice' %}
-				<h4>Practice Game: {{game.code_name}}</h4>
+				<h1>Practice Game</h1>
+				<h1>{{game.code_name}}</h1>
 			{% else %}
-				<h4>Game codename: {{game.code_name}}</h4>
+				<h1>Codename</h1>
+				<h1>{{game.code_name}}</h1>
 				<h5>Players</h5>
 			{% endif %}
-			<table class="table" id="scoreboard">
-				{% for player in game.gameplayer_set.all %}
-				<tr id="scoreboard-player_{{player.username}}" data-player-name="{{player.username}}" class="player-score {% if player == gameplayer %}scoreboard_myscore {% endif %}">
-					<td>{{player.player.user.username}}:</td>
-					<td class="scoreboard-player-score" id="scoreboard-player-score_{{player.username}}">{{player.total_score}}</td>
-					<td>/</td>
-					<td>{{game.max_score}}</td>
-				</tr>
-			{% endfor %}
-			</table>
 		</div>
 	</div>
-	<div id="diceboard">
-		<div class="row">
-			<div class="col hidden centered" id="current-score">You have <span id="current-score-value">0</span> points this turn</div>
-		</div>
-		<div class="row">
-			<div class="col hidden centered" id="available-dice">You have <span id="available-dice-value"></span> dice to roll</div>
-		</div>
-		<div class="row hidden" id="row-last-turn-message">
-			<div class="col">
-				<div class="big-message hidden" id="last-turn-message">
-				</div>
-			</div>
-		</div>
+	<div clas="row">
+		<table class="table" id="scoreboard">
+			{% for player in game.gameplayer_set.all %}
+			<tr id="scoreboard-player_{{player.username}}" data-player-name="{{player.username}}" class="player-score {% if player == gameplayer %}scoreboard_myscore {% endif %}">
+				<td>{{player.player.user.username}}:</td>
+				<td class="scoreboard-player-score" id="scoreboard-player-score_{{player.username}}">{{player.total_score}}</td>
+				<td>/</td>
+				<td>{{game.max_score}}</td>
+			</tr>
+		{% endfor %}
+		</table>
+	</div>
 
-		<div class="row hidden" id="row-borkle-message">
-			<div class="col">
-				<div class="big-message hidden" id="borkle-message">
-				</div>
-			</div>
-		</div>
+	{# Current Turn Stats #}
+	<div class="hidden centered big-message" id="current-score">You have <span id="current-score-value">0</span> points this turn</div>
+	<div class="hidden centered big-message" id="available-dice">You have <span id="available-dice-value"></span> dice to roll</div>
 
-		<div class="row">
-			<div class="col-4">
+	{# Last turn message  #}
+	<div class="hidden" id="row-last-turn-message">
+		<div class="big-message hidden" id="last-turn-message"></div>
+	</div>
+
+	{# Borkled turn over message #}
+	<div class="hidden" id="row-borkle-message">
+		<div class="big-message hidden" id="borkle-message"></div>
+	</div>
+
+	{# Game over winner stats #}
+	<div class="winner-data hidden">
+		<div class="big-message col" id="winner-data"></div>
+	</div>
+
+	<div id="play-board" class="as-table">
+		{# Roll and end turn buttons #}
+		<div class="as-tr">
+			<div class="as-td col-game-buttons">
 				<table id="game-button-table" class="table_active">
 					<tr>
 						<td>
@@ -80,7 +86,9 @@
 					</tr>
 				</table>
 			</div>
-			<div class="col" id="rolled-dice"> {# Dice Table #}
+
+			{# Rolled Dice table #}
+			<div class="as-td col-game-dice" id="rolled-dice"> {# Dice Table #}
 				<table id="dice-table">
 					<tr id="slots-6-5">
 						<td id="slot-rolled_dice_6_value"></td>
@@ -98,93 +106,75 @@
 			</div>
 		</div>
 
-
-		<div class="row" id="game-tools">
-			<div class="auto-centered">
-				
-			</div>
-		</div>
-
-		<div class="row" id="selected-dice-slot" class="selected-dice-slot_active">
-			<div class="col" id="selected-dice-images"></div>
-			<div class="col-5">
-                <div class="row">
-			        <div class="col hidden" id="score-dice-btn-row">
-				        <button class="game-btn game-btn_square_small" id="score-selected-dice">Keep Dice</button>
-			        </div>
-                </div>
-			    <div class="row">
-			    	<div class="col">
-						<div id="selected-dice-score" class=""></div>
+		{# Active selected dice #}
+		<div class="as-tr">
+			<div id="selected-dice-slot" class="selected-dice-slot_active">
+				<div class="as-table">
+					<div class="as-tr">
+						<div class="as-td">
+							<div class="" id="selected-dice-images"></div>
+						</div>
+				         <div class="as-td">
+					        <div class="hidden" id="score-dice-btn-row">
+						        <button class="game-btn game-btn_square_small" id="score-selected-dice">Keep Dice</button>
+					        </div>
+							<div id="selected-dice-score" class=""></div>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 
-		<div class="row" id="scored-sets-slots">
+		{# Active turn scored sets #}
+		<div id="scored-sets-slots">
 			<div class="col" id="scored-sets">
 			</div>
 		</div>
-		<div class="row">
-			<div class="col-8" id="opponent-rolled-dice">
-				<div class="row">
-					<div class="col-4" id="opponent-rolled_dice_1_value"></div>
-					<div class="col-4" id="opponent-rolled_dice_2_value"></div>
-				</div>
-				<div class="row">
-					<div class="col-4" id="opponent-rolled_dice_3_value"></div>
-					<div class="col-4" id="opponent-rolled_dice_4_value"></div>
-				</div>
-				<div class="row">
-					<div class="col-4" id="opponent-rolled_dice_5_value"></div>
-					<div class="col-4" id="opponent-rolled_dice_6_value"></div>
-				</div>
+
+	</div>
+
+	{# Whole game scorecards #}
+	<div class="as-table">
+		<div class="as-tr">
+			<div class="as-td">
+				<hr />
+				<h5>Score Cards</h5>
 			</div>
-			<div class="col" id="opponent-scored-sets"></div>
-		</div>
-		<div class="row">
-			<div class="col" id="opponent-selected-dice"></div>
 		</div>
 	</div>
-	<div class="row winner-data hidden">
-		<div class="big-message col" id="winner-data"></div>
-	</div>
-	<div class="row">
-		<div class="col"><hr /></div>
-	</div>
-	<div class="row">
-		<div class="col"><h5>Score Cards</h5></div>
-	</div>
-	<div class="row" id="score-card-log">
-		<div class="col-2">
-			<button id="scorecard-nav_prev" class="scorecard-nav scorecard-nav_prev" data-target-attr='data-prev-player'><</button>
-		</div>
-		{% for player in game.gameplayer_set.all %}
-			<div id="score-card-log_{{player.username}}" class="col{% if forloop.first %} scorecard-nav_active{% else %} hidden{% endif %}" id="score-card-log_{{player.username}}" data-next-player="" data-prev-player="">
-				<input type="hidden" id="player-turn-index_{{player.username}}" value="0" />
-				<input type="hidden" id="player-turn-roll_{{player.username}}" value="1" />
-				<table class="table" id="scorecard_{{player.username}}">
-					<tr><td><th>{{player.username}}</th></td></tr>
-					<tbody id="tbody-scorecard_{{player.username}}"></tbody>
-				</table>
+		
+	<div class="as-table">
+		<div class="as-tr">
+			<div class="as-td as-td_scorecard-nav">
+				<button id="scorecard-nav_prev" class="scorecards-td scorecard-nav scorecard-nav_prev" data-target-attr='data-prev-player'><</button>
 			</div>
-		{% endfor %}
-		<div class="col-2"><button id="scorecard-nav_next" class="scorecard-nav scorecard-nav_next" data-target-attr='data-next-player'>></button>
+			<div class="as-td">
+				{% for player in game.gameplayer_set.all %}
+					<div id="score-card-log_{{player.username}}" class="{% if forloop.first %} scorecard-nav_active{% else %} hidden{% endif %}" id="score-card-log_{{player.username}}" data-next-player="" data-prev-player="">
+						<input type="hidden" id="player-turn-index_{{player.username}}" value="0" />
+						<input type="hidden" id="player-turn-roll_{{player.username}}" value="1" />
+						<table class="table" id="scorecard_{{player.username}}">
+							<tr><td><th>{{player.username}}</th></td></tr>
+							<tbody id="tbody-scorecard_{{player.username}}"></tbody>
+						</table>
+					</div>
+				{% endfor %}
+			</div>
+			<div class="as-td align-right">
+				<button id="scorecard-nav_next" class="scorecard-nav scorecard-nav_next" data-target-attr='data-next-player'>></button>
+			</div>
 		</div>
 	</div>
 
-	
-	<div class="row">
+	{# Leave game buttons #}
+	<div class="leave-game">
 		{% if game.game_type == 'practice' %}
-			<div class="col" id="leavegame">
-				<a href="{% url 'game_cancel' game_uuid=game.uuid %}?src=game"><button class="btn btn-danger">Cancel Game</button></a>
-			</div>
+			<a href="{% url 'game_cancel' game_uuid=game.uuid %}?src=game"><button class="btn btn-danger">Cancel Game</button></a>
 		{% else %}
-		<div class="col" id="leavegame">
-			<a href="{% url 'leave_game' game_uuid=game.uuid %}"><button class="btn btn-danger">Leave Game</button></a>
-		</div>
+			<a href="{% url 'leave_game' game_uuid=game.uuid %}"><button class="btn game-btn game-btn_red">Leave Game</button></a>
 		{% endif %}
 	</div>
+
 <div class="image-cache" id="rolled-dice-cache" style="display: none;">
 	{% for img in rolled_dice_cache %}
 		{{img|safe}}

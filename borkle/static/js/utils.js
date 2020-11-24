@@ -266,6 +266,7 @@ function refreshScoreCard() {
 function initiateTurn(overrideRollButton) {
 	clearScoreSetTable();
 	updateDiceCount(6);
+	toggleSelectedDiceSlot('off');
 	toggleAvailableDice('on');
 	toggleCurrentScore('on');
 	toggleAvailableDice('on');

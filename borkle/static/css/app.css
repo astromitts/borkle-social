@@ -1,186 +1,267 @@
+body {
+  background-image: linear-gradient(to right, #9AC2C9, #9AC2C9, #B9D8C2, #9AC2C9, #9AC2C9);
+}
+
 #main-content {
-	margin-top: 2rem;
+  margin-top: 0.6rem;
 }
 
-.big-message {
-	font-weight: bold;
-	text-align:center;
-}
-
-.winner-data {
-    background-color: #a1ecdd;
-    border-radius: 8px;
-    height: 5rem;
-    margin-left: .2rem;
-    margin-right: .2rem;
-}
-
-#winner-data {
-	margin: auto 0;
-}
-
-.image-cache {
-	visibility: hidden;
-}
-
-.hidden {
-	display: none;
-}
-.centered {
-	text-align: center;
-}
-
-#game-tools {
-	margin-top: 1rem;
-	margin-bottom: 1rem;
-}
-
-.game-btn {
-	color: #EAEDED;
-	background-color: #45B39D;
-	border: 1px solid #45B39D;
-	border-radius: 1rem;
-	font-weight: bold;
-}
-button.game-btn:hover {
-	color: #EAEDED;
-	background-color: #0E6655;
-	border: 1px solid #45B39D;
-	border-radius: 1rem;
-}
-
-button.game-btn_square {
-	width: 6rem;
-	height: 6rem;
-}
-
-button.game-btn_square_small {
-	width: 5rem;
-	height: 5rem;
-}
-
-button.game-btn_red {
-	background-color: #F95545;
-	border: 1px solid #442522;
-}
-button.game-btn_red:hover {
-	background-color: #ff838f;
-	border: 1px solid #442522;
-}
-
-button.game-btn_long {
-	margin: 0 auto;
-	width: 13rem;
-	height: 4rem;
-}
-
-span.span-undo-btn {
-	display: inline-block;
-	width: 4rem;
-}
-
-span.span-score-value {
-	display: inline-block;
-	min-width: 4rem;
+.bg-dark {
+  background-color: #608DAD !important;
 }
 
 .auto-centered {
-	display: inline-block;
-	margin: auto;
-}
-
-table.dice-table_active td {
-	height: 6rem;
-	width: 6rem;
-}
-
-img.rolled-dice {
-	border: 2px solid #ffffff;
-	width: 6rem;
-	height: 6rem;
-}
-
-img.selected {
-	width: 5rem;
-	height: 5rem;
-}
-
-img.rolled-dice_selectable:hover {
-	border: 2px solid orange;
-}
-
-table#scoreset_table {
-	width: 100%;
-}
-
-#selected-dice-score {
-	font-weight: bold;
-}
-
-img.scored-dice {
-	width: 2rem;
-	height: 2rem;
-}
-
-div.selected-dice-slot_active {
-	background-color: #FCF3CF;
-	border-radius: 1rem;
-	padding: 1rem;
-	margin: .5rem 0rem;
-}
-
-div.scored-sets-slots {
-	padding-top: 1rem;
-}
-
-tr.scoreboard_myscore {
-	font-weight: bold;
-}
-
-tr.scoreboard_currentplayer {
-	background-color: #FEF9E7;
-}
-tr.player-left-game {
-	background-color: #FADBD8;
-	text-align: center;
-}
-
-div#roll-button {
-	margin-bottom: 7rem;
-}
-
-.dashboard-row {
-	margin-bottom: 3rem;
-}
-
-#dashboard-game-categories .card {
-	margin-bottom: .75rem;
+  display: inline-block;
+  margin: auto;
 }
 
 .margin_t75 {
-	margin-top: .75rem;
+  margin-top: 0.75rem;
 }
 
-.btn-long {
-	min-width: 25rem;
+.align-right {
+  text-align: right;
+}
+
+.start-game-buttons {
+  text-align: center;
+  padding: 3rem;
+}
+.start-game-buttons a {
+  display: block;
+  margin-bottom: 2rem;
+}
+
+.game-header {
+  margin: auto 0;
+  display: block;
+  padding-top: 1rem;
+  text-align: center;
+  width: 100%;
+}
+.game-header h1 {
+  font-size: 1rem;
+  color: #676767;
+}
+
+#game-container {
+  background-color: #ffffff;
+  padding: 0 0 1rem 0;
+  border-radius: 20px;
+  margin-bottom: 1rem;
+}
+#game-container form {
+  padding: 1rem;
+}
+#game-container form th {
+  width: 40%;
+}
+#game-container form input {
+  min-width: 12rem;
+}
+
+#play-board {
+  min-height: 7rem;
+  width: 100%;
+}
+
+.as-table {
+  display: table;
+  width: 100%;
+}
+.as-table .as-tr {
+  display: table-row;
+}
+.as-table .as-td {
+  display: table-cell;
+  vertical-align: top;
+}
+.as-table .as-td_scorecard-nav {
+  width: 1.75rem;
+}
+
+.big-message {
+  font-weight: bold;
+  text-align: center;
+}
+
+.winner-data {
+  background-color: #a1ecdd;
+  border-radius: 8px;
+  height: 5rem;
+  margin-left: 0.2rem;
+  margin-right: 0.2rem;
+}
+
+#winner-data {
+  margin: auto 0;
+}
+
+.image-cache {
+  visibility: hidden;
+}
+
+.hidden {
+  display: none;
+}
+
+.centered {
+  text-align: center;
+}
+
+#game-tools {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.game-btn {
+  color: #EAEDED;
+  background-color: #608DAD;
+  border: 1px solid #45B39D;
+  border-radius: 1rem;
+  font-weight: bold;
+}
+.game-btn:hover {
+  color: #EAEDED;
+  background-color: #0E6655;
+  border: 1px solid #45B39D;
+  border-radius: 1rem;
+}
+.game-btn_square {
+  width: 6rem;
+  height: 6rem;
+}
+.game-btn_square_small {
+  width: 5rem;
+  height: 5rem;
+}
+.game-btn_red {
+  background-color: #F37272;
+  border: 1px solid #442522;
+}
+.game-btn_red:hover {
+  background-color: #FFCB47;
+  border: 1px solid #442522;
+}
+.game-btn_long {
+  margin: 0 auto;
+  width: 13rem;
+  height: 4rem;
+}
+
+.col-game-buttons {
+  display: inline-block;
+  float: left;
+  padding: 0;
+  width: 6rem;
+}
+
+.col-game-dice {
+  display: inline-block;
+  float: right;
+  padding-left: 0;
+}
+
+span.span-undo-btn {
+  display: inline-block;
+  width: 4rem;
+}
+
+span.span-score-value {
+  display: inline-block;
+  min-width: 4rem;
+}
+
+table.dice-table_active td {
+  height: 6rem;
+  width: 6rem;
+}
+
+img.rolled-dice {
+  width: 6rem;
+  height: 6rem;
+}
+
+img.selected {
+  width: 5rem;
+  height: 5rem;
+}
+
+table#scoreset_table {
+  width: 100%;
+}
+
+#selected-dice-score {
+  font-weight: bold;
+}
+
+img.scored-dice {
+  width: 2rem;
+  height: 2rem;
+}
+
+div.selected-dice-slot_active {
+  background-color: #FFEBB8;
+  border-radius: 1rem;
+  padding: 1rem;
+  margin: 0.5rem 0rem;
+}
+
+div#scored-sets-slots {
+  margin-top: 3rem;
+}
+
+tr.scoreboard_myscore {
+  font-weight: bold;
+}
+
+tr.scoreboard_currentplayer {
+  background-color: #FFCB47;
+}
+
+tr.player-left-game {
+  background-color: #F37272;
+  text-align: center;
+}
+
+div#roll-button {
+  margin-bottom: 7rem;
+}
+
+#dashboard-game-categories .card {
+  margin-bottom: 0.75rem;
+}
+
+#scorecards {
+  display: table;
+  width: 100%;
+}
+
+.scorecards-tr {
+  display: table-row;
+}
+.scorecards-td {
+  display: table-cell;
 }
 
 button.scorecard-nav {
-	height: 16rem;
-	background-color: #B9E3FB;
-	border: none;
+  height: 16rem;
+  background-color: #608DAD;
+  width: 1.75rem;
+  border: none;
 }
-
 button.scorecard-nav_next {
-	border-top-right-radius: 5px;
-	border-bottom-right-radius: 5px;
-	border-right-color: #000000;
-	border-right-width: 1px;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
 }
-
 button.scorecard-nav_prev {
-	border-top-left-radius: 5px;
-	border-bottom-left-radius: 5px;
-}
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
 }
 
+.leave-game {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+/*# sourceMappingURL=app.css.map */
