@@ -270,6 +270,7 @@ function initiateTurn(overrideRollButton) {
 	toggleCurrentScore('on');
 	toggleAvailableDice('on');
 	toggleCurrentScore('on');
+	toggleOpponentTurn('off');
 	if (!overrideRollButton) {
 		clearRolledDice('slot-');
 		toggleRollDiceButton('on');

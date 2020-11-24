@@ -48,6 +48,7 @@ function toggleLastTurn(visibility) {
 function toggleOpponentTurn(visibility, currentPlayer) {
 	var messageText;
 	if( visibility == 'on' ){
+		toggleCurrentScore('off');
 		if ( currentPlayer.last_turn ) {
 			messageText = "It's "+currentPlayer.player_name+"'s last turn!!!";
 		} else {
