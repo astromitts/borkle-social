@@ -1,5 +1,6 @@
 body {
   background-image: linear-gradient(to right, #9AC2C9, #9AC2C9, #B9D8C2, #9AC2C9, #9AC2C9);
+  font-family: "Noto Sans JP";
 }
 
 .bg-light {
@@ -7,7 +8,15 @@ body {
   color: #e2e0e0;
 }
 .bg-light a {
+  font-family: "Nerko One";
   color: #000000 !important;
+  font-weight: bold;
+  font-size: 2.2rem;
+}
+
+.navbar {
+  padding-top: 0;
+  padding-bottom: 0;
 }
 
 .auto-centered {
@@ -65,8 +74,9 @@ body {
   width: 100%;
 }
 .game-header h1 {
-  font-size: 1rem;
+  font-size: 0.8rem;
   color: #313131;
+  font-weight: bold;
 }
 
 #game-container {
