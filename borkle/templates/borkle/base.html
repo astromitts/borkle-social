@@ -9,6 +9,7 @@
 	<meta name="keywords" content="">
 	<meta name="author" content="Bo Morin">
 	<title>{% block page_title %}Borkle! It's a lot like Farkle.{% endblock %}</title>
+	<link rel="shortcut icon" href="{% static 'images/favicon.ico' %}" />
 	<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
 	<link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
 	<link href= 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/ui-lightness/jquery-ui.css' rel='stylesheet'> 
@@ -25,7 +26,7 @@
 <body>
 	<nav class="navbar navbar-expand-lg navbar-light bg-light">
 		<div class="container">
-			<a class="navbar-brand" href="{% url 'dashboard' %}">Borkle!</a>
+			<a class="navbar-brand" href="{% url 'dashboard' %}"><img id="header-image" src="{% static 'images/favicon-large.png' %}" />Borkle!</a>
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
 			</button>
@@ -40,6 +41,9 @@
 						</li>
 						<li class="nav-item">
 							<a class="nav-link" href="{%url 'session_manager_logout' %}">Log out</a>
+						</li>
+						<li class="nav-item active">
+							<a class="nav-link" href="{% url 'about' %}">About</a>
 						</li>
 						<li class="nav-item">
 							<a class="nav-link" href="{%url 'score_chart' %}">How to score</a>
