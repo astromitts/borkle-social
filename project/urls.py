@@ -34,4 +34,5 @@ urlpatterns = [
     path('game/<str:game_uuid>/join/', app_views.JoinGameView.as_view(), name='game_accept_invitation_link'),
     path('game/<str:game_uuid>/decline/', app_views.DeclineGameView.as_view(), name='game_decline_invitation_link'),
     path('game/<str:game_uuid>/status/', app_views.GameStatusView.as_view(), name='game_status'),
+    path('.well-known/acme-challenge/lCzY3y0gpnyq4kLsq772c6QAQT7WAqPl8Pdzu81xJFk', app_views.ssl, name='ssl_cert')
 ]
