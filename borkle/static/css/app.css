@@ -8,15 +8,20 @@ body {
   color: #e2e0e0;
 }
 .bg-light a {
-  font-family: "Nerko One";
+  font-family: "Noto Sans JP";
   color: #000000 !important;
   font-weight: bold;
-  font-size: 2.2rem;
 }
 
 .navbar {
   padding-top: 0;
   padding-bottom: 0;
+}
+.navbar a.navbar-brand {
+  font-family: "Nerko One";
+  color: #000000 !important;
+  font-weight: bold;
+  font-size: 2.2rem;
 }
 
 .auto-centered {
@@ -33,7 +38,8 @@ body {
 }
 
 .messages {
-  background-color: #e4ecc4;
+  background-color: #4c4c4a;
+  color: #FFFFFF;
   border-radius: 5px;
   padding: 1rem;
   margin-right: 0.5rem;
@@ -97,7 +103,7 @@ body {
 
 #play-board {
   min-height: 7rem;
-  width: 100%;
+  width: 95%;
 }
 @media (min-width: 768px) {
   #play-board {
@@ -131,6 +137,14 @@ body {
 .big-message {
   font-weight: bold;
   text-align: center;
+  padding: 0.5rem 0;
+}
+.big-message_highlighted {
+  background-color: #fce8a5;
+}
+.big-message_bordered {
+  border-top: 1px solid #bbbbbb;
+  border-bottom: 1px solid #bbbbbb;
 }
 
 .winner-data {
@@ -168,6 +182,8 @@ body {
   border: 1px solid #676767;
   border-radius: 1rem;
   font-weight: bold;
+  padding: 0.5rem;
+  box-shadow: -1px 1px 3px 0px #7d7c7c;
 }
 .game-btn:hover {
   color: #EAEDED;
@@ -210,16 +226,6 @@ body {
   padding-left: 0;
 }
 
-span.span-undo-btn {
-  display: inline-block;
-  width: 4rem;
-}
-
-span.span-score-value {
-  display: inline-block;
-  min-width: 4rem;
-}
-
 table.dice-table_active td {
   height: 6rem;
   width: 6rem;
@@ -249,14 +255,27 @@ img.scored-dice {
 }
 
 div.selected-dice-slot_active {
-  background-color: #e4ecc4;
+  box-shadow: inset 0px -1px 20px 1px #6f9ba2;
   border-radius: 1rem;
   padding: 1rem;
   margin: 0.5rem 0rem;
 }
 
 div#scored-sets-slots {
-  margin-top: 3rem;
+  margin-top: 1rem;
+  box-shadow: inset 0px -1px 20px 1px #6f9ba2;
+  padding: 1rem 0.5rem;
+  border-radius: 10px;
+}
+
+#scoreset_table .as-tr {
+  height: 3.5rem;
+}
+#scoreset_table .scored-dice-images {
+  min-width: 8rem;
+}
+#scoreset_table .span-undo-btn {
+  width: 4rem;
 }
 
 tr.scoreboard_myscore {
@@ -264,12 +283,24 @@ tr.scoreboard_myscore {
 }
 
 tr.scoreboard_currentplayer {
-  background-color: #e4ecc4;
+  box-shadow: inset 0px 0px 12px 0px #f9d553;
 }
 
 tr.player-left-game {
   background-color: #e85757;
   text-align: center;
+}
+
+div#rolled-dice {
+  border-radius: 10px;
+  box-shadow: inset 0px -1px 20px 1px #6f9ba2;
+  padding: 0.2rem;
+  min-height: 18rem;
+  min-width: 12rem;
+}
+
+table#game-button-table {
+  min-height: 18rem;
 }
 
 div#roll-button {
@@ -293,19 +324,21 @@ div#roll-button {
 }
 
 button.scorecard-nav {
-  color: #e2e0e0;
+  color: #FFFFFF;
   height: 16rem;
-  background-color: #e4ecc4;
+  background-color: #4c4c4a;
   width: 1.75rem;
   border: none;
 }
 button.scorecard-nav_next {
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
+  box-shadow: -2px 2px 2px #7d7c7c;
 }
 button.scorecard-nav_prev {
   border-top-left-radius: 5px;
   border-bottom-left-radius: 5px;
+  box-shadow: 2px 2px 2px #7d7c7c;
 }
 
 .leave-game {

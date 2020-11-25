@@ -39,7 +39,7 @@ function setRolledDice(rolledDice, setSelectable, rollHasScore){
 		var diceSlotId = rolledDiceFieldNames[key];
 		var diceCacheID = 'rolled-dice-cache_' + diceValue;
 		var existingImageInSlot = $('img#'+diceSlotId);
-		if (diceValue != null) {
+		if (diceValue != null && diceValue != undefined) {
 			var diceImage = getImageFromCache(diceCacheID);
 			if (existingImageInSlot.length == 0 || !diceImage['src'].includes(existingImageInSlot.attr('src'))) {
 				var needsRefresh = true;
@@ -47,10 +47,7 @@ function setRolledDice(rolledDice, setSelectable, rollHasScore){
 				var needsRefresh = false;
 			}
 			if (needsRefresh == true) {
-				if (existingImageInSlot.length > 0) {
-					existingImageInSlot.remove();
-				}
-
+				existingImageInSlot.remove();
 				var targetDiv = document.getElementById('slot-' + diceSlotId);
 				if (setSelectable && rollHasScore) {
 					diceClass = 'rolled-dice rolled-dice_selectable';
@@ -67,31 +64,6 @@ function setRolledDice(rolledDice, setSelectable, rollHasScore){
 				existingImageInSlot.remove();
 			}
 		}
-	}
-	closeDiceRowsIfEmpty();
-}
-
-function closeDiceRowsIfEmpty() {
-	closeDiceRowIfEmpty(['slot-rolled_dice_1_value', 'slot-rolled_dice_2_value']);
-	closeDiceRowIfEmpty(['slot-rolled_dice_3_value', 'slot-rolled_dice_4_value']);
-	closeDiceRowIfEmpty(['slot-rolled_dice_5_value', 'slot-rolled_dice_6_value']);
-}
-
-function closeDiceRowIfEmpty(rowIds) {
-	var hasDice = false;
-	var parentId = null;
-	for (var key of Object.keys(rowIds)) { 
-		var diceTD = document.getElementById(rowIds[key]);
-		if (diceTD.hasChildNodes('img')) {
-			hasDice = true;
-		}
-		parentId = diceTD.parentElement.id;
-	}
-	var parentTR = $('tr#' + parentId);
-	if (hasDice == false) {
-		toggleElementVisibility(parentTR, 'off');
-	} else {
-		toggleElementVisibility(parentTR, 'on');
 	}
 }
 
@@ -173,7 +145,6 @@ function bindScoreDice() {
 		} else {
 			alert('that is not a score, try something else');
 		}
-		closeDiceRowsIfEmpty();
 	});
 }
 
@@ -247,31 +218,34 @@ function buildScoreSetTable(selectedDiceScore, sourceIds, allowUndo, scoreSetPk)
 		var needsBuild = true;
 	}
 	if ( needsBuild ) {
-		var diceImgCell = document.createElement('td');
-		diceImgCell.append(document.createElement('hr'));
+		var parentTableTD = document.createElement('td');
+		
+		var scoredSetAsTable = document.createElement('div');
+		scoredSetAsTable.setAttribute('class', 'as-table');
+
+		var scoredSetAsTableTr = document.createElement('div');
+		scoredSetAsTableTr.setAttribute('class', 'as-tr');
+
+		scoredSetAsTable.append(scoredSetAsTableTr);
+
 
 		if ( allowUndo && selectedDiceScore.locked == false) {
-			var undoSpan = document.createElement('span');
-			undoSpan.setAttribute('class', 'span-undo-btn');
+			var undoSpan = document.createElement('div');
+			undoSpan.setAttribute('class', 'as-td span-undo-btn');
 			var undoButton = document.createElement('button');
 			undoButton.innerHTML = 'undo';
 			undoButton.setAttribute('class', 'game-btn undo-score-selection');
 			undoSpan.append(undoButton);
-			diceImgCell.append(undoSpan);
+			scoredSetAsTableTr.append(undoSpan);
 			bindUndoScoreSetSelection(undoButton);
 		} else if (allowUndo) {
-			var undoSpan = document.createElement('span');
-			undoSpan.setAttribute('class', 'span-undo-btn');
-			diceImgCell.append(undoSpan);
+			var undoSpan = document.createElement('div');
+			undoSpan.setAttribute('class', 'as-td span-undo-btn');
+			scoredSetAsTableTr.append(undoSpan);
 		}
 
-		var scoredImagesSpan = document.createElement('span');
-		scoredImagesSpan.setAttribute('class', 'scored-dice-images');
-
-		var scoreTextSpan = document.createElement('span');
-		scoreTextSpan.setAttribute('class', 'span-score-value');
-		scoreTextSpan.innerHTML = '<span id="score-value">' + selectedDiceScore.scoreValue + '</span> = ';
-		diceImgCell.append(scoreTextSpan);
+		var scoredImagesSpan = document.createElement('div');
+		scoredImagesSpan.setAttribute('class', 'scored-dice-images as-td');
 
 		for (var key of Object.keys(selectedDiceScore.scorableValues)) {
 			var diceValue = selectedDiceScore.scorableValues[key];
@@ -279,10 +253,17 @@ function buildScoreSetTable(selectedDiceScore, sourceIds, allowUndo, scoreSetPk)
 			diceImage.setAttribute('data-source-slot', sourceIds[key]);
 			scoredImagesSpan.append(diceImage);
 		}
+		scoredSetAsTableTr.append(scoredImagesSpan);
 
-		diceImgCell.append(scoredImagesSpan);
 
-		scoreRow.append(diceImgCell);
+		var scoreTextSpan = document.createElement('div');
+		scoreTextSpan.setAttribute('class', 'span-score-value as-td');
+		scoreTextSpan.innerHTML = '<span id="score-value"> = ' + selectedDiceScore.scoreValue;
+		scoredSetAsTableTr.append(scoreTextSpan);
+		
+		parentTableTD.append(scoredSetAsTable);
+
+		scoreRow.append(parentTableTD);
 		scoreTable.prepend(scoreRow);
 	}
 }

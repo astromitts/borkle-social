@@ -49,20 +49,22 @@
 		</table>
 	</div>
 
-	{# Current Turn Stats #}
-	<div class="hidden centered big-message" id="current-score">You have <span id="current-score-value">0</span> points this turn</div>
-	<div class="hidden centered big-message" id="available-dice">You have <span id="available-dice-value"></span> dice to roll</div>
 
 	{# Last turn message  #}
-	<div class="big-message hidden shrink-at-md" id="last-turn-message"></div>
-
-	{# Borkled turn over message #}
-	<div class="big-message hidden shrink-at-md" id="borkle-message"></div>
+	<div class="big-message big-message_highlighted big-message_bordered hidden shrink-at-md" id="last-turn-message"></div>
 
 	{# Game over winner stats #}
 	<div class="winner-data hidden">
-		<div class="big-message col" id="winner-data"></div>
+		<div class="big-message" id="winner-data"></div>
 	</div>
+
+	{# Current Turn Stats #}
+	<div class="hidden centered big-message" id="current-score">
+		You have <span id="current-score-value">0</span> points this turn<br />You have <span id="available-dice-value"></span> dice to roll
+	</div>
+	{# Borkled turn over message #}
+	<div class="big-message big-message_highlighted hidden shrink-at-md" id="borkle-message"></div>
+
 
 	<div id="play-board" class="as-table  shrink-at-md">
 		{# Roll and end turn buttons #}

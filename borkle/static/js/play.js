@@ -6,6 +6,7 @@ $(document).ready(function playGame(){
 	if ( data['game_over'] == true ) {
 		var autorefresh = false;
 		displayWinner(data['winners']);
+		toggleDiceBoard('off');
 		refreshScoreCard();
 	} else {
 		var autorefresh = true;
@@ -45,6 +46,7 @@ $(document).ready(function playGame(){
 						displayWinner(data['winners']);
 						clearGameMessage('last-turn');
 						clearGameMessage('borkle');
+						toggleDiceBoard('off');
 						clearInterval(gameLoop);
 					} else {
 						var isCurrentPlayer = data['is_current_player'];
@@ -64,9 +66,6 @@ $(document).ready(function playGame(){
 							toggleOpponentTurn('on', data['current_player']);
 							buildAlreadyRolledDice(data['current_rolled_dice']['rolledValues'], false);
 							setCurrentRollScoreSets(data['current_rolled_dice']['scoresets'], false);
-							if ( data['last_turn'] ) {
-								toggleOpponentTurn('on', data['current_player']['player_name'])
-							}
 						}
 					}
 				}

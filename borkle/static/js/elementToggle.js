@@ -93,17 +93,11 @@ function toggleEndTurnButton(visibility) {
 }
 
 function toggleDiceBoard(visibility) {
-	var targetRolledDiceDiv = $('div#rolled-dice');
-	var targetSelectedDiceDiv = $('div#selected-dice');
-	var targetSelectedDiceDiv = $('div#diceboard');
+	var playBoard = $('div#play-board');
 	if (visibility == 'on') {
-		toggleElementVisibility(targetRolledDiceDiv, 'on');
-		toggleElementVisibility(targetSelectedDiceDiv, 'on');
-		toggleElementVisibility(targetSelectedDiceDiv, 'on');
+		toggleElementVisibility(playBoard, 'on');
 	} else {
-		toggleElementVisibility(targetRolledDiceDiv, 'off');
-		toggleElementVisibility(targetSelectedDiceDiv, 'off');
-		toggleElementVisibility(targetSelectedDiceDiv, 'off');
+		toggleElementVisibility(playBoard, 'off');
 	}
 	return visibility;
 }

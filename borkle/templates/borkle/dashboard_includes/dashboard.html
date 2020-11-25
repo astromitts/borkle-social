@@ -16,7 +16,7 @@
 									<h6 class="card-subtitle mb-2 text-muted">{{gp.player.user.username}}</h6>
 					    		{% endif %}
 							{% endfor %}
-					    <a href="{% url 'game_board' game_uuid=game.uuid %}" class="card-link">Go to game</a>
+					    <a href="{% url 'game_board' game_uuid=game.uuid %}" class="card-link"><button class="game-btn">Go to game</button></a>
 					  </div>
 					</div>
 				{% endfor %}
@@ -47,7 +47,7 @@
 								{% endif %}
 							{% endfor %}
 							{% if player == game.created_by %}
-								<a href="{% url 'game_cancel' game_uuid=game.uuid %}"><button class="btn btn-danger">Cancel game</button>
+								<a href="{% url 'game_cancel' game_uuid=game.uuid %}"><button class="game-btn game-btn_red">Cancel game</button>
 							{% endif %}
 						  </div>
 						</div>
@@ -63,9 +63,9 @@
 					    <h5 class="card-title">codename: {{game.code_name}}</h5>
 					    <h6 class="card-subtitle mb-2 text-muted">Invited by {{game.created_by.user.username}}</h6>
 					    <a href="{% url 'game_accept_invitation_link' game_uuid=game.uuid %}" class="card-link">
-					    	<button class="btn btn-success btn-sm">Join Game</button></a>
+					    	<button class="game-btn">Join Game</button></a>
 					    <a href="{% url 'game_decline_invitation_link' game_uuid=game.uuid %}" class="card-link">
-					    	<button class="btn btn-warning btn-sm">Decline Game</a></button>
+					    	<button class="game-btn game-btn_red">Decline Game</button></a>
 					  </div>
 					</div>
 				{% endfor %}
@@ -81,7 +81,7 @@
 							{% for winner in game.winner %}
 					    		<h6 class="card-subtitle mb-2 text-muted">winner: {{winner.username}} {{winner.total_score}} points</h6>
 					    	{% endfor %}
-					    	<a href="{% url 'game_history' game_uuid=game.uuid %}" class="card-link">Score card</a>
+					    	<a href="{% url 'game_history' game_uuid=game.uuid %}" class="card-link"><button class="game-btn">Score card</button></a>
 						</div>
 					</div>
 				{% endfor %}

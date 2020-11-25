@@ -4,7 +4,9 @@ $htag-font-color: #313131;
 $navbrand-font: 'Nerko One';
 $body-font: 'Noto Sans JP';
 
-$game-play-highlight: #e4ecc4;
+$game-play-highlight: #4c4c4a;
+$game-play-highlight-font-color: #FFFFFF;
+
 $game-play-lowlight: #e4ecc4;
 
 $game-button-main: #e4ecc4;
@@ -23,6 +25,12 @@ $game-play-secondary: #e4ecc4;
 
 $gradient-1: #B9D8C2;
 $gradient-2: #9AC2C9;
+
+$button-box-shadow-color: #7d7c7c;
+$dice-board-box-shadow-color: #6f9ba2;
+
+$current-player-color: #f9d553;
+$game-alert-color: #fce8a5;
 
 
 // Small tablets and large smartphones (landscape view)
@@ -46,20 +54,26 @@ body {
 }
 
 
+
 .bg-light {
 	background-color: transparent !important;
 	color: $game-button-text-color;
 	a {
-		font-family: $navbrand-font;
+		font-family: $body-font;
 		color: #000000 !important;
 		font-weight: bold;
-		font-size: 2.2rem;
 	}
 }
 
 .navbar {
 	padding-top: 0;
 	padding-bottom: 0;
+	a.navbar-brand {
+		font-family: $navbrand-font;
+		color: #000000 !important;
+		font-weight: bold;
+		font-size: 2.2rem;
+	}
 }
 .auto-centered {
 	display: inline-block;
@@ -76,6 +90,7 @@ body {
 
 .messages {
 	background-color: $game-play-highlight;
+	color: $game-play-highlight-font-color;
 	border-radius: 5px;
 	padding: 1rem;
 	margin-right: .5rem;
@@ -139,7 +154,7 @@ body {
 
 #play-board {
 	min-height: 7rem;
-	width: 100%;
+	width: 95%;
 	@media (min-width: #{$screen-md-min}) {
 		width: 75%;
 	}
@@ -169,6 +184,14 @@ body {
 .big-message {
 	font-weight: bold;
 	text-align:center;
+	padding: .5rem 0;
+	&_highlighted {
+		background-color: $game-alert-color;
+	}
+	&_bordered {
+	    border-top: 1px solid #bbbbbb;
+	    border-bottom: 1px solid #bbbbbb;
+	}
 }
 
 .winner-data {
@@ -205,6 +228,8 @@ body {
 	border: 1px solid $game-button-main-border;
 	border-radius: 1rem;
 	font-weight: bold;
+	padding: .5rem;
+	box-shadow: -1px 1px 3px 0px $button-box-shadow-color;
 	&:hover {
 		color: $game-play-gray;
 		background-color: $game-button-main-hover;
@@ -247,16 +272,6 @@ body {
 	padding-left: 0;
 }
 
-span.span-undo-btn {
-	display: inline-block;
-	width: 4rem;
-}
-
-span.span-score-value {
-	display: inline-block;
-	min-width: 4rem;
-}
-
 table.dice-table_active td {
 	height: 6rem;
 	width: 6rem;
@@ -287,14 +302,29 @@ img.scored-dice {
 }
 
 div.selected-dice-slot_active {
-	background-color: $game-play-lowlight;
+	box-shadow: inset 0px -1px 20px 1px $dice-board-box-shadow-color;
 	border-radius: 1rem;
 	padding: 1rem;
 	margin: .5rem 0rem;
 }
 
 div#scored-sets-slots {
-	margin-top: 3rem;
+	margin-top: 1rem;
+	box-shadow: inset 0px -1px 20px 1px $dice-board-box-shadow-color;    
+	padding: 1rem .5rem;
+    border-radius: 10px;
+}
+
+#scoreset_table {
+	.as-tr {
+		height: 3.5rem;
+	}
+	.scored-dice-images {
+  		min-width: 8rem;
+	}
+	.span-undo-btn {
+		width: 4rem;
+	}
 }
 
 tr.scoreboard_myscore {
@@ -302,11 +332,25 @@ tr.scoreboard_myscore {
 }
 
 tr.scoreboard_currentplayer {
-	background-color: $game-play-highlight;
+	box-shadow: inset 0px 0px 12px 0px $current-player-color;
 }
+
 tr.player-left-game {
 	background-color: $game-button-danger;
 	text-align: center;
+}
+
+
+div#rolled-dice {    
+	border-radius: 10px;
+    box-shadow: inset 0px -1px 20px 1px $dice-board-box-shadow-color;
+    padding: .2rem;
+    min-height: 18rem;
+    min-width: 12rem;
+}
+
+table#game-button-table {
+	min-height: 18rem;
 }
 
 div#roll-button {
@@ -335,18 +379,20 @@ div#roll-button {
 }
 
 button.scorecard-nav {
-	color: $game-button-text-color;
+	color: $game-play-highlight-font-color;
 	height: 16rem;
-	background-color: $game-play-secondary;
+	background-color: $game-play-highlight;
 	width: 1.75rem;
 	border: none;
 	&_next {
 		border-top-right-radius: 5px;
 		border-bottom-right-radius: 5px;
+		box-shadow: -2px 2px 2px $button-box-shadow-color;
 	}
 	&_prev {
 		border-top-left-radius: 5px;
 		border-bottom-left-radius: 5px;
+		box-shadow: 2px 2px 2px $button-box-shadow-color;
 	}
 }
 
