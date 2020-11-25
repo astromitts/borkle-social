@@ -23,6 +23,7 @@ $(document).ready(function playGame(){
 		bindScoreDice();
 		bindEndTurn(practiceGame);
 		refreshScoreCard();
+		refreshScoreBoard();
 		toggleCurrentTurnToolsOff();
 		var overrideRollButton = false;
 		if (data['current_rolled_dice']['rolledValues'].length > 0 && !isAllNull(data['current_rolled_dice']['rolledValues'])) {
@@ -71,6 +72,7 @@ $(document).ready(function playGame(){
 							toggleCurrentTurnToolsOff();		
 						}
 						toggleScoreCards('on');
+						refreshScoreCard();
 						var isCurrentPlayer = data['is_current_player'];
 						
 						if (isCurrentPlayer) {
@@ -86,6 +88,7 @@ $(document).ready(function playGame(){
 						} else {
 							currentPlayerTriggered = false;	
 							toggleOpponentTurn('on', data['current_player']);
+							toggleCurrentTurnToolsOff();
 							buildAlreadyRolledDice(data['current_rolled_dice']['rolledValues'], false);
 							setCurrentRollScoreSets(data['current_rolled_dice']['scoresets'], false);
 						}

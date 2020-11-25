@@ -254,10 +254,10 @@ function refreshScoreCard() {
 						}
 					}
 				});
+				latestScoreCardInput.setAttribute('value', latestScoreCardTurn);
 			});
 		}
 	});
-	latestScoreCardInput.setAttribute('value', latestScoreCardTurn);
 }
 
 function initiateTurn(overrideRollButton) {

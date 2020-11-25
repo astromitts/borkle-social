@@ -26,14 +26,7 @@
 	</span>	
 	<div id="scoreboard">
 		<div class="game-header">
-			{% if game.game_type == 'practice' %}
-				<h1>Practice Game</h1>
-				<h1>{{game.code_name}}</h1>
-			{% else %}
-				<h1>Codename</h1>
-				<h1>{{game.code_name}}</h1>
-				<h5>Players</h5>
-			{% endif %}
+			<h1>Codename: {{game.code_name}}</h1>
 		</div>
 	</div>
 	<div>

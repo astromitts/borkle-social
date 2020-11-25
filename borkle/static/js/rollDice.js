@@ -41,13 +41,14 @@ function setRolledDice(rolledDice, setSelectable, rollHasScore){
 		var diceCacheID = 'rolled-dice-cache_' + diceValue;
 		var existingImageInSlot = $('img#'+diceSlotId);
 		if (diceValue != null && diceValue != undefined) {
-			var diceImage = getImageFromCache(diceCacheID);
-			if (existingImageInSlot.length == 0 || !diceImage['src'].includes(existingImageInSlot.attr('src'))) {
+			var cacheImageSrc = $('img#' + diceCacheID).attr('src');
+			if (existingImageInSlot.length == 0 || !diceImage['src'].includes(cacheImageSrc)) {
 				var needsRefresh = true;
 			} else {
 				var needsRefresh = false;
 			}
 			if (needsRefresh == true) {
+				var diceImage = getImageFromCache(diceCacheID);
 				existingImageInSlot.remove();
 				var targetDiv = document.getElementById('slot-' + diceSlotId);
 				if (setSelectable && rollHasScore) {
