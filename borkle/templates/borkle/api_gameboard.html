@@ -136,16 +136,18 @@
 		<div class="as-tr">
 			<div class="as-td">
 				<hr />
-				<h5>Score Cards</h5>
+				<h5>Score Card{% if game.gameplayer_set.count > 1 %}s{% endif %}</h5>
 			</div>
 		</div>
 	</div>
 		
 	<div class="as-table shrink-at-md">
 		<div class="as-tr">
-			<div class="as-td as-td_scorecard-nav">
-				<button id="scorecard-nav_prev" class="scorecards-td scorecard-nav scorecard-nav_prev" data-target-attr='data-prev-player'><</button>
-			</div>
+			{% if game.gameplayer_set.count > 1 %}
+				<div class="as-td as-td_scorecard-nav">
+					<button id="scorecard-nav_prev" class="scorecards-td scorecard-nav scorecard-nav_prev" data-target-attr='data-prev-player'><</button>
+				</div>
+			{% endif %}
 			<div class="as-td">
 				{% for player in game.gameplayer_set.all %}
 					<div id="score-card-log_{{player.username}}" class="{% if forloop.first %} scorecard-nav_active{% else %} hidden{% endif %}" id="score-card-log_{{player.username}}" data-next-player="" data-prev-player="">
@@ -158,9 +160,12 @@
 					</div>
 				{% endfor %}
 			</div>
-			<div class="as-td align-right">
-				<button id="scorecard-nav_next" class="scorecard-nav scorecard-nav_next" data-target-attr='data-next-player'>></button>
-			</div>
+
+			{% if game.gameplayer_set.count > 1 %}
+				<div class="as-td align-right">
+					<button id="scorecard-nav_next" class="scorecard-nav scorecard-nav_next" data-target-attr='data-next-player'>></button>
+				</div>
+			{% endif %}
 		</div>
 	</div>
 
