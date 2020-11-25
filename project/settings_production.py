@@ -17,3 +17,8 @@ DATABASES = {
 ALLOWED_HOSTS = ['borkle-game.herokuapp.com', 'herokuapp.com', ]
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'borkle/static'),
+)
