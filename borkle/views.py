@@ -230,7 +230,3 @@ class GameStatusView(BorkleProtectedGameView):
         else:
             template = loader.get_template('borkle/game_waiting_players.html')
         return HttpResponse(template.render(context, request))
-
-
-def ssl(request):
-    return HttpResponse("lCzY3y0gpnyq4kLsq772c6QAQT7WAqPl8Pdzu81xJFk.ig6-T3eRjnt8lAJVxvgmOWCLcwWaLtDmCqIKdhcoCzw", content_type='text/plain')
