@@ -89,6 +89,16 @@ body {
   min-height: 7rem;
   width: 100%;
 }
+@media (min-width: 768px) {
+  #play-board {
+    width: 75%;
+  }
+}
+@media (min-width: 768px) {
+  #play-board {
+    width: 60%;
+  }
+}
 
 .as-table {
   display: table;
@@ -103,6 +113,9 @@ body {
 }
 .as-table .as-td_scorecard-nav {
   width: 1.75rem;
+}
+.as-table .as-td_w70 {
+  width: 70%;
 }
 
 .big-message {
@@ -287,6 +300,20 @@ button.scorecard-nav_prev {
 .leave-game {
   margin-top: 2rem;
   text-align: center;
+}
+
+.shrink-at-md {
+  margin: 0 auto;
+}
+@media (min-width: 768px) {
+  .shrink-at-md {
+    width: 75%;
+  }
+}
+@media (min-width: 768px) {
+  .shrink-at-md {
+    width: 60%;
+  }
 }
 
 /*# sourceMappingURL=app.css.map */

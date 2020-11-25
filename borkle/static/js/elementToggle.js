@@ -128,6 +128,26 @@ function toggleOpponentScoreSet(visibility) {
 	return visibility;
 }
 
+function setGameMessage(messageText, selector) {
+	var gameMessageRow = $('div#'+selector+'-message');
+	var gameMessageDiv = $('div#'+selector+'-message');
+	if (gameMessageDiv.html() != messageText ){
+		gameMessageDiv.html(messageText);
+	}
+	toggleElementVisibility(gameMessageDiv, 'on');
+	toggleElementVisibility(gameMessageRow, 'on');
+	return 'on';
+}
+
+function clearGameMessage(selectId) {
+	var gameMessageRow = $('div#'+selectId+'-message');
+	var gameMessageDiv = $('div#'+selectId+'-message');
+	$('div#'+selectId+'-message').html('');
+	toggleElementVisibility(gameMessageDiv, 'off');
+	toggleElementVisibility(gameMessageRow, 'off');
+	return 'off';
+}
+
 function toggleElementVisibility(target, visibility) {
 	if (visibility == 'on' && target.hasClass('hidden')) {
 		target.removeClass('hidden');

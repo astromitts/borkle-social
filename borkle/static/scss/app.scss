@@ -19,6 +19,21 @@ $gradient-1: #B9D8C2;
 $gradient-2: #9AC2C9;
 
 
+// Small tablets and large smartphones (landscape view)
+$screen-sm-min: 576px;
+
+// Small tablets (portrait view)
+$screen-md-min: 768px;
+
+// Small tablets (portrait view)
+$screen-md-landscape-min: 768px;
+
+// Tablets and small desktops
+$screen-lg-min: 992px;
+
+// Large tablets and desktops
+$screen-xl-min: 1200px;
+
 body {
 	background-image: linear-gradient(to right, $gradient-2, $gradient-2, $gradient-1, $gradient-2, $gradient-2);
 }
@@ -109,6 +124,12 @@ body {
 #play-board {
 	min-height: 7rem;
 	width: 100%;
+	@media (min-width: #{$screen-md-min}) {
+		width: 75%;
+	}
+	@media (min-width: #{$screen-md-min}) {
+		width: 60%;
+	}
 }
 
 .as-table {
@@ -122,6 +143,9 @@ body {
 		vertical-align: top;
 		&_scorecard-nav{
 			width: 1.75rem;
+		}
+		&_w70 {
+			width: 70%;
 		}
 	}
 }
@@ -312,4 +336,14 @@ button.scorecard-nav {
 .leave-game {
 	margin-top: 2rem;
 	text-align: center;
+}
+
+.shrink-at-md {
+	margin: 0 auto;
+	@media (min-width: #{$screen-md-min}) {
+		width: 75%;
+	}
+	@media (min-width: #{$screen-md-min}) {
+		width: 60%;
+	}
 }

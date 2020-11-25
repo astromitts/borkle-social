@@ -30,26 +30,6 @@ function doNonAsyncGet(targetUrl) {
 	return resultData;
 }
 
-function setGameMessage(messageText, selector) {
-	var gameMessageRow = $('div#row-'+selector+'-message');
-	var gameMessageDiv = $('div#'+selector+'-message');
-	if (gameMessageDiv.html() != messageText ){
-		gameMessageDiv.html(messageText);
-	}
-	toggleElementVisibility(gameMessageDiv, 'on');
-	toggleElementVisibility(gameMessageRow, 'on');
-	return 'on';
-}
-
-function clearGameMessage(selectId) {
-	var gameMessageRow = $('div#row-'+selectId+'-message');
-	var gameMessageDiv = $('div#'+selectId+'-message');
-	$('div#'+selectId+'-message').html('');
-	toggleElementVisibility(gameMessageDiv, 'off');
-	toggleElementVisibility(gameMessageRow, 'off');
-	return 'off';
-}
-
 function getImageFromCache(imageId) {
 	var imgSource = document.getElementById(imageId);
 	var imgClone = imgSource.cloneNode();

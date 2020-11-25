@@ -24,7 +24,7 @@
 		<input type="hidden" id="api-scorecardsetup-url" value="{% url 'game_api' game_uuid=game.uuid api_target='scorecardsetup' %}" />
 		<input type="hidden" id="latest-scorecard-turn" value="0" />
 	</span>	
-	<div class="row" id="scoreboard">
+	<div id="scoreboard">
 		<div class="game-header">
 			{% if game.game_type == 'practice' %}
 				<h1>Practice Game</h1>
@@ -36,8 +36,8 @@
 			{% endif %}
 		</div>
 	</div>
-	<div clas="row">
-		<table class="table" id="scoreboard">
+	<div>
+		<table class="table shrink-at-md" id="scoreboard">
 			{% for player in game.gameplayer_set.all %}
 			<tr id="scoreboard-player_{{player.username}}" data-player-name="{{player.username}}" class="player-score {% if player == gameplayer %}scoreboard_myscore {% endif %}">
 				<td>{{player.player.user.username}}:</td>
@@ -54,21 +54,17 @@
 	<div class="hidden centered big-message" id="available-dice">You have <span id="available-dice-value"></span> dice to roll</div>
 
 	{# Last turn message  #}
-	<div class="hidden" id="row-last-turn-message">
-		<div class="big-message hidden" id="last-turn-message"></div>
-	</div>
+	<div class="big-message hidden shrink-at-md" id="last-turn-message"></div>
 
 	{# Borkled turn over message #}
-	<div class="hidden" id="row-borkle-message">
-		<div class="big-message hidden" id="borkle-message"></div>
-	</div>
+	<div class="big-message hidden shrink-at-md" id="borkle-message"></div>
 
 	{# Game over winner stats #}
 	<div class="winner-data hidden">
 		<div class="big-message col" id="winner-data"></div>
 	</div>
 
-	<div id="play-board" class="as-table">
+	<div id="play-board" class="as-table  shrink-at-md">
 		{# Roll and end turn buttons #}
 		<div class="as-tr">
 			<div class="as-td col-game-buttons">
@@ -111,7 +107,7 @@
 			<div id="selected-dice-slot" class="selected-dice-slot_active">
 				<div class="as-table">
 					<div class="as-tr">
-						<div class="as-td">
+						<div class="as-td as-td_w70">
 							<div class="" id="selected-dice-images"></div>
 						</div>
 				         <div class="as-td">
@@ -134,7 +130,7 @@
 	</div>
 
 	{# Whole game scorecards #}
-	<div class="as-table">
+	<div class="as-table shrink-at-md">
 		<div class="as-tr">
 			<div class="as-td">
 				<hr />
@@ -143,7 +139,7 @@
 		</div>
 	</div>
 		
-	<div class="as-table">
+	<div class="as-table shrink-at-md">
 		<div class="as-tr">
 			<div class="as-td as-td_scorecard-nav">
 				<button id="scorecard-nav_prev" class="scorecards-td scorecard-nav scorecard-nav_prev" data-target-attr='data-prev-player'><</button>
