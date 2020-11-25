@@ -3,11 +3,6 @@ from project.settings import *  # noqa
 
 DEBUG = False
 
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'borkle/static'),
-)
-
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
