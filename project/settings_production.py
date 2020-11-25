@@ -14,7 +14,7 @@ DATABASES = {
     }
 }
 
-ALLOWED_HOSTS = ['borkle-game.herokuapp.com', 'herokuapp.com', 'borkle.app']
+ALLOWED_HOSTS = ['borkle-game.herokuapp.com', 'herokuapp.com', 'www.borkle.app']
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
