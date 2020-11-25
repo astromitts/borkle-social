@@ -1,19 +1,21 @@
-$nav-color: #608DAD;
-$header-font-color: #676767;
+$nav-color: transparent;
+$htag-font-color: #313131;
 
-$game-play-highlight: #FFCB47;
-$game-play-lowlight: #FFEBB8;
+$game-play-highlight: #e4ecc4;
+$game-play-lowlight: #e4ecc4;
 
-$game-button-main: $nav-color;
-$game-button-main-border: #45B39D;
+$game-button-main: #292929;
+$game-button-main-border: #676767;
 $game-button-main-hover: #0E6655;
 $game-play-gray: #EAEDED;
 
-$game-play-danger: #F37272;
-$game-play-danger-border: #442522;
-$game-play-danger-hover: $game-play-highlight;
+$game-button-danger: #e85757;
+$game-button-danger-border: #676767;
+$game-button-danger-hover: $game-play-highlight;
 
-$game-play-secondary: $nav-color;
+$game-button-text-color: #e2e0e0;
+
+$game-play-secondary: #292929;
 
 $gradient-1: #B9D8C2;
 $gradient-2: #9AC2C9;
@@ -38,14 +40,14 @@ body {
 	background-image: linear-gradient(to right, $gradient-2, $gradient-2, $gradient-1, $gradient-2, $gradient-2);
 }
 
-#main-content {
-	margin-top: .6rem;
-}
 
-.bg-dark {
-	background-color: $nav-color !important;
+.bg-light {
+	background-color: transparent !important;
+	color: $game-button-text-color;
+	a {
+		color: #000000 !important;
+	}
 }
-
 .auto-centered {
 	display: inline-block;
 	margin: auto;
@@ -74,12 +76,12 @@ body {
 .dashboard {
 	padding: .5rem;
 	h2 { 
-		color: $header-font-color;
+		color: $htag-font-color;
 		font-size: 1rem;
 		text-align: right;
 	}
 	h3 {
-		color: $header-font-color;
+		color: $htag-font-color;
 		font-size: 1.1rem;
 	}
 }
@@ -101,7 +103,7 @@ body {
     width: 100%;
     h1 {
 		font-size: 1rem;
-		color: $header-font-color;
+		color: $htag-font-color;
 	}
 }
 
@@ -184,7 +186,7 @@ body {
 }
 
 .game-btn {
-	color: #EAEDED;
+	color: $game-button-text-color;
 	background-color: $game-button-main;
 	border: 1px solid $game-button-main-border;
 	border-radius: 1rem;
@@ -204,11 +206,11 @@ body {
 		}
 	}
 	&_red{
-		background-color: $game-play-danger;
-		border: 1px solid $game-play-danger-border;
+		background-color: $game-button-danger;
+		border: 1px solid $game-button-danger-border;
 		&:hover{
-			background-color: $game-play-danger-hover;
-			border: 1px solid $game-play-danger-border;
+			background-color: $game-button-danger-hover;
+			border: 1px solid $game-button-danger-border;
 		}
 	}
 	&_long {
@@ -289,7 +291,7 @@ tr.scoreboard_currentplayer {
 	background-color: $game-play-highlight;
 }
 tr.player-left-game {
-	background-color: $game-play-danger;
+	background-color: $game-button-danger;
 	text-align: center;
 }
 
@@ -319,6 +321,7 @@ div#roll-button {
 }
 
 button.scorecard-nav {
+	color: $game-button-text-color;
 	height: 16rem;
 	background-color: $game-play-secondary;
 	width: 1.75rem;

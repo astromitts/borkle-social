@@ -2,12 +2,12 @@ body {
   background-image: linear-gradient(to right, #9AC2C9, #9AC2C9, #B9D8C2, #9AC2C9, #9AC2C9);
 }
 
-#main-content {
-  margin-top: 0.6rem;
+.bg-light {
+  background-color: transparent !important;
+  color: #e2e0e0;
 }
-
-.bg-dark {
-  background-color: #608DAD !important;
+.bg-light a {
+  color: #000000 !important;
 }
 
 .auto-centered {
@@ -24,7 +24,7 @@ body {
 }
 
 .messages {
-  background-color: #FFCB47;
+  background-color: #e4ecc4;
   border-radius: 5px;
   padding: 1rem;
   margin-right: 0.5rem;
@@ -39,12 +39,12 @@ body {
   padding: 0.5rem;
 }
 .dashboard h2 {
-  color: #676767;
+  color: #313131;
   font-size: 1rem;
   text-align: right;
 }
 .dashboard h3 {
-  color: #676767;
+  color: #313131;
   font-size: 1.1rem;
 }
 
@@ -66,7 +66,7 @@ body {
 }
 .game-header h1 {
   font-size: 1rem;
-  color: #676767;
+  color: #313131;
 }
 
 #game-container {
@@ -153,16 +153,16 @@ body {
 }
 
 .game-btn {
-  color: #EAEDED;
-  background-color: #608DAD;
-  border: 1px solid #45B39D;
+  color: #e2e0e0;
+  background-color: #292929;
+  border: 1px solid #676767;
   border-radius: 1rem;
   font-weight: bold;
 }
 .game-btn:hover {
   color: #EAEDED;
   background-color: #0E6655;
-  border: 1px solid #45B39D;
+  border: 1px solid #676767;
   border-radius: 1rem;
 }
 .game-btn_square {
@@ -174,12 +174,12 @@ body {
   height: 5rem;
 }
 .game-btn_red {
-  background-color: #F37272;
-  border: 1px solid #442522;
+  background-color: #e85757;
+  border: 1px solid #676767;
 }
 .game-btn_red:hover {
-  background-color: #FFCB47;
-  border: 1px solid #442522;
+  background-color: #e4ecc4;
+  border: 1px solid #676767;
 }
 .game-btn_long {
   margin: 0 auto;
@@ -239,7 +239,7 @@ img.scored-dice {
 }
 
 div.selected-dice-slot_active {
-  background-color: #FFEBB8;
+  background-color: #e4ecc4;
   border-radius: 1rem;
   padding: 1rem;
   margin: 0.5rem 0rem;
@@ -254,11 +254,11 @@ tr.scoreboard_myscore {
 }
 
 tr.scoreboard_currentplayer {
-  background-color: #FFCB47;
+  background-color: #e4ecc4;
 }
 
 tr.player-left-game {
-  background-color: #F37272;
+  background-color: #e85757;
   text-align: center;
 }
 
@@ -283,8 +283,9 @@ div#roll-button {
 }
 
 button.scorecard-nav {
+  color: #e2e0e0;
   height: 16rem;
-  background-color: #608DAD;
+  background-color: #292929;
   width: 1.75rem;
   border: none;
 }
