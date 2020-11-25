@@ -79,7 +79,7 @@ class GameStatusApi(BorkleProtectedGameView):
             'current_score': current_turn.current_score,
             'available_dice_count': current_turn.available_dice_count,
             'last_turn': self.game.last_turn and not self.game.current_player.had_last_turn,
-            'scoresets': self._format_scoresets(current_turn.scoreset_set.order_by('-pk').all()),
+            'scoresets': self._format_scoresets(current_turn.scoreset_set.order_by('pk').all()),
             'rolledValues': current_turn.scorable_values,
             'scoredFields': current_turn.scorable_fields
         }

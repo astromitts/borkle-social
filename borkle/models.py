@@ -359,6 +359,7 @@ class Turn(models.Model):
         self.save()
 
     def set_roll_dice(self, rolled_dice):
+        self.scoreset_set.all().update(locked=True)
         for dice_field, value in rolled_dice.items():
             setattr(self, dice_field, value)
         self.save()

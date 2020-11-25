@@ -6,6 +6,7 @@ function bindRollDice() {
 		clearRolledDice(targetDivPrefix);
 		toggleBorkleMessage('off');
 		toggleRollDiceButton('off');
+		toggleEndTurnButton('on');
 
 		clearUndoButtons();
 		var diceAmount = parseInt($(this).attr('data-dice-count'));

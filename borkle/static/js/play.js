@@ -17,13 +17,16 @@ $(document).ready(function playGame(){
 		refreshScoreCard();
 		toggleCurrentTurnToolsOff();
 		var overrideRollButton = false;
-		//if (data['current_rolled_dice']['rolledValues'].length > 0 && !isAllNull(data['current_rolled_dice']['rolledValues'])) {
-		//	buildAlreadyRolledDice(data['current_rolled_dice']['rolledValues'], true);
-		//	setCurrentRollScoreSets(data['current_rolled_dice']['scoresets'], true);
-		//	var overrideRollButton = false;
-		//	var currentPlayerTriggered = true;
-		//	//toggleCurrentTurnToolsOff();
-		//}
+		if (data['current_rolled_dice']['rolledValues'].length > 0 && !isAllNull(data['current_rolled_dice']['rolledValues'])) {
+			buildAlreadyRolledDice(data['current_rolled_dice']['rolledValues'], true);
+			setCurrentRollScoreSets(data['current_rolled_dice']['scoresets'], true);
+			var overrideRollButton = false;
+			var currentPlayerTriggered = true;
+			toggleEndTurnButton('on');
+			if (data['current_rolled_dice']['scoresets'].length > 0) {
+				toggleRollDiceButton('on');
+			}
+		}
 	}
 	getPlayerCardData();
 	bindScoreCardNav();
