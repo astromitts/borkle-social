@@ -163,8 +163,8 @@ body {
 }
 
 .game-btn {
-  color: #e2e0e0;
-  background-color: #292929;
+  color: #000000;
+  background-color: #e4ecc4;
   border: 1px solid #676767;
   border-radius: 1rem;
   font-weight: bold;
@@ -295,7 +295,7 @@ div#roll-button {
 button.scorecard-nav {
   color: #e2e0e0;
   height: 16rem;
-  background-color: #292929;
+  background-color: #e4ecc4;
   width: 1.75rem;
   border: none;
 }

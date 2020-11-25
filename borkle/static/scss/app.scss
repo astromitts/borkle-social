@@ -7,7 +7,8 @@ $body-font: 'Noto Sans JP';
 $game-play-highlight: #e4ecc4;
 $game-play-lowlight: #e4ecc4;
 
-$game-button-main: #292929;
+$game-button-main: #e4ecc4;
+$game-button-main-text: #000000;
 $game-button-main-border: #676767;
 $game-button-main-hover: #0E6655;
 $game-play-gray: #EAEDED;
@@ -18,7 +19,7 @@ $game-button-danger-hover: $game-play-highlight;
 
 $game-button-text-color: #e2e0e0;
 
-$game-play-secondary: #292929;
+$game-play-secondary: #e4ecc4;
 
 $gradient-1: #B9D8C2;
 $gradient-2: #9AC2C9;
@@ -199,7 +200,7 @@ body {
 }
 
 .game-btn {
-	color: $game-button-text-color;
+	color: $game-button-main-text;
 	background-color: $game-button-main;
 	border: 1px solid $game-button-main-border;
 	border-radius: 1rem;
