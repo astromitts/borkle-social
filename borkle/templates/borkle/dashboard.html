@@ -7,8 +7,9 @@
 
 {% block main_content %}
 	<input type="hidden" id="refreshurl" value="{% url 'dashboard_refresh' %}" />
-	<div class="dashboard">
+		<div class="dashboard">
 		<h2>Welcome, {{user.username}}</h2>
+		<div id="dashboard-games">
 		{% include 'borkle/dashboard_includes/dashboard.html' with player=player %}
 	</div>
 {% endblock %}

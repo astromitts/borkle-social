@@ -17,7 +17,8 @@ class GameStatusApi(BorkleProtectedGameView):
                     'pk': player.pk,
                     'username': player.username,
                     'score': player.total_score,
-                    'current_player': player == self.game.current_player
+                    'current_player': player == self.game.current_player,
+                    'ready': player.ready,
                 }
             )
         return scoreboard
@@ -133,12 +134,12 @@ class GameStatusApi(BorkleProtectedGameView):
         if kwargs['api_target'] == 'gameinfo':
             if self.game.status == 'over':
                 data = {
-                    'game_over': self.game.status == 'over',
+                    'game_status': self.game.status,
                     'winners': self._format_winner(),
                 }
-            else:
+            elif self.game.all_players_ready:
                 data = {
-                    'game_over': self.game.status == 'over',
+                    'game_status': self.game.status,
                     'practice_game': self.game.game_type == 'practice',
                     'is_current_player': self.is_current_player,
                     'last_turn': self.game.last_turn,
@@ -151,6 +152,13 @@ class GameStatusApi(BorkleProtectedGameView):
                     'current_score_sets': self._format_scoresets(self.game.current_player.current_turn.scoreset_set.order_by('-pk').all()),
                     'available_dice_count': self.game.current_player.current_turn.available_dice_count,
                 }
+            else:
+                data = {
+                    'game_status': self.game.status,
+                    'practice_game': self.game.game_type == 'practice',
+                    'player_names': self._scoreboard()
+                }
+
         elif kwargs['api_target'] == 'scorecardsetup':
             data = {'scorecards': self._player_scorecards()}
 

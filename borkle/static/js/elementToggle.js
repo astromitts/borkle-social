@@ -122,6 +122,16 @@ function toggleOpponentScoreSet(visibility) {
 	return visibility;
 }
 
+function toggleScoreCards(visibility) {
+		var targetDiv = $('.scorecard-toggle');
+	if ( visibility == 'on' ){
+		toggleElementVisibility(targetDiv, 'on');
+	} else {
+		toggleElementVisibility(targetDiv, 'off');
+	}
+	return visibility;
+}
+
 function setGameMessage(messageText, selector) {
 	var gameMessageRow = $('div#'+selector+'-message');
 	var gameMessageDiv = $('div#'+selector+'-message');

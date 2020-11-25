@@ -20,6 +20,8 @@ class Player(models.Model):
         gameplayer = GamePlayer.objects.get(player=self, game=game)
         gameplayer.ready = True
         gameplayer.save()
+        if game.all_players_ready:
+            game.start_game()
 
     def decline_game(self, game):
         gameplayer = GamePlayer.objects.get(player=self, game=game)

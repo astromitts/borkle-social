@@ -3,13 +3,21 @@ $(document).ready(function playGame(){
 	var data = checkGameData(false);
 	var currentPlayerTriggered = false;
 	
-	if ( data['game_over'] == true ) {
+	var stillWaiting = true;
+	if ( data['game_status'] == 'over' ) {
+		var stillWaiting = false;
 		var autorefresh = false;
 		displayWinner(data['winners']);
 		toggleDiceBoard('off');
 		refreshScoreCard();
+	} else if ( data['game_status'] == 'waiting' ) {
+		var autorefresh = true;
+		refreshScoreBoard();
+		toggleDiceBoard('off');
+		toggleScoreCards('off');
 	} else {
 		var autorefresh = true;
+		var stillWaiting = false;
 		var practiceGame = data['practice_game'];
 		bindRollDice();
 		bindScoreDice();
@@ -43,7 +51,7 @@ $(document).ready(function playGame(){
 				dataType: 'json',
 				success: function setData(data) {
 					resultData = data;	
-					if ( data['game_over'] ) {
+					if ( data['game_status'] == 'over' ) {
 						var autorefresh = false;
 						endTurn();
 						displayWinner(data['winners']);
@@ -51,11 +59,23 @@ $(document).ready(function playGame(){
 						clearGameMessage('borkle');
 						toggleDiceBoard('off');
 						clearInterval(gameLoop);
-					} else {
+					} else if (data['game_status'] == 'active') {
+						if ( stillWaiting == true ) {
+							refreshScoreBoard();
+							toggleDiceBoard('on');
+							stillWaiting = false;
+							bindRollDice();
+							bindScoreDice();
+							bindEndTurn(false);
+							refreshScoreCard();
+							toggleCurrentTurnToolsOff();		
+						}
+						toggleScoreCards('on');
 						var isCurrentPlayer = data['is_current_player'];
+						
 						if (isCurrentPlayer) {
 							if (!currentPlayerTriggered) {
-								refreshScoreboard();
+								refreshScoreBoard();
 								initiateTurn(overrideRollButton);
 								currentPlayerTriggered = true;
 								overrideRollButton = false;
@@ -65,7 +85,6 @@ $(document).ready(function playGame(){
 							}
 						} else {
 							currentPlayerTriggered = false;	
-							//toggleCurrentTurnToolsOff();	
 							toggleOpponentTurn('on', data['current_player']);
 							buildAlreadyRolledDice(data['current_rolled_dice']['rolledValues'], false);
 							setCurrentRollScoreSets(data['current_rolled_dice']['scoresets'], false);

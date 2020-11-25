@@ -115,7 +115,7 @@ class InitializeDistributedGame(BorkleBaseView):
                     invited_players.append(player)
 
             game, game_player = Game.create(max_score=max_score, invited_players=invited_players, initial_player=self.player)
-            return redirect(reverse('dashboard'))
+            return redirect(reverse('game_board', kwargs={'game_uuid': game.uuid}))
 
         template = loader.get_template('borkle/generic_form.html')
         context = {
@@ -167,7 +167,7 @@ class InitializeLocalGame(BorkleBaseView):
 class JoinGameView(BorkleProtectedGameView):
     def get(self, request, *args, **kwargs):
         self.player.join_game(self.game)
-        return redirect(reverse('dashboard'))
+        return redirect(reverse('game_board', kwargs={'game_uuid': self.game.uuid}))
 
 
 class DeclineGameView(BorkleProtectedGameView):

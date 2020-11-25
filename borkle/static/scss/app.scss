@@ -331,8 +331,13 @@ tr.scoreboard_myscore {
 	font-weight: bold;
 }
 
-tr.scoreboard_currentplayer {
-	box-shadow: inset 0px 0px 12px 0px $current-player-color;
+tr.scoreboard {
+	&_currentplayer {
+		box-shadow: inset 0px 0px 12px 0px $current-player-color;
+	}
+	&_waiting {
+		color: #BBBBBB;
+	}
 }
 
 tr.player-left-game {

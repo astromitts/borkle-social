@@ -285,6 +285,9 @@ tr.scoreboard_myscore {
 tr.scoreboard_currentplayer {
   box-shadow: inset 0px 0px 12px 0px #f9d553;
 }
+tr.scoreboard_waiting {
+  color: #BBBBBB;
+}
 
 tr.player-left-game {
   background-color: #e85757;

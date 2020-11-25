@@ -119,7 +119,7 @@ function endTurn() {
 	$('div#scored-sets').html('');
 	toggleCurrentTurnToolsOff();
 	clearGameMessage();
-	refreshScoreboard();
+	refreshScoreBoard();
 	updateTurnScore(0);
 }
 
@@ -164,11 +164,11 @@ function displayWinner(winnerData) {
 }
 
 
-function refreshScoreboard() {
-	var refreshScoreboardUrl = $('input#api-scoreboard-url').val();
+function refreshScoreBoard() {
+	var refreshScoreBoardUrl = $('input#api-scoreboard-url').val();
 	$.ajax({
 		method: 'GET',
-		url: refreshScoreboardUrl,
+		url: refreshScoreBoardUrl,
 		dataType: 'json',
 		success: function (data) {
 			$('tr.player-score').each(function checkIfPlayerLeft(){
@@ -190,6 +190,12 @@ function refreshScoreboard() {
 					playerRow.addClass('scoreboard_currentplayer');
 				} else {
 					playerRow.removeClass('scoreboard_currentplayer');
+				}
+
+				if( player['ready'] == true ) {
+					playerRow.removeClass('scoreboard_waiting');
+				} else {
+					playerRow.addClass('scoreboard_waiting');
 				}
 			});
 		}
