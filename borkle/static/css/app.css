@@ -171,7 +171,7 @@ body {
 }
 .game-btn:hover {
   color: #EAEDED;
-  background-color: #0E6655;
+  background-color: #899266;
   border: 1px solid #676767;
   border-radius: 1rem;
 }
@@ -188,7 +188,7 @@ body {
   border: 1px solid #676767;
 }
 .game-btn_red:hover {
-  background-color: #e4ecc4;
+  background-color: #a01f1f;
   border: 1px solid #676767;
 }
 .game-btn_long {
