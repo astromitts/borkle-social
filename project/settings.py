@@ -128,10 +128,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 
-STATIC_URL = '/borkle/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'borkle/static')
-
-
 LOGIN_SUCCESS_REDIRECT = 'dashboard'
 PW_RESET_SUCCESS_REDIRECT = 'session_manager_index'
 LOGIN_REDIRECT_URL = '/dashboard/'
