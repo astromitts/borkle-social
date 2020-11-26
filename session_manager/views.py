@@ -175,7 +175,11 @@ class LoginUserView(View):
                 return HttpResponse(self.template.render(self.context, request))
             else:
                 login(request, user)
+                request.session['user_is_authenticated'] = True
+                request.session['user_id'] = user.pk
                 # messages.success(request, 'Log in successful.')
+                if request.session.get('login_redirect_from'):
+                    return redirect(request.session['login_redirect_from'])
                 return redirect(reverse(settings.LOGIN_SUCCESS_REDIRECT))
         else:
             messages.error(request, 'Something went wrong. Please correct errors below.')
@@ -256,6 +260,10 @@ class ResetPasswordFromProfileView(AuthenticatedView):
 class LogOutUserView(View):
     def get(self, request, *args, **kwargs):
         logout(request)
+        request.session['user_is_authenticated'] = False
+        request.session['user_id'] = None
+        request.session['player_id'] = None
+
         messages.success(request, 'Logged out.')
         return redirect(reverse('session_manager_login'))
 

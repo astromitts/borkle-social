@@ -1,0 +1,19 @@
+{% extends 'borkle/base.html' %}
+{% load static %}
+
+{% block main_content %}
+	<div class="error-page-content">
+		{% if status_code %}
+			<h1>Error: {{status_code}}</h1>
+		{% else %}
+			<h1>Error</h1>
+		{% endif %}
+		<p>
+			{% if message %}
+				{{ message }}
+			{% else %}
+				Oh man! Something went wrong and I'm not sure what it is. Sorry.
+			{% endif %}
+		</p>
+	</div>
+{% endblock %}

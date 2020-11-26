@@ -3,6 +3,15 @@ body {
   font-family: "Noto Sans JP";
 }
 
+.error-page-content {
+  padding: 5rem;
+  font-weight: bold;
+  color: #580606;
+}
+.error-page-content h1 {
+  font-size: 1.6rem;
+}
+
 .bg-light {
   background-color: transparent !important;
   color: #e2e0e0;

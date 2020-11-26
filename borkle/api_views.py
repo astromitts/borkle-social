@@ -134,13 +134,7 @@ class GameStatusApi(BorkleBaseView):
         return data
 
     def get(self, request, *args, **kwargs):
-        if not self.game:
-            data = {'error': 'Game not found'}
-            return JsonResponse(data, status=404)
-        if not self.gameplayer:
-            data = {'error': "Player is not in that game"}
-            return JsonResponse(data, status=404)
-
+        status = 200
         if kwargs['api_target'] == 'gameinfo':
             if self.game.status == 'over':
                 data = {
@@ -187,18 +181,14 @@ class GameStatusApi(BorkleBaseView):
                 'status': 'error',
                 'message': 'Unrecognized request.'
             }
+            status = 500
 
-        return JsonResponse(data)
+        return JsonResponse(data, status=status)
 
     def post(self, request, *args, **kwargs):
-        if not self.game:
-            data = {'error': 'Game not found'}
-            return JsonResponse(data, status=404)
-        if not self.gameplayer:
-            data = {'error': "Player is not in that game"}
-            return JsonResponse(data, status=404)
 
         data = {}
+        status = 200
         if kwargs['api_target'] == 'scoredice':
             if self.is_current_player:
                 dice_value_fields = []
@@ -258,18 +248,13 @@ class GameStatusApi(BorkleBaseView):
                 'status': 'error',
                 'message': 'Unrecognized request.'
             }
-        return JsonResponse(data)
+            status = 500
+        return JsonResponse(data, status=status)
 
 
 class GameBoardApiVersion(BorkleBaseView):
 
     def get(self, request, *args, **kwargs):
-        if not self.game:
-            messages.error(request, 'Game not found')
-            return redirect(reverse('dashboard'))
-        if not self.gameplayer:
-            messages.error(request, "You're not in that game")
-            return redirect(reverse('dashboard'))
 
         template = loader.get_template('borkle/api_gameboard.html')
         rolled_dice_cache = []

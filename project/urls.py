@@ -7,11 +7,8 @@ import session_manager.views as session_views
 import borkle.views as app_views
 import borkle.api_views as api_views
 
-handler404 = app_views.handler404
-handler500 = app_views.handler500
-
 urlpatterns = [
-    path('accounts/', include('allauth.urls')),
+    # path('accounts/', include('allauth.urls')),
     path('dashboard/', app_views.Dashboard.as_view(), name='dashboard'),
     path('dashboard/refresh/', app_views.Dashboard.as_view(), name='dashboard_refresh'),
     path('', TemplateView.as_view(template_name='borkle/about.html'), name='about'),

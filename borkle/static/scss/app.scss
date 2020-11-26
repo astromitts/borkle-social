@@ -53,7 +53,14 @@ body {
 	font-family: $body-font;
 }
 
-
+.error-page-content {
+	padding: 5rem;
+	font-weight: bold;
+	color: #580606;
+	h1 {
+		font-size: 1.6rem;
+	}
+}
 
 .bg-light {
 	background-color: transparent !important;
