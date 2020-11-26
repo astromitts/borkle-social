@@ -1,13 +1,16 @@
-from django.shortcuts import render
+from django.contrib import messages
+from django.shortcuts import render, redirect
+from django.urls import reverse
 from django.template import loader
 from django.http import HttpResponse, JsonResponse
 
-from borkle.models import ScoreSet
-from borkle.views import BorkleProtectedGameView
+from borkle.models import Game, ScoreSet
+from borkle.views import BorkleBaseView
+from session_manager.views import AuthenticatedView
 from borkle.utils import get_dice_image_path
 
 
-class GameStatusApi(BorkleProtectedGameView):
+class GameStatusApi(BorkleBaseView):
     def _scoreboard(self):
         scoreboard = []
 
@@ -131,6 +134,13 @@ class GameStatusApi(BorkleProtectedGameView):
         return data
 
     def get(self, request, *args, **kwargs):
+        if not self.game:
+            data = {'error': 'Game not found'}
+            return JsonResponse(data, status=404)
+        if not self.gameplayer:
+            data = {'error': "Player is not in that game"}
+            return JsonResponse(data, status=404)
+
         if kwargs['api_target'] == 'gameinfo':
             if self.game.status == 'over':
                 data = {
@@ -181,6 +191,13 @@ class GameStatusApi(BorkleProtectedGameView):
         return JsonResponse(data)
 
     def post(self, request, *args, **kwargs):
+        if not self.game:
+            data = {'error': 'Game not found'}
+            return JsonResponse(data, status=404)
+        if not self.gameplayer:
+            data = {'error': "Player is not in that game"}
+            return JsonResponse(data, status=404)
+
         data = {}
         if kwargs['api_target'] == 'scoredice':
             if self.is_current_player:
@@ -244,8 +261,16 @@ class GameStatusApi(BorkleProtectedGameView):
         return JsonResponse(data)
 
 
-class GameBoardApiVersion(BorkleProtectedGameView):
+class GameBoardApiVersion(BorkleBaseView):
+
     def get(self, request, *args, **kwargs):
+        if not self.game:
+            messages.error(request, 'Game not found')
+            return redirect(reverse('dashboard'))
+        if not self.gameplayer:
+            messages.error(request, "You're not in that game")
+            return redirect(reverse('dashboard'))
+
         template = loader.get_template('borkle/api_gameboard.html')
         rolled_dice_cache = []
         scored_dice_cache = []

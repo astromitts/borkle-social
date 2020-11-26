@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.core.exceptions import ValidationError
 from django.urls import reverse
 from django.template import loader
 from django.http import HttpResponse, JsonResponse
@@ -35,27 +36,23 @@ def handler500(request):
 class BorkleBaseView(AuthenticatedView):
     def setup(self, request, *args, **kwargs):
         super(BorkleBaseView, self).setup(request, *args, **kwargs)
-        self.player = Player.get_or_create(user=self.request.user)
-        if 'game_uuid' in kwargs:
-            self.game = Game.objects.filter(uuid=kwargs['game_uuid']).first()
-            if self.game:
-                self.gameplayer = GamePlayer.objects.filter(game=self.game, player=self.player).first()
-                if self.game.status == 'active':
-                    self.is_current_player = self.player == self.game.current_player.player
-                else:
-                    self.is_current_player = False
-            else:
-                raise Exception('Game Not Found')
+        if request.user.is_authenticated:
+            self.player = Player.get_or_create(user=self.request.user)
+            if 'game_uuid' in kwargs:
+                try:
+                    self.game = Game.objects.filter(uuid=kwargs['game_uuid']).first()
+                except ValidationError:
+                    self.game = None
+
+                if self.game:
+                    self.gameplayer = GamePlayer.objects.filter(game=self.game, player=self.player).first()
+                    if self.game.status == 'active':
+                        self.is_current_player = self.player == self.game.current_player.player
+                    else:
+                        self.is_current_player = False
 
 
-class BorkleProtectedGameView(BorkleBaseView):
-    def setup(self, request, *args, **kwargs):
-        super(BorkleProtectedGameView, self).setup(request, *args, **kwargs)
-        if not self.gameplayer:
-            return self.handle_no_permission()
-
-
-class BorkleProtectedTurnView(BorkleProtectedGameView):
+class BorkleProtectedTurnView(BorkleBaseView):
     def setup(self, request, *args, **kwargs):
         super(BorkleProtectedTurnView, self).setup(request, *args, **kwargs)
 
@@ -66,7 +63,9 @@ class BorkleProtectedTurnView(BorkleProtectedGameView):
 class Dashboard(BorkleBaseView):
     def get(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
-            return redirect(reverse('about'))
+            messages.error(request, 'You need to log in to view that page')
+            return redirect(reverse('session_manager_login'))
+
         if 'refresh' in request.path:
             template = loader.get_template('borkle/dashboard_includes/dashboard.html')
         else:
@@ -79,6 +78,10 @@ class Dashboard(BorkleBaseView):
 
 class InitializeGame(BorkleBaseView):
     def get(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            messages.error(request, 'You need to log in to view that page')
+            return redirect(reverse('session_manager_login'))
+
         template = loader.get_template('borkle/start_game_landing_page.html')
         context = {}
         return HttpResponse(template.render(context, request))
@@ -86,6 +89,10 @@ class InitializeGame(BorkleBaseView):
 
 class InitializeDistributedGame(BorkleBaseView):
     def get(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            messages.error(request, 'You need to log in to view that page')
+            return redirect(reverse('session_manager_login'))
+
         template = loader.get_template('borkle/generic_form.html')
         form = InitializeGameForm(
             initial={
@@ -100,6 +107,10 @@ class InitializeDistributedGame(BorkleBaseView):
         return HttpResponse(template.render(context, request))
 
     def post(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            messages.error(request, 'You need to log in to view that page')
+            return redirect(reverse('session_manager_login'))
+
         form = InitializeGameForm(request.POST)
         if form.is_valid():
             num_players = 1
@@ -127,6 +138,10 @@ class InitializeDistributedGame(BorkleBaseView):
 
 class InitializeLocalGame(BorkleBaseView):
     def get(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            messages.error(request, 'You need to log in to view that page')
+            return redirect(reverse('session_manager_login'))
+
         template = loader.get_template('borkle/generic_form.html')
         form = InitializePracticeGameForm(
             initial={
@@ -140,6 +155,10 @@ class InitializeLocalGame(BorkleBaseView):
         return HttpResponse(template.render(context, request))
 
     def post(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            messages.error(request, 'You need to log in to view that page')
+            return redirect(reverse('session_manager_login'))
+
         form = InitializePracticeGameForm(request.POST)
         if form.is_valid():
             num_players = 1
@@ -164,20 +183,53 @@ class InitializeLocalGame(BorkleBaseView):
         return HttpResponse(template.render(context, request))
 
 
-class JoinGameView(BorkleProtectedGameView):
+class JoinGameView(BorkleBaseView):
     def get(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            messages.error(request, 'You need to log in to view that page')
+            return redirect(reverse('session_manager_login'))
+
+        if not self.game:
+            messages.error(request, 'Game not found')
+            return redirect(reverse('dashboard'))
+        if not self.gameplayer:
+            messages.error(request, "You're not in that game")
+            return redirect(reverse('dashboard'))
+
         self.player.join_game(self.game)
         return redirect(reverse('game_board', kwargs={'game_uuid': self.game.uuid}))
 
 
-class DeclineGameView(BorkleProtectedGameView):
+class DeclineGameView(BorkleBaseView):
     def get(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            messages.error(request, 'You need to log in to view that page')
+            return redirect(reverse('session_manager_login'))
+
+        if not self.game:
+            messages.error(request, 'Game not found')
+            return redirect(reverse('dashboard'))
+        if not self.gameplayer:
+            messages.error(request, "You're not in that game")
+            return redirect(reverse('dashboard'))
+
         self.player.decline_game(self.game)
         return redirect(reverse('dashboard'))
 
 
-class CancelGameView(BorkleProtectedGameView):
+class CancelGameView(BorkleBaseView):
     def get(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            messages.error(request, 'You need to log in to view that page')
+            return redirect(reverse('session_manager_login'))
+
+        if not self.game:
+            messages.error(request, 'Game not found')
+            return redirect(reverse('dashboard'))
+        if not self.gameplayer:
+            messages.error(request, "You're not in that game")
+            return redirect(reverse('dashboard'))
+
         if self.game.created_by == self.player:
             if request.GET.get('src', '') == 'game':
                 cancel_url = reverse('game_board', kwargs={'game_uuid': self.game.uuid})
@@ -194,6 +246,10 @@ class CancelGameView(BorkleProtectedGameView):
             messages.error(request, 'Permission denied. Contact game owner for help.')
 
     def post(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            messages.error(request, 'You need to log in to view that page')
+            return redirect(reverse('session_manager_login'))
+
         if self.game.created_by == self.player:
             messages.success(request, 'Game cancelled.')
             self.game.delete()
@@ -202,8 +258,19 @@ class CancelGameView(BorkleProtectedGameView):
         return redirect(reverse('dashboard'))
 
 
-class LeaveGameView(BorkleProtectedGameView):
+class LeaveGameView(BorkleBaseView):
     def get(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            messages.error(request, 'You need to log in to view that page')
+            return redirect(reverse('session_manager_login'))
+
+        if not self.game:
+            messages.error(request, 'Game not found')
+            return redirect(reverse('dashboard'))
+        if not self.gameplayer:
+            messages.error(request, "You're not in that game")
+            return redirect(reverse('dashboard'))
+
         template = loader.get_template('borkle/confirm_action.html')
         context = {
             'cancel_url': reverse('game_board', kwargs={'game_uuid': self.game.uuid}),
@@ -212,21 +279,19 @@ class LeaveGameView(BorkleProtectedGameView):
         return HttpResponse(template.render(context, request))
 
     def post(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            messages.error(request, 'You need to log in to view that page')
+            return redirect(reverse('session_manager_login'))
+
+        if not self.game:
+            messages.error(request, 'Game not found')
+            return redirect(reverse('dashboard'))
+        if not self.gameplayer:
+            messages.error(request, "You're not in that game")
+            return redirect(reverse('dashboard'))
+
         self.game.boot_player(self.gameplayer)
         messages.success(request, 'Successfully left game.')
         if self.game.gameplayer_set.count() == 0:
             self.game.delete()
         return redirect(reverse('dashboard'))
-
-
-class GameStatusView(BorkleProtectedGameView):
-    def get(self, request, *args, **kwargs):
-        context = {
-            'game': self.game
-        }
-        game_status = self.game.get_status()
-        if game_status == 'active':
-            template = loader.get_template('borkle/game_waiting_players.html')
-        else:
-            template = loader.get_template('borkle/game_waiting_players.html')
-        return HttpResponse(template.render(context, request))
