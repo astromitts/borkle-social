@@ -40,9 +40,14 @@ function setRolledDice(rolledDice, setSelectable, rollHasScore){
 		var diceSlotId = rolledDiceFieldNames[key];
 		var diceCacheID = 'rolled-dice-cache_' + diceValue;
 		var existingImageInSlot = $('img#'+diceSlotId);
+		if (existingImageInSlot.length == 0 || diceValue == null || diceValue == undefined) {
+			existingImageDiceValue = 0;
+		} else {
+			existingImageDiceValue = parseInt(existingImageInSlot.attr('data-value'));
+		}
 		if (diceValue != null && diceValue != undefined) {
 			var cacheImageSrc = $('img#' + diceCacheID).attr('src');
-			if (existingImageInSlot.length == 0 || !diceImage['src'].includes(cacheImageSrc)) {
+			if (existingImageDiceValue != diceValue) {
 				var needsRefresh = true;
 			} else {
 				var needsRefresh = false;
@@ -62,7 +67,7 @@ function setRolledDice(rolledDice, setSelectable, rollHasScore){
 				bindSelectDice($('img#' + diceSlotId));
 			} 
 		} else {
-			if (existingImageInSlot.length > 0) {
+			if (existingImageInSlot.length != 0) {
 				existingImageInSlot.remove();
 			}
 		}
