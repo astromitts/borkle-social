@@ -1,7 +1,11 @@
 {% extends 'borkle/base.html' %}
 {% load socialaccount %}
 {% block main_content %}
+<div class="session">
 {% include 'session_manager/generic_form.html' with form=form submit_text='Log in' %}
 
-<div>Don't have an account? <a href="{% url 'session_manager_register' %}"><button class="btn btn-primary btn-large">Register here</button></a> or <a href="{% provider_login_url 'google' %}"><button class="btn btn-primary btn-large">Login with Google</button></a></div>
+	<div>Need an account? <a href="{% url 'session_manager_register' %}"><button class="btn btn-primary btn-large">Register here</button></a>
+
+	{% comment %} or <a href="{% provider_login_url 'google' %}"><button class="btn btn-primary btn-large">Login with Google</button></a>{% endcomment %}</div>
+</div>
 {% endblock %}

@@ -32,12 +32,16 @@ img#header-image {
   height: 2.7rem;
 }
 
-.display-4 {
-  font-size: 2rem;
+#about {
+  padding: 1.5rem;
+  color: #313131;
 }
 
-.lead {
-  font-size: 1rem;
+.session {
+  padding: 1.5rem;
+}
+.session table.table {
+  width: 60%;
 }
 
 .auto-centered {
@@ -114,7 +118,12 @@ img#header-image {
   width: 40%;
 }
 #game-container form input {
-  min-width: 12rem;
+  max-width: 9rem;
+}
+@media (min-width: 768px) {
+  #game-container form input {
+    max-width: 12rem;
+  }
 }
 
 #play-board {

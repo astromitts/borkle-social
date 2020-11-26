@@ -84,12 +84,16 @@ img#header-image{
 	height: 2.7rem;	
 }
 
-.display-4 {
-	font-size: 2rem;
+#about {
+	padding: 1.5rem;
+	color: $htag-font-color;
 }
 
-.lead {
-	font-size: 1rem;
+.session {
+	padding: 1.5rem;
+	table.table {
+		width: 60%;
+	}
 }
 
 .auto-centered {
@@ -164,7 +168,10 @@ img#header-image{
 			width: 40%;
 		}
 		input {
-			min-width: 12rem;
+			max-width: 9rem;
+			@media (min-width: #{$screen-md-min}) {
+				max-width: 12rem;
+			}
 		}
 	}
 }
