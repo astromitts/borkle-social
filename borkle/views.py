@@ -62,7 +62,7 @@ class InitializeGame(BorkleBaseView):
 
 class InitializeDistributedGame(BorkleBaseView):
     def get(self, request, *args, **kwargs):
-        template = loader.get_template('borkle/generic_form.html')
+        template = loader.get_template('bogames/generic_form.html')
         form = InitializeGameForm(
             initial={
                 'how_many_points_are_you_playing_to': 10000,
@@ -91,9 +91,9 @@ class InitializeDistributedGame(BorkleBaseView):
                     invited_players.append(player)
 
             game, game_player = Game.create(max_score=max_score, invited_players=invited_players, initial_player=self.player)
-            return redirect(reverse('game_board', kwargs={'game_uuid': game.uuid}))
+            return redirect(reverse('borkle_game_board', kwargs={'game_uuid': game.uuid}))
 
-        template = loader.get_template('borkle/generic_form.html')
+        template = loader.get_template('bogames/generic_form.html')
         context = {
             'form': form,
             'form_header': 'Start a game!'
@@ -103,7 +103,7 @@ class InitializeDistributedGame(BorkleBaseView):
 
 class InitializeLocalGame(BorkleBaseView):
     def get(self, request, *args, **kwargs):
-        template = loader.get_template('borkle/generic_form.html')
+        template = loader.get_template('bogames/generic_form.html')
         form = InitializePracticeGameForm(
             initial={
                 'how_many_points_are_you_playing_to': 10000,
@@ -134,9 +134,9 @@ class InitializeLocalGame(BorkleBaseView):
                 game_type='practice'
             )
             game.get_status()
-            return redirect(reverse('game_board', kwargs={'game_uuid': game.uuid}))
+            return redirect(reverse('borkle_game_board', kwargs={'game_uuid': game.uuid}))
 
-        template = loader.get_template('borkle/generic_form.html')
+        template = loader.get_template('bogames/generic_form.html')
         context = {
             'form': form,
             'form_header': 'Start a practice game!'
@@ -147,22 +147,22 @@ class InitializeLocalGame(BorkleBaseView):
 class JoinGameView(BorkleBaseView):
     def get(self, request, *args, **kwargs):
         self.player.join_game(self.game)
-        return redirect(reverse('game_board', kwargs={'game_uuid': self.game.uuid}))
+        return redirect(reverse('borkle_game_board', kwargs={'game_uuid': self.game.uuid}))
 
 
 class DeclineGameView(BorkleBaseView):
     def get(self, request, *args, **kwargs):
         self.player.decline_game(self.game)
-        return redirect(reverse('dashboard'))
+        return redirect(reverse('borkle_dashboard'))
 
 
 class CancelGameView(BorkleBaseView):
     def get(self, request, *args, **kwargs):
         if self.game.created_by == self.player:
             if request.GET.get('src', '') == 'game':
-                cancel_url = reverse('game_board', kwargs={'game_uuid': self.game.uuid})
+                cancel_url = reverse('borkle_game_board', kwargs={'game_uuid': self.game.uuid})
             else:
-                cancel_url = reverse('dashboard')
+                cancel_url = reverse('borkle_dashboard')
 
             template = loader.get_template('borkle/confirm_action.html')
             context = {
@@ -179,14 +179,14 @@ class CancelGameView(BorkleBaseView):
             self.game.delete()
         else:
             messages.error(request, 'Permission denied. Contact game owner for help.')
-        return redirect(reverse('dashboard'))
+        return redirect(reverse('borkle_dashboard'))
 
 
 class LeaveGameView(BorkleBaseView):
     def get(self, request, *args, **kwargs):
-        template = loader.get_template('borkle/confirm_action.html')
+        template = loader.get_template('bogames/confirm_action.html')
         context = {
-            'cancel_url': reverse('game_board', kwargs={'game_uuid': self.game.uuid}),
+            'cancel_url': reverse('borkle_game_board', kwargs={'game_uuid': self.game.uuid}),
             'form_header': 'Are you sure you want to leave the game?'
         }
         return HttpResponse(template.render(context, request))
@@ -196,4 +196,4 @@ class LeaveGameView(BorkleBaseView):
         messages.success(request, 'Successfully left game.')
         if self.game.gameplayer_set.count() == 0:
             self.game.delete()
-        return redirect(reverse('dashboard'))
+        return redirect(reverse('borkle_dashboard'))

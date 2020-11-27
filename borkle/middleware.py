@@ -42,7 +42,7 @@ page_not_found_message = "I'm not sure what page you're looking for, but this on
 
 
 unauthentication_allowed_url_names = [
-    'score_chart',
+    'borkle_score_chart',
     'about',
     'session_manager_login',
     'session_manager_logout',

@@ -1,0 +1,80 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="description" content="">
+	<meta name="keywords" content="">
+	<meta name="author" content="Bo Morin">
+	<title>{% block page_title %}Bogames. Games by Bo.{% endblock %}</title>
+	<link rel="shortcut icon" href="{% static 'images/favicon.ico' %}" />
+	<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
+	<link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+	<link href= 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/ui-lightness/jquery-ui.css' rel='stylesheet'> 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js" > </script> 
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" > </script>
+	<script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+	<script src="{% static 'js/base.js' %}"></script>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nerko+One">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto+Sans+JP">
+	<link href="{% static 'css/app.css' %}" rel="stylesheet">
+	{% block extra_js %}
+	{% endblock %}
+</head>
+<body>
+	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+		<div class="container">
+			<a class="navbar-brand" href="{% if user.is_authenticated %}{% url 'borkle_dashboard' %}{% else %}{% url 'about' %}{% endif %}"><img id="header-image" src="{% static 'images/favicon-large.png' %}" />Borkle!</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarText">
+				<ul class="navbar-nav mr-auto">
+					{% if user.is_authenticated %}
+						{% block game_navigation %}{% endblock %}
+						{% if user.is_staff %}
+							<li class="nav-item">
+								<a class="nav-link" target="_blank" href="/admin/">Admin</a>
+							</li>
+						{% endif %}
+					{% else %}
+						<li class="nav-item">
+							<a class="nav-link" href="{% url 'session_manager_register' %}">Register</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="{%url 'session_manager_login' %}">Log in</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="{%url 'about' %}">About</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="{%url 'borkle_score_chart' %}">How to score</a>
+						</li>
+					{% endif %}
+				</ul>
+				{% if user.is_authenticated %}
+					<span class="navbar-text">Logged in as: {{user.username}}</span>
+				{% endif %}
+			</div>
+		</div>
+	</nav>
+
+	<div class="container">
+		<div id="main-content">
+			<div id="game-container">
+				{% block messages %}
+					{% if messages %}
+						<div class="messages">
+							{% for message in messages %}
+							<b>{{message.level_tag}}:</b> {{message}}<br />
+							{% endfor %}
+						</div>
+					{% endif %}
+				{% endblock %}
+				{% block main_content %}{% endblock %}
+			</div>
+		</div>
+	</div>
+</body>

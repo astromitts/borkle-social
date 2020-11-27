@@ -17,7 +17,7 @@
 				<li>Once some one reaches the game's max score, each other player gets one more turn to try to beat the highest scoring player and win</li>
 				<li>At the end of the game, the player with the highest score wins!</li>
 				<li>There is no tie breaking mechanism, so games can result in ties</li>
-				<li>Refer to <a href="{% url 'score_chart' %}">the score chart</a> to see possible dice scores</li>
+				<li>Refer to <a href="{% url 'borkle_score_chart' %}">the score chart</a> to see possible dice scores</li>
 			</ul>
 		{% if not user.is_authenticated %}
 		<p>Already registered?</p>

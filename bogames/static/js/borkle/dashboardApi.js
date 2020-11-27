@@ -58,7 +58,6 @@ function _declineLink(game) {
 }
 
 function _activeGamePlayer(player, game) {
-	var playerInfoDiv = document.createElement('div');
 	var playerInfo = document.createElement('h6');
 	playerInfo.setAttribute('id', game.codeName + '-' +player.username+ '-body');
 	if ( player.isCurrentPlayer ) {
@@ -68,7 +67,6 @@ function _activeGamePlayer(player, game) {
 		playerInfo.innerHTML = player.username;
 		playerInfo.setAttribute('class', 'activeplayer card-subtitle mb-2 muted');
 	}
-	playerInfo.setAttribute('id', 'activeplayer_' + player.username);
 	return playerInfo;
 }
 
@@ -81,7 +79,6 @@ function _pendingGamePlayer(player, game) {
 		playerInfo.innerHTML = player.username + ": waiting";
 	}
 	playerInfo.setAttribute('class', 'activeplayer card-subtitle mb-2');
-	playerInfo.setAttribute('id', 'pendingplayer_' + player.username);
 	return playerInfo;
 }
 

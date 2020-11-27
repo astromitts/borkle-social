@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'session_manager',
+    'bogames',
     'borkle',
     'namer',
     'allauth',   # <--
@@ -130,7 +131,7 @@ USE_TZ = True
 STATIC_URL = '/borkle/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'borkle/static')
 
-LOGIN_SUCCESS_REDIRECT = 'dashboard'
+LOGIN_SUCCESS_REDIRECT = 'borkle_dashboard'
 PW_RESET_SUCCESS_REDIRECT = 'session_manager_index'
 LOGIN_REDIRECT_URL = '/dashboard/'
 

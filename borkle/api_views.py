@@ -38,10 +38,10 @@ class DashboardApi(BorkleBaseView):
                 'players': [self._format_player(gp, game.current_player) for gp in game.gameplayer_set.all()],
                 'isCurrentPlayer': is_current_player,
                 'isPracticeGame': game.game_type == 'practice',
-                'link': reverse('game_board', kwargs={'game_uuid': game.uuid}),
-                'cancelLink': reverse('game_cancel', kwargs={'game_uuid': game.uuid}),
-                'joinLink': reverse('game_accept_invitation_link', kwargs={'game_uuid': game.uuid}),
-                'declineLink': reverse('game_decline_invitation_link', kwargs={'game_uuid': game.uuid})
+                'link': reverse('borkle_game_board', kwargs={'game_uuid': game.uuid}),
+                'cancelLink': reverse('borkle_game_cancel', kwargs={'game_uuid': game.uuid}),
+                'joinLink': reverse('borkle_game_accept_invitation_link', kwargs={'game_uuid': game.uuid}),
+                'declineLink': reverse('borkle_game_decline_invitation_link', kwargs={'game_uuid': game.uuid})
             })
         return append_to_list
 

@@ -1,27 +1,27 @@
 {% extends 'borkle/base.html' %}
 {% load static apptags %}
 {% block extra_js %}
-	<script src="{% static 'js/gameUtils.js' %}"></script>
-	<script src="{% static 'js/nav.js' %}"></script>
-	<script src="{% static 'js/dice.js' %}"></script>
-	<script src="{% static 'js/elementToggle.js' %}"></script>
-	<script src="{% static 'js/rollDice.js' %}"></script>
-	<script src="{% static 'js/play.js' %}"></script>
+	<script src="{% static 'js/borkle/gameUtils.js' %}"></script>
+	<script src="{% static 'js/borkle/nav.js' %}"></script>
+	<script src="{% static 'js/borkle/dice.js' %}"></script>
+	<script src="{% static 'js/borkle/elementToggle.js' %}"></script>
+	<script src="{% static 'js/borkle/rollDice.js' %}"></script>
+	<script src="{% static 'js/borkle/play.js' %}"></script>
 {% endblock %}
 
 {% block main_content %}
 	<span id="js-api-urls">
 		<input type="hidden" id="static-url" value="{% static '' %}" />
-		<input type="hidden" id="api-gameinfo-url" value="{% url 'game_api' game_uuid=game.uuid api_target='gameinfo' %}" />
-		<input type="hidden" id="api-diceboard-url" value="{% url 'game_api' game_uuid=game.uuid  api_target='diceboard' %}" />
-		<input type="hidden" id="api-scorecard-url" value="{% url 'game_api' game_uuid=game.uuid api_target='scorecard' %}" />
-		<input type="hidden" id="api-scoreboard-url" value="{% url 'game_api' game_uuid=game.uuid api_target='scoreboard' %}" />
-		<input type="hidden" id="api-scoredice-url" value="{% url 'game_api' game_uuid=game.uuid api_target='scoredice' %}" />
-		<input type="hidden" id="api-undoselection-url" value="{% url 'game_api' game_uuid=game.uuid api_target='undoselection' %}" />
-		<input type="hidden" id="api-rolldice-url" value="{% url 'game_api' game_uuid=game.uuid api_target='rolldice' %}" />
-		<input type="hidden" id="api-borkle-url" value="{% url 'game_api' game_uuid=game.uuid api_target='borkle' %}" />
-		<input type="hidden" id="api-endturn-url" value="{% url 'game_api' game_uuid=game.uuid api_target='endturn' %}" />
-		<input type="hidden" id="api-scorecardsetup-url" value="{% url 'game_api' game_uuid=game.uuid api_target='scorecardsetup' %}" />
+		<input type="hidden" id="api-gameinfo-url" value="{% url 'borkle_game_api' game_uuid=game.uuid api_target='gameinfo' %}" />
+		<input type="hidden" id="api-diceboard-url" value="{% url 'borkle_game_api' game_uuid=game.uuid  api_target='diceboard' %}" />
+		<input type="hidden" id="api-scorecard-url" value="{% url 'borkle_game_api' game_uuid=game.uuid api_target='scorecard' %}" />
+		<input type="hidden" id="api-scoreboard-url" value="{% url 'borkle_game_api' game_uuid=game.uuid api_target='scoreboard' %}" />
+		<input type="hidden" id="api-scoredice-url" value="{% url 'borkle_game_api' game_uuid=game.uuid api_target='scoredice' %}" />
+		<input type="hidden" id="api-undoselection-url" value="{% url 'borkle_game_api' game_uuid=game.uuid api_target='undoselection' %}" />
+		<input type="hidden" id="api-rolldice-url" value="{% url 'borkle_game_api' game_uuid=game.uuid api_target='rolldice' %}" />
+		<input type="hidden" id="api-borkle-url" value="{% url 'borkle_game_api' game_uuid=game.uuid api_target='borkle' %}" />
+		<input type="hidden" id="api-endturn-url" value="{% url 'borkle_game_api' game_uuid=game.uuid api_target='endturn' %}" />
+		<input type="hidden" id="api-scorecardsetup-url" value="{% url 'borkle_game_api' game_uuid=game.uuid api_target='scorecardsetup' %}" />
 		<input type="hidden" id="latest-scorecard-turn" value="0" />
 	</span>	
 	<div id="scoreboard">
@@ -165,9 +165,9 @@
 	{# Leave game buttons #}
 	<div class="leave-game">
 		{% if game.game_type == 'practice' %}
-			<a href="{% url 'game_cancel' game_uuid=game.uuid %}?src=game"><button class="btn btn-danger">Cancel Game</button></a>
+			<a href="{% url 'borkle_game_cancel' game_uuid=game.uuid %}?src=game"><button class="btn btn-danger">Cancel Game</button></a>
 		{% else %}
-			<a href="{% url 'leave_game' game_uuid=game.uuid %}"><button class="btn game-btn game-btn_red">Leave Game</button></a>
+			<a href="{% url 'borkle_leave_game' game_uuid=game.uuid %}"><button class="btn game-btn game-btn_red">Leave Game</button></a>
 		{% endif %}
 	</div>
 

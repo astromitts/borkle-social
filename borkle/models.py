@@ -258,7 +258,7 @@ class GamePlayer(models.Model):
 
     @property
     def game_invitation_link(self):
-        return reverse('game_accept_invitation_link', kwargs={'game_uuid': self.game.uuid, 'gameplayer_id': self.pk})
+        return reverse('borkle_game_accept_invitation_link', kwargs={'game_uuid': self.game.uuid, 'gameplayer_id': self.pk})
 
     @property
     def current_turn(self):
