@@ -9,9 +9,10 @@ import borkle.api_views as api_views
 
 urlpatterns = [
     # path('accounts/', include('allauth.urls')),
+    path('', TemplateView.as_view(template_name='borkle/about.html'), name='about'),
     path('dashboard/', app_views.Dashboard.as_view(), name='dashboard'),
     path('dashboard/refresh/', app_views.Dashboard.as_view(), name='dashboard_refresh'),
-    path('', TemplateView.as_view(template_name='borkle/about.html'), name='about'),
+    path('dashboard/api/', api_views.DashboardApi.as_view(), name='dashboard_api'),
     path('scorechart/', TemplateView.as_view(template_name='borkle/score_chart.html'), name='score_chart'),
     path('admin/', admin.site.urls),
     path('register/', session_views.CreateUserView.as_view(), name='session_manager_register'),

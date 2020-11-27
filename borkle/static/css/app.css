@@ -91,6 +91,22 @@ img#header-image {
   color: #313131;
   font-size: 1.1rem;
 }
+.dashboard h5 {
+  color: #828282;
+  font-size: 1rem;
+}
+.dashboard .card {
+  margin-bottom: 1rem;
+  width: 18rem;
+  border-radius: 10px;
+}
+.dashboard button.cancel-link {
+  float: right;
+}
+.dashboard .codename {
+  display: block;
+  font-size: 0.8rem;
+}
 
 .start-game-buttons {
   text-align: center;

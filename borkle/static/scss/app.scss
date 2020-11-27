@@ -140,6 +140,22 @@ img#header-image{
 		color: $htag-font-color;
 		font-size: 1.1rem;
 	}
+	h5 {
+		color: #828282;
+	    font-size: 1rem;
+	}
+	.card {
+  		margin-bottom: 1rem;
+  		width: 18rem;
+  		border-radius: 10px;
+	}
+	button.cancel-link {
+		float: right;
+	}
+	.codename {
+		display: block;
+	    font-size: .8rem;
+	}
 }
 
 .start-game-buttons {

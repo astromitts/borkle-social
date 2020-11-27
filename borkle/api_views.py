@@ -10,6 +10,55 @@ from session_manager.views import AuthenticatedView
 from borkle.utils import get_dice_image_path
 
 
+class DashboardApi(BorkleBaseView):
+
+    def _format_player(self, player, current_player):
+        return {
+            'username': player.username,
+            'ready': player.ready,
+            'isCurrentPlayer': player == current_player,
+        }
+
+    def _add_formatted_games(self, games, append_to_list, status):
+        for game in games:
+            player_gameplayer = game.get_gameplayer(self.player)
+            if game.current_player and game.current_player.current_turn:
+                current_game_player = game.current_player.username
+                is_current_player = game.current_player.current_turn == player_gameplayer
+            else:
+                current_game_player = None
+                is_current_player = False
+            append_to_list.append({
+                'dashboardStatus': status,
+                'uuid': game.uuid,
+                'codeName': game.code_name,
+                'createdBy': game.created_by.username,
+                'isGameOwner': game.created_by == self.player,
+                'current_player_name': current_game_player,
+                'players': [self._format_player(gp, game.current_player) for gp in game.gameplayer_set.all()],
+                'isCurrentPlayer': is_current_player,
+                'isPracticeGame': game.game_type == 'practice',
+                'link': reverse('game_board', kwargs={'game_uuid': game.uuid}),
+                'cancelLink': reverse('game_cancel', kwargs={'game_uuid': game.uuid}),
+                'joinLink': reverse('game_accept_invitation_link', kwargs={'game_uuid': game.uuid}),
+                'declineLink': reverse('game_decline_invitation_link', kwargs={'game_uuid': game.uuid})
+            })
+        return append_to_list
+
+    def get(self, request, *args, **kwargs):
+        player_games = self.player.all_games
+        data = {
+            'playerName': self.player.username,
+            # 'activeGames': [self._format_game(game, 'active') for game in player_games['active']],
+            # 'pendingGames': [self._format_game(game, 'pending') for game in player_games['pending']],
+            # 'invitedGames': [self._format_game(game, 'invited') for game in player_games['invitations']],
+            'games': [],
+        }
+        data['games'] = self._add_formatted_games(player_games['active'], data['games'], 'active')
+        data['games'] = self._add_formatted_games(player_games['pending'], data['games'], 'pending')
+        data['games'] = self._add_formatted_games(player_games['invitations'], data['games'], 'invited')
+        return JsonResponse(data)
+
 class GameStatusApi(BorkleBaseView):
     def _scoreboard(self):
         scoreboard = []

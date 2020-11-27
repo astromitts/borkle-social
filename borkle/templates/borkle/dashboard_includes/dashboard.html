@@ -10,12 +10,12 @@
 					<div class="card" style="width: 18rem;">
 					  <div class="card-body">
 					    <h5 class="card-title">codename: {{game.code_name}}</h5>
-					    	<h6 class="card-subtitle mb-2">{{game.current_player.username}}'s turn!</h6>
-					    	{% for gp in game.gameplayer_set.all %}
-					    		{% if gp != game.current_player %}
-									<h6 class="card-subtitle mb-2 text-muted">{{gp.player.user.username}}</h6>
-					    		{% endif %}
-							{% endfor %}
+				    	<h6 class="card-subtitle mb-2">{{game.current_player.username}}'s turn!</h6>
+				    	{% for gp in game.gameplayer_set.all %}
+				    		{% if gp != game.current_player %}
+								<h6 class="card-subtitle mb-2 text-muted">{{gp.player.user.username}}</h6>
+				    		{% endif %}
+						{% endfor %}
 					    <a href="{% url 'game_board' game_uuid=game.uuid %}" class="card-link"><button class="game-btn">Go to game</button></a>
 					  </div>
 					</div>

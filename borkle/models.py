@@ -16,6 +16,10 @@ class Player(models.Model):
     def __str__(self):
         return '<Player {}> {}'.format(self.pk, self.user.username)
 
+    @property
+    def username(self):
+        return self.user.username
+
     def join_game(self, game):
         gameplayer = GamePlayer.objects.get(player=self, game=game)
         gameplayer.ready = True
@@ -226,6 +230,9 @@ class Game(models.Model):
             self.code_name = random_name
         super(Game, self).save(*args, **kwargs)
 
+
+    def get_gameplayer(self, player):
+        return self.gameplayer_set.filter(player=player).first()
 
     def boot_player(self, gameplayer):
         if gameplayer.is_current_player:
