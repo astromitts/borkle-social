@@ -46,6 +46,19 @@ img#header-image {
   color: #313131;
 }
 
+#landingpage {
+  padding: 1rem;
+}
+#landingpage .card {
+  width: 10rem;
+}
+#landingpage .card a.game-card-link {
+  width: 8rem;
+  height: 8rem;
+  margin: 0 auto;
+  margin-top: 1rem;
+}
+
 .session {
   padding: 1.5rem;
 }

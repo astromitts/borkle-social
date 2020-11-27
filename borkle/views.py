@@ -5,15 +5,17 @@ from django.urls import reverse
 from django.template import loader
 from django.http import HttpResponse, JsonResponse
 
-from session_manager.views import AuthenticatedView
 from django.views import View
 
+from bogames.models import Player
+from borkle.models import BorkleGame
+
 from borkle.forms import InitializeGameForm, InitializePracticeGameForm
-from borkle.models import Player, Game, GamePlayer, ScoreSet
+from borkle.models import BorklePlayer, ScoreSet
 from borkle.utils import get_dice_image_path
 
 
-class BorkleBaseView(AuthenticatedView):
+class BorkleBaseView(View):
     def setup(self, request, *args, **kwargs):
         super(BorkleBaseView, self).setup(request, *args, **kwargs)
         if request.user.is_authenticated:
@@ -21,24 +23,16 @@ class BorkleBaseView(AuthenticatedView):
             request.session['player_id'] = self.player.pk
             if 'game_uuid' in kwargs:
                 try:
-                    self.game = Game.objects.filter(uuid=kwargs['game_uuid']).first()
+                    self.game = BorkleGame.objects.filter(uuid=kwargs['game_uuid']).first()
                 except ValidationError:
                     self.game = None
 
                 if self.game:
-                    self.gameplayer = GamePlayer.objects.filter(game=self.game, player=self.player).first()
+                    self.gameplayer = BorklePlayer.objects.filter(game=self.game, player=self.player).first()
                     if self.game.status == 'active':
                         self.is_current_player = self.player == self.game.current_player.player
                     else:
                         self.is_current_player = False
-
-
-class BorkleProtectedTurnView(BorkleBaseView):
-    def setup(self, request, *args, **kwargs):
-        super(BorkleProtectedTurnView, self).setup(request, *args, **kwargs)
-
-        if not self.is_current_player:
-            return self.handle_no_permission()
 
 
 class Dashboard(BorkleBaseView):
@@ -90,7 +84,7 @@ class InitializeDistributedGame(BorkleBaseView):
                     player = Player.get_by_username(username=player_username)
                     invited_players.append(player)
 
-            game, game_player = Game.create(max_score=max_score, invited_players=invited_players, initial_player=self.player)
+            game, game_player = BorkleGame.create(max_score=max_score, invited_players=invited_players, initial_player=self.player)
             return redirect(reverse('borkle_game_board', kwargs={'game_uuid': game.uuid}))
 
         template = loader.get_template('bogames/generic_form.html')
@@ -126,7 +120,7 @@ class InitializeLocalGame(BorkleBaseView):
             max_score = int(request.POST['how_many_points_are_you_playing_to'])
             if max_score < 1:
                 max_score = 100
-            game, game_player = Game.create(
+            game, game_player = BorkleGame.create(
                 max_score=max_score,
                 invited_players=[],
                 initial_player=self.player,
@@ -194,6 +188,6 @@ class LeaveGameView(BorkleBaseView):
     def post(self, request, *args, **kwargs):
         self.game.boot_player(self.gameplayer)
         messages.success(request, 'Successfully left game.')
-        if self.game.gameplayer_set.count() == 0:
+        if self.game.borkleplayer_set.count() == 0:
             self.game.delete()
         return redirect(reverse('borkle_dashboard'))

@@ -8,7 +8,7 @@
 	<meta name="description" content="">
 	<meta name="keywords" content="">
 	<meta name="author" content="Bo Morin">
-	<title>{% block page_title %}Bogames. Games by Bo.{% endblock %}</title>
+	<title>BoGames | {% block page_title %}Games by Bo.{% endblock %}</title>
 	<link rel="shortcut icon" href="{% static 'images/favicon.ico' %}" />
 	<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
 	<link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
@@ -26,7 +26,8 @@
 <body>
 	<nav class="navbar navbar-expand-lg navbar-light bg-light">
 		<div class="container">
-			<a class="navbar-brand" href="{% if user.is_authenticated %}{% url 'borkle_dashboard' %}{% else %}{% url 'about' %}{% endif %}"><img id="header-image" src="{% static 'images/favicon-large.png' %}" />Borkle!</a>
+			
+			{% block navbrand %}{% endblock %}
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
 			</button>

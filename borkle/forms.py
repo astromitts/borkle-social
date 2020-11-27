@@ -5,7 +5,7 @@ from django.forms import (
     HiddenInput
 )
 from django.core.exceptions import ValidationError
-from borkle.models import Player
+from bogames.models import Player
 
 
 def _validate_player(player_username):

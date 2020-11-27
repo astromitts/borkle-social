@@ -1,0 +1,32 @@
+{% extends 'bogames/base.html' %}
+{% load static apptags %}
+{% block page_title %}Borkle! It's a lot like Farkle.{% endblock %}
+
+{% block navbrand %}
+	<a class="navbar-brand" href="{% if user.is_authenticated %}{% url 'bogames_landingpage' %}{% else %}{% url 'borkle_about' %}{% endif %}">
+	<img id="header-image" src="{% static 'images/favicon-large.png' %}" />BoGames!</a>
+{% endblock %}
+
+{% block game_navigation %}
+	<li class="nav-item active">
+		<a class="nav-link" href="{% url 'borkle_dashboard' %}">Borkle</a>
+	</li>
+{% endblock %}
+
+{% block main_content %}
+	<div class="row" id="landingpage">
+		<div class="col">
+			{% for game_title, link_url in games.items %}
+				<div class="card">
+					<a class="game-card-link" href="{{link_url}}">
+						<img src="{% static 'images/favicon-large.png' %}" class="card-img-top" alt="image link to borkle game" />
+					</a>
+					<div class="card-body">
+						<h5 class="card-title">{{game_title}}</h5>
+						<a href="{{link_url}}" class="btn btn-primary">Play</a>
+					</div>
+				</div>
+			{% endfor %}
+		</div>
+	</div>
+{% endblock %}

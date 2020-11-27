@@ -1,0 +1,477 @@
+$nav-color: transparent;
+$htag-font-color: #313131;
+
+$navbrand-font: 'Nerko One';
+$body-font: 'Noto Sans JP';
+
+$game-play-highlight: #4c4c4a;
+$game-play-highlight-font-color: #FFFFFF;
+
+$game-play-lowlight: #e4ecc4;
+
+$game-button-main: #e4ecc4;
+$game-button-main-text: #000000;
+$game-button-main-border: #676767;
+$game-button-main-hover: #899266;
+$game-play-gray: #EAEDED;
+
+$game-button-danger: #e85757;
+$game-button-danger-border: #676767;
+$game-button-danger-hover: #a01f1f;
+
+$game-button-text-color: #e2e0e0;
+
+$game-play-secondary: #e4ecc4;
+
+$gradient-1: #B9D8C2;
+$gradient-2: #9AC2C9;
+
+$button-box-shadow-color: #7d7c7c;
+$dice-board-box-shadow-color: #6f9ba2;
+
+$current-player-color: #f9d553;
+$game-alert-color: #fce8a5;
+
+
+// Small tablets and large smartphones (landscape view)
+$screen-sm-min: 576px;
+
+// Small tablets (portrait view)
+$screen-md-min: 768px;
+
+// Small tablets (portrait view)
+$screen-md-landscape-min: 768px;
+
+// Tablets and small desktops
+$screen-lg-min: 992px;
+
+// Large tablets and desktops
+$screen-xl-min: 1200px;
+
+body {
+	background-image: linear-gradient(to right, $gradient-2, $gradient-2, $gradient-1, $gradient-2, $gradient-2);
+	font-family: $body-font;
+}
+
+.error-page-content {
+	padding: 5rem;
+	font-weight: bold;
+	color: #580606;
+	h1 {
+		font-size: 1.6rem;
+	}
+}
+
+.bg-light {
+	background-color: transparent !important;
+	color: $game-button-text-color;
+	a {
+		font-family: $body-font;
+		color: #000000 !important;
+		font-weight: bold;
+	}
+}
+
+.navbar {
+	padding-top: 0;
+	padding-bottom: 0;
+	a.navbar-brand {
+		font-family: $navbrand-font;
+		color: #000000 !important;
+		font-weight: bold;
+		font-size: 2.2rem;
+		img {
+			margin-right: .3rem;
+		}
+	}
+}
+
+img#header-image{
+	width: 2.7rem;
+	height: 2.7rem;	
+}
+
+#about {
+	padding: 1.5rem;
+	color: $htag-font-color;
+}
+
+#landingpage {
+	padding: 1rem;
+	.card {
+		width: 10rem;
+		a.game-card-link {
+			width: 8rem;
+			height: 8rem;
+			margin: 0 auto;
+			margin-top: 1rem;
+		}
+	}
+}
+
+.session {
+	padding: 1.5rem;
+	table.table {
+		width: 60%;
+	}
+}
+
+.auto-centered {
+	display: inline-block;
+	margin: auto;
+}
+
+.margin_t75 {
+	margin-top: .75rem;
+}
+
+.align-right {
+	text-align: right;
+}
+
+.messages {
+	background-color: $game-play-highlight;
+	color: $game-play-highlight-font-color;
+	border-radius: 5px;
+	padding: 1rem;
+	margin-right: .5rem;
+	margin-left: .5rem;
+}
+
+.how-to-score {
+	padding: 1rem;	
+}
+
+.dashboard {
+	padding: .5rem;
+	h2 { 
+		color: $htag-font-color;
+		font-size: 1rem;
+		text-align: right;
+	}
+	h3 {
+		color: $htag-font-color;
+		font-size: 1.1rem;
+	}
+	h5 {
+		color: #828282;
+	    font-size: 1rem;
+	}
+	.card {
+  		margin-bottom: 1rem;
+  		width: 18rem;
+  		border-radius: 10px;
+	}
+	button.cancel-link {
+		float: right;
+	}
+	.codename {
+		display: block;
+	    font-size: .8rem;
+	}
+}
+
+.start-game-buttons {
+	text-align: center;
+	padding: 3rem;
+	a {
+		display: block;
+		margin-bottom: 2rem;
+	}
+}
+
+.game-header {
+	margin: auto 0;
+    display: block;
+    padding-top: 1rem;
+    text-align: center;
+    width: 100%;
+    h1 {
+		font-size: .8rem;
+		color: $htag-font-color;
+		font-weight: bold;
+	}
+}
+
+#game-container {
+	background-color: #ffffff;
+	padding: 0 0 1rem 0;
+	border-radius: 20px;
+	margin-bottom: 1rem;
+	form {
+		padding: 1rem;
+		th {
+			width: 40%;
+		}
+		input {
+			max-width: 9rem;
+			@media (min-width: #{$screen-md-min}) {
+				max-width: 12rem;
+			}
+		}
+	}
+}
+
+#play-board {
+	min-height: 7rem;
+	width: 95%;
+	@media (min-width: #{$screen-md-min}) {
+		width: 75%;
+	}
+	@media (min-width: #{$screen-md-min}) {
+		width: 60%;
+	}
+}
+
+.as-table {
+	display: table;
+	width: 100%;
+	.as-tr {
+		display: table-row;
+	}
+	.as-td {
+		display: table-cell;
+		vertical-align: top;
+		&_scorecard-nav{
+			width: 1.75rem;
+		}
+		&_w70 {
+			width: 70%;
+		}
+	}
+}
+
+.big-message {
+	font-weight: bold;
+	text-align:center;
+	padding: .5rem 0;
+	&_highlighted {
+		background-color: $game-alert-color;
+	}
+	&_bordered {
+	    border-top: 1px solid #bbbbbb;
+	    border-bottom: 1px solid #bbbbbb;
+	}
+}
+
+.winner-data {
+    background-color: #a1ecdd;
+    border-radius: 8px;
+    height: 5rem;
+    margin-left: .2rem;
+    margin-right: .2rem;
+}
+
+#winner-data {
+	margin: auto 0;
+}
+
+.image-cache {
+	visibility: hidden;
+}
+
+.hidden {
+	display: none;
+}
+.centered {
+	text-align: center;
+}
+
+#game-tools {
+	margin-top: 1rem;
+	margin-bottom: 1rem;
+}
+
+.game-btn {
+	color: $game-button-main-text;
+	background-color: $game-button-main;
+	border: 1px solid $game-button-main-border;
+	border-radius: 1rem;
+	font-weight: bold;
+	padding: .5rem;
+	box-shadow: -1px 1px 3px 0px $button-box-shadow-color;
+	&:hover {
+		color: $game-play-gray;
+		background-color: $game-button-main-hover;
+		border: 1px solid $game-button-main-border;
+		border-radius: 1rem;
+	}
+	&_square{
+		width: 6rem;
+		height: 6rem;
+		&_small {
+			width: 5rem;
+			height: 5rem;
+		}
+	}
+	&_red{
+		background-color: $game-button-danger;
+		border: 1px solid $game-button-danger-border;
+		&:hover{
+			background-color: $game-button-danger-hover;
+			border: 1px solid $game-button-danger-border;
+		}
+	}
+	&_long {
+		margin: 0 auto;
+		width: 13rem;
+		height: 4rem;
+	}
+}
+
+.col-game-buttons {
+	display: inline-block;
+	float: left;
+	padding: 0;
+	width: 6rem;
+}
+
+.col-game-dice {
+	display: inline-block;
+	float: right;
+	padding-left: 0;
+}
+
+table.dice-table_active td {
+	height: 6rem;
+	width: 6rem;
+}
+
+img.rolled-dice {
+	width: 6rem;
+	height: 6rem;
+}
+
+img.selected {
+	width: 5rem;
+	height: 5rem;
+}
+
+
+table#scoreset_table {
+	width: 100%;
+}
+
+#selected-dice-score {
+	font-weight: bold;
+}
+
+img.scored-dice {
+	width: 2rem;
+	height: 2rem;
+}
+
+div.selected-dice-slot_active {
+	box-shadow: inset 0px -1px 20px 1px $dice-board-box-shadow-color;
+	border-radius: 1rem;
+	padding: 1rem;
+	margin: .5rem 0rem;
+}
+
+div#scored-sets-slots {
+	margin-top: 1rem;
+	box-shadow: inset 0px -1px 20px 1px $dice-board-box-shadow-color;    
+	padding: 1rem .5rem;
+    border-radius: 10px;
+}
+
+#scoreset_table {
+	.as-tr {
+		height: 3.5rem;
+	}
+	.scored-dice-images {
+  		min-width: 8rem;
+	}
+	.span-undo-btn {
+		width: 4rem;
+	}
+}
+
+tr.scoreboard_myscore {
+	font-weight: bold;
+}
+
+tr.scoreboard {
+	&_currentplayer {
+		box-shadow: inset 0px 0px 12px 0px $current-player-color;
+	}
+	&_waiting {
+		color: #BBBBBB;
+	}
+}
+
+tr.player-left-game {
+	background-color: $game-button-danger;
+	text-align: center;
+}
+
+
+div#rolled-dice {    
+	border-radius: 10px;
+    box-shadow: inset 0px -1px 20px 1px $dice-board-box-shadow-color;
+    padding: .2rem;
+    min-height: 18rem;
+    min-width: 12rem;
+}
+
+table#game-button-table {
+	min-height: 18rem;
+}
+
+div#roll-button {
+	margin-bottom: 7rem;
+}
+
+
+#dashboard-game-categories {
+	.card {
+		margin-bottom: .75rem;
+	}
+}
+
+#scorecards {
+	display: table;
+	width: 100%;
+}
+
+.scorecards {
+	&-tr {
+		display: table-row;
+	}
+	&-td {
+		display: table-cell;
+	}
+}
+
+button.scorecard-nav {
+	color: $game-play-highlight-font-color;
+	height: 16rem;
+	background-color: $game-play-highlight;
+	width: 1.75rem;
+	border: none;
+	&_next {
+		border-top-right-radius: 5px;
+		border-bottom-right-radius: 5px;
+		box-shadow: -2px 2px 2px $button-box-shadow-color;
+	}
+	&_prev {
+		border-top-left-radius: 5px;
+		border-bottom-left-radius: 5px;
+		box-shadow: 2px 2px 2px $button-box-shadow-color;
+	}
+}
+
+.leave-game {
+	margin-top: 2rem;
+	text-align: center;
+}
+
+.shrink-at-md {
+	margin: 0 auto;
+	@media (min-width: #{$screen-md-min}) {
+		width: 75%;
+	}
+	@media (min-width: #{$screen-md-min}) {
+		width: 60%;
+	}
+}

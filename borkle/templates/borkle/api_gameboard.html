@@ -31,7 +31,7 @@
 	</div>
 	<div>
 		<table class="table shrink-at-md" id="scoreboard">
-			{% for player in game.gameplayer_set.all %}
+			{% for player in game.borkleplayer_set.all %}
 			<tr id="scoreboard-player_{{player.username}}" data-player-name="{{player.username}}" class="player-score {% if player == gameplayer %}scoreboard_myscore {% endif %}">
 				<td>{{player.player.user.username}}:</td>
 				<td class="scoreboard-player-score" id="scoreboard-player-score_{{player.username}}">{{player.total_score}}</td>
@@ -129,20 +129,20 @@
 		<div class="as-tr">
 			<div class="as-td">
 				<hr />
-				<h5>Score Card{% if game.gameplayer_set.count > 1 %}s{% endif %}</h5>
+				<h5>Score Card{% if game.borkleplayer_set.count > 1 %}s{% endif %}</h5>
 			</div>
 		</div>
 	</div>
 		
 	<div class="scorecard-toggle as-table shrink-at-md">
 		<div class="as-tr">
-			{% if game.gameplayer_set.count > 1 %}
+			{% if game.borkleplayer_set.count > 1 %}
 				<div class="as-td as-td_scorecard-nav">
 					<button id="scorecard-nav_prev" class="scorecards-td scorecard-nav scorecard-nav_prev" data-target-attr='data-prev-player'><</button>
 				</div>
 			{% endif %}
 			<div class="as-td">
-				{% for player in game.gameplayer_set.all %}
+				{% for player in game.borkleplayer_set.all %}
 					<div id="score-card-log_{{player.username}}" class="{% if forloop.first %} scorecard-nav_active{% else %} hidden{% endif %}" id="score-card-log_{{player.username}}" data-next-player="" data-prev-player="">
 						<input type="hidden" id="player-turn-index_{{player.username}}" value="0" />
 						<input type="hidden" id="player-turn-roll_{{player.username}}" value="1" />
@@ -154,7 +154,7 @@
 				{% endfor %}
 			</div>
 
-			{% if game.gameplayer_set.count > 1 %}
+			{% if game.borkleplayer_set.count > 1 %}
 				<div class="as-td align-right">
 					<button id="scorecard-nav_next" class="scorecard-nav scorecard-nav_next" data-target-attr='data-next-player'>></button>
 				</div>

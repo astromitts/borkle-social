@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'session_manager',
     'bogames',
     'borkle',
+    'boatfight',
     'namer',
     'allauth',   # <--
     'allauth.account',   # <--
@@ -53,7 +54,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'borkle.middleware.borkle_game_request_validation',
+    'bogames.middleware.bogames_request_validation',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
