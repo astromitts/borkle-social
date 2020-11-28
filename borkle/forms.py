@@ -5,15 +5,8 @@ from django.forms import (
     HiddenInput
 )
 from django.core.exceptions import ValidationError
+from bogames.form_utils import _validate_player
 from bogames.models import Player
-
-
-def _validate_player(player_username):
-    if player_username:
-        player = Player.get_by_username(username=player_username)
-        if not player:
-            return False
-    return True
 
 
 class InitializePracticeGameForm(Form):

@@ -7,35 +7,6 @@ const rolledDiceFieldNames = [
 	'rolled_dice_6_value',
 ]
 
-function doAsyncPost(targetUrl, postData) {
-	$.ajax({
-		method: 'POST',
-		url: targetUrl,
-		dataType: 'json',
-		data: postData,
-	});
-}
-
-function doNonAsyncGet(targetUrl) {
-	var resultData;
-	$.ajax({
-		method: 'GET',
-		url: targetUrl,
-		dataType: 'json',
-		async: false,
-		success: function successFunction(data) {
-			resultData = data;
-		}
-	});
-	return resultData;
-}
-
-function getImageFromCache(imageId) {
-	var imgSource = document.getElementById(imageId);
-	var imgClone = imgSource.cloneNode();
-	return imgClone;
-}
-
 function addDice(addAmount) {
 	var diceButton = $('button#rolldice');
 	var diceAmount = parseInt(diceButton.attr('data-dice-count'));
@@ -293,24 +264,4 @@ function setCurrentRollScoreSets(scoreSets, allowUndo) {
 
 function clearScoreSetTable(visibility) {
 	$('div#scored-sets').html('');
-}
-
-function isAllNull(testList) {
-	var nullCount = 0;
-	testList.forEach(function checkIfNull(val){
-		if(val == null){
-			nullCount++;
-		}
-	});
-	return nullCount == testList.length;
-}
-
-function stripNulls(diceSet) {
-	var nonNulls = [];
-	diceSet.forEach(function removeNull(val) {
-		if(val == null == false){
-			nonNulls.push(val);
-		}
-	});
-	return nonNulls;
 }

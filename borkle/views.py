@@ -8,16 +8,32 @@ from django.http import HttpResponse, JsonResponse
 from django.views import View
 
 from bogames.models import Player
+from bogames.views import (
+    DashboardBase,
+    DashboardApiBase,
+    BoGameBase,
+    JoinGameView,
+    CancelGameView,
+    LeaveGameView,
+)
+
 from borkle.models import BorkleGame
 
 from borkle.forms import InitializeGameForm, InitializePracticeGameForm
-from borkle.models import BorklePlayer, ScoreSet
+from borkle.models import GamePlayer, ScoreSet
 from borkle.utils import get_dice_image_path
 
 
-class BorkleBaseView(View):
+class BorkleBaseView(BoGameBase):
     def setup(self, request, *args, **kwargs):
         super(BorkleBaseView, self).setup(request, *args, **kwargs)
+        self.game_path = 'borkle_game_board'
+        self.cancel_path = 'borkle_game_cancel'
+        self.join_path = 'borkle_game_accept_invitation_link'
+        self.decline_path = 'borkle_game_decline_invitation_link'
+        self.dashboard_refresh_url = 'borkle_dashboard_api'
+        self.gamePlayerClass = GamePlayer
+
         if request.user.is_authenticated:
             self.player = Player.get_or_create(user=self.request.user)
             request.session['player_id'] = self.player.pk
@@ -28,23 +44,12 @@ class BorkleBaseView(View):
                     self.game = None
 
                 if self.game:
-                    self.gameplayer = BorklePlayer.objects.filter(game=self.game, player=self.player).first()
+                    self.gameplayer = GamePlayer.objects.filter(game=self.game, player=self.player).first()
                     if self.game.status == 'active':
                         self.is_current_player = self.player == self.game.current_player.player
+                        self.current_player = self.game.current_player
                     else:
                         self.is_current_player = False
-
-
-class Dashboard(BorkleBaseView):
-    def get(self, request, *args, **kwargs):
-        if 'refresh' in request.path:
-            template = loader.get_template('borkle/dashboard_includes/dashboard.html')
-        else:
-            template = loader.get_template('borkle/dashboard.html')
-        context = {
-            'player': self.player,
-        }
-        return HttpResponse(template.render(context, request))
 
 
 class InitializeGame(BorkleBaseView):
@@ -52,6 +57,33 @@ class InitializeGame(BorkleBaseView):
         template = loader.get_template('borkle/start_game_landing_page.html')
         context = {}
         return HttpResponse(template.render(context, request))
+
+
+class JoinGame(BorkleBaseView, JoinGameView):
+    pass
+
+
+class CancelGame(BorkleBaseView, CancelGameView):
+    pass
+
+
+class LeaveGame(BorkleBaseView, LeaveGameView):
+    pass
+
+
+class Dashboard(BorkleBaseView, DashboardBase):
+    def setup(self, request, *args, **kwargs):
+        super(Dashboard, self).setup(request, *args, **kwargs)
+
+
+class DashboardApi(BorkleBaseView, DashboardApiBase):
+
+    def _format_player(self, player, current_player):
+        return {
+            'username': player.username,
+            'ready': player.ready,
+            'isCurrentPlayer': player == current_player,
+        }
 
 
 class InitializeDistributedGame(BorkleBaseView):
@@ -136,58 +168,3 @@ class InitializeLocalGame(BorkleBaseView):
             'form_header': 'Start a practice game!'
         }
         return HttpResponse(template.render(context, request))
-
-
-class JoinGameView(BorkleBaseView):
-    def get(self, request, *args, **kwargs):
-        self.player.join_game(self.game)
-        return redirect(reverse('borkle_game_board', kwargs={'game_uuid': self.game.uuid}))
-
-
-class DeclineGameView(BorkleBaseView):
-    def get(self, request, *args, **kwargs):
-        self.player.decline_game(self.game)
-        return redirect(reverse('borkle_dashboard'))
-
-
-class CancelGameView(BorkleBaseView):
-    def get(self, request, *args, **kwargs):
-        if self.game.created_by == self.player:
-            if request.GET.get('src', '') == 'game':
-                cancel_url = reverse('borkle_game_board', kwargs={'game_uuid': self.game.uuid})
-            else:
-                cancel_url = reverse('borkle_dashboard')
-
-            template = loader.get_template('borkle/confirm_action.html')
-            context = {
-                'cancel_url': cancel_url,
-                'form_header': 'Are you sure you want to cancel the game?'
-            }
-            return HttpResponse(template.render(context, request))
-        else:
-            messages.error(request, 'Permission denied. Contact game owner for help.')
-
-    def post(self, request, *args, **kwargs):
-        if self.game.created_by == self.player:
-            messages.success(request, 'Game cancelled.')
-            self.game.delete()
-        else:
-            messages.error(request, 'Permission denied. Contact game owner for help.')
-        return redirect(reverse('borkle_dashboard'))
-
-
-class LeaveGameView(BorkleBaseView):
-    def get(self, request, *args, **kwargs):
-        template = loader.get_template('bogames/confirm_action.html')
-        context = {
-            'cancel_url': reverse('borkle_game_board', kwargs={'game_uuid': self.game.uuid}),
-            'form_header': 'Are you sure you want to leave the game?'
-        }
-        return HttpResponse(template.render(context, request))
-
-    def post(self, request, *args, **kwargs):
-        self.game.boot_player(self.gameplayer)
-        messages.success(request, 'Successfully left game.')
-        if self.game.borkleplayer_set.count() == 0:
-            self.game.delete()
-        return redirect(reverse('borkle_dashboard'))

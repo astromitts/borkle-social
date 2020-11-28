@@ -4,80 +4,16 @@ from django.urls import reverse
 from django.template import loader
 from django.http import HttpResponse, JsonResponse
 
-from borkle.models import Game, ScoreSet, BorklePlayer
+from borkle.models import Game, ScoreSet, GamePlayer
 from borkle.views import BorkleBaseView
 from borkle.utils import get_dice_image_path
 
-
-class DashboardApi(BorkleBaseView):
-
-    def _format_player(self, player, current_player):
-        return {
-            'username': player.username,
-            'ready': player.ready,
-            'isCurrentPlayer': player == current_player,
-        }
-
-    def _add_formatted_games(self, games, append_to_list, status):
-        for game in games:
-            player_gameplayer = game.get_gameplayer(self.player)
-            if game.current_player and game.current_player.current_turn:
-                current_game_player = game.current_player.username
-                is_current_player = game.current_player.current_turn == player_gameplayer
-            else:
-                current_game_player = None
-                is_current_player = False
-            append_to_list.append({
-                'dashboardStatus': status,
-                'uuid': game.uuid,
-                'codeName': game.code_name,
-                'createdBy': game.created_by.username,
-                'isGameOwner': game.created_by == self.player,
-                'current_player_name': current_game_player,
-                'players': [self._format_player(gp, game.current_player) for gp in game.borkleplayer_set.all()],
-                'isCurrentPlayer': is_current_player,
-                'isPracticeGame': game.game_type == 'practice',
-                'link': reverse('borkle_game_board', kwargs={'game_uuid': game.uuid}),
-                'cancelLink': reverse('borkle_game_cancel', kwargs={'game_uuid': game.uuid}),
-                'joinLink': reverse('borkle_game_accept_invitation_link', kwargs={'game_uuid': game.uuid}),
-                'declineLink': reverse('borkle_game_decline_invitation_link', kwargs={'game_uuid': game.uuid})
-            })
-        return append_to_list
-
-    def get(self, request, *args, **kwargs):
-        player_instances = BorklePlayer.objects.filter(player=self.player)
-        player_games = {
-            'active': [],
-            'pending': [],
-            'invitations': [],
-        }
-
-        for player_inst in player_instances:
-            game = player_inst.game
-            if game.all_players_ready:
-                player_games['active'].append(game)
-            elif player_inst.ready:
-                player_games['pending'].append(game)
-            else:
-                player_games['invitations'].append(games)
-
-        data = {
-            'playerName': self.player.username,
-            # 'activeGames': [self._format_game(game, 'active') for game in player_games['active']],
-            # 'pendingGames': [self._format_game(game, 'pending') for game in player_games['pending']],
-            # 'invitedGames': [self._format_game(game, 'invited') for game in player_games['invitations']],
-            'games': [],
-        }
-        data['games'] = self._add_formatted_games(player_games['active'], data['games'], 'active')
-        data['games'] = self._add_formatted_games(player_games['pending'], data['games'], 'pending')
-        data['games'] = self._add_formatted_games(player_games['invitations'], data['games'], 'invited')
-        return JsonResponse(data)
 
 class GameStatusApi(BorkleBaseView):
     def _scoreboard(self):
         scoreboard = []
 
-        for player in self.game.borkleplayer_set.all():
+        for player in self.game.gameplayer_set.all():
             scoreboard.append(
                 {
                     'pk': player.pk,
@@ -90,7 +26,7 @@ class GameStatusApi(BorkleBaseView):
         return scoreboard
 
     def _players_name_list(self):
-        return [player.username for player in self.game.borkleplayer_set.all()]
+        return [player.username for player in self.game.gameplayer_set.all()]
 
     def _format_scoresets(self, scoresets):
         formatted_scoresets = []
@@ -112,7 +48,7 @@ class GameStatusApi(BorkleBaseView):
         # turns = self.game.turn_set.filter(turn_index__gte=latest_turn).all()
         turn_history = []
 
-        for player in self.game.borkleplayer_set.all():
+        for player in self.game.gameplayer_set.all():
             player_data = {
                 'username': player.username,
                 'pk': player.pk,
@@ -154,7 +90,7 @@ class GameStatusApi(BorkleBaseView):
 
     def _players(self):
         players = []
-        for player in self.game.borkleplayer_set.all():
+        for player in self.game.gameplayer_set.all():
             players.append(
                 {
                     'pk': player.pk,
@@ -167,11 +103,11 @@ class GameStatusApi(BorkleBaseView):
 
     def _player_scorecards(self):
         player_cards = {}
-        players = self.game.borkleplayer_set.all()
-        for i in range(self.game.borkleplayer_set.count()):
+        players = self.game.gameplayer_set.all()
+        for i in range(self.game.gameplayer_set.count()):
             player = players[i]
 
-            if i != self.game.borkleplayer_set.count() - 1:
+            if i != self.game.gameplayer_set.count() - 1:
                 next_player_card = players[i + 1].username
             else:
                 next_player_card = players[0].username
@@ -179,7 +115,7 @@ class GameStatusApi(BorkleBaseView):
             if i != 0:
                 previous_player_card = players[i - 1].username
             else:
-                previous_player_card = players[self.game.borkleplayer_set.count() - 1].username
+                previous_player_card = players[self.game.gameplayer_set.count() - 1].username
 
             player_cards[player.username] = {
                 'next_player_card': next_player_card,

@@ -2,11 +2,11 @@
 {% load static %}
 
 {% block extra_js %}
-	<script src="{% static 'js/borkle/dashboardApi.js' %}"></script>
+	<script src="{% static dashboard_api_js_file %}"></script>
 {% endblock %}
 
 {% block main_content %}
-	<input type="hidden" id="refreshurl" value="{% url 'borkle_dashboard_api' %}" />
+	<input type="hidden" id="refreshurl" value="{% url dashboard_refresh_url %}" />
 		<div class="dashboard">
 			<h2>Welcome, {{user.username}}</h2>
 			<div class="row">

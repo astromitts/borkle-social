@@ -1,3 +1,4 @@
+
 function bindRollDice() {
 	var rollDiceUrl = $('input#api-rolldice-url').val();
 	var targetDivPrefix =  'slot-';

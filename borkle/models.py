@@ -22,6 +22,9 @@ class BorkleGame(Game):
         default='normal'
     )
 
+    def get_gameplayer_class(self):
+        return GamePlayer
+
     @classmethod
     def create(cls, max_score, invited_players, initial_player, code_name_prefix=None, game_type='normal'):
         game = cls()
@@ -33,25 +36,25 @@ class BorkleGame(Game):
         if code_name_prefix:
             game.code_name = '{}-{}'.format(code_name_prefix, game.code_name)
             game.save()
-        initial_borkleplayer = BorklePlayer(player=initial_player, game=game, ready=True)
-        initial_borkleplayer.save()
+        initial_gameplayer = GamePlayer(player=initial_player, game=game, ready=True)
+        initial_gameplayer.save()
         for player in invited_players:
-            borkleplayer = BorklePlayer(player=player, game=game, ready=False)
-            borkleplayer.save()
+            gameplayer = GamePlayer(player=player, game=game, ready=False)
+            gameplayer.save()
 
         order = 1
-        for player in game.borkleplayer_set.order_by('?').all():
+        for player in game.gameplayer_set.order_by('?').all():
             player.player_order = order
             player.save()
             order += 1
 
-        return game, initial_borkleplayer
+        return game, initial_gameplayer
 
     def start_turn(self):
         self.is_current_player = True
         self.save()
         new_turn = Turn(
-            borkleplayer=self,
+            gameplayer=self,
             game=self.game,
             turn_index=self.game.current_turn_index,
             active=True
@@ -83,27 +86,27 @@ class BorkleGame(Game):
 
     @property
     def all_players_ready(self):
-        ready_player_count = self.borkleplayer_set.filter(ready=True).count()
-        return ready_player_count == self.borkleplayer_set.all().count()
+        ready_player_count = self.gameplayer_set.filter(ready=True).count()
+        return ready_player_count == self.gameplayer_set.all().count()
 
     @property
     def current_player(self):
-        if self.borkleplayer_set.count() == 1:
-            return self.borkleplayer_set.first()
-        return self.borkleplayer_set.filter(is_current_player=True).first()
+        if self.gameplayer_set.count() == 1:
+            return self.gameplayer_set.first()
+        return self.gameplayer_set.filter(is_current_player=True).first()
 
     @property
     def all_players_had_last_turn(self):
-        return self.borkleplayer_set.filter(had_last_turn=True).count() == self.borkleplayer_set.all().count()
+        return self.gameplayer_set.filter(had_last_turn=True).count() == self.gameplayer_set.all().count()
 
     def start_game(self):
         self.status = 'active'
         self.save()
-        first_player = random.choice(self.borkleplayer_set.all())
+        first_player = random.choice(self.gameplayer_set.all())
         first_player.start_turn()
 
     def advance_player(self):
-        if self.borkleplayer_set.count() == 1:
+        if self.gameplayer_set.count() == 1:
             self.current_player.end_turn()
             self.current_turn_index += 1
             self.save()
@@ -113,14 +116,13 @@ class BorkleGame(Game):
                 self.current_player.start_turn()
         else:
             current_player_order = self.current_player.player_order
-            if current_player_order == self.borkleplayer_set.count():
-                next_player = self.borkleplayer_set.get(player_order=1)
+            if current_player_order == self.gameplayer_set.count():
+                next_player = self.gameplayer_set.get(player_order=1)
                 self.current_turn_index += 1
                 self.save()
             else:
-                next_player = self.borkleplayer_set.get(player_order=current_player_order + 1)
+                next_player = self.gameplayer_set.get(player_order=current_player_order + 1)
             self.current_player.end_turn()
-
             if self.all_players_had_last_turn:
                 self.end_game()
             else:
@@ -154,26 +156,26 @@ class BorkleGame(Game):
         super(Game, self).save(*args, **kwargs)
 
 
-    def get_borkleplayer(self, player):
-        return self.borkleplayer_set.filter(player=player).first()
+    def get_gameplayer(self, player):
+        return self.gameplayer_set.filter(player=player).first()
 
-    def boot_player(self, borkleplayer):
-        if borkleplayer.is_current_player:
+    def boot_player(self, gameplayer):
+        if gameplayer.is_current_player:
             self.advance_player()
-        borkleplayer.delete()
+        gameplayer.delete()
 
     @property
     def winner(self):
         winner = None
-        max_score = self.borkleplayer_set.all().aggregate(maxscore=Max('total_score'))['maxscore']
-        winner_qs = self.borkleplayer_set.filter(total_score=max_score)
+        max_score = self.gameplayer_set.all().aggregate(maxscore=Max('total_score'))['maxscore']
+        winner_qs = self.gameplayer_set.filter(total_score=max_score)
         return winner_qs.all()
 
     @property
     def turn_history(self):
         history = {}
         for i in reversed(range(1, self.current_turn_index + 1)):
-            for player in self.borkleplayer_set.all():
+            for player in self.gameplayer_set.all():
                 player_history = history.get(player, {})
                 player_turn = player.turn_set.filter(turn_index=i).first()
                 if player_turn:
@@ -187,11 +189,11 @@ class BorkleGame(Game):
         return history
 
     def get_gameplayer(self, player):
-        return self.borkleplayer_set.filter(player=player).first()
+        return self.gameplayer_set.filter(player=player).first()
 
 
-class BorklePlayer(models.Model):
-    player = models.ForeignKey(Player, null=True, on_delete=models.CASCADE)
+class GamePlayer(models.Model):
+    player = models.ForeignKey(Player, null=True, on_delete=models.CASCADE, related_name='gameplayer_player')
     game = models.ForeignKey(BorkleGame, on_delete=models.CASCADE)
     ready = models.BooleanField(default=False)
     player_order = models.IntegerField(default=1)
@@ -229,7 +231,7 @@ class BorklePlayer(models.Model):
         self.is_current_player = True
         self.save()
         new_turn = Turn(
-            borkleplayer=self,
+            gameplayer=self,
             game=self.game,
             turn_index=self.game.current_turn_index,
             active=True
@@ -238,15 +240,16 @@ class BorklePlayer(models.Model):
 
     def end_turn(self):
         self.is_current_player = False
-        self.current_turn.set_score()
-        self.update_score()
-        self.current_turn.end_turn()
+        if self.current_turn:
+            self.current_turn.set_score()
+            self.update_score()
+            self.current_turn.end_turn()
         if self.total_score >= self.game.max_score:
             self.game.last_turn = True
             self.game.save()
         if self.game.last_turn:
             self.had_last_turn = True
-            self.save()
+        self.save()
 
     def update_score(self):
         total_score = 0
@@ -272,7 +275,7 @@ class BorklePlayer(models.Model):
 
 
 class Turn(models.Model):
-    borkleplayer = models.ForeignKey(BorklePlayer, on_delete=models.CASCADE)
+    gameplayer = models.ForeignKey(GamePlayer, on_delete=models.CASCADE)
     game = models.ForeignKey(BorkleGame, on_delete=models.CASCADE)
     score = models.IntegerField(default=0)
     active = models.BooleanField(default=False)
@@ -290,7 +293,7 @@ class Turn(models.Model):
             active_str = ' (active)'
         else:
             active_str = ''
-        return '{} turn: {}{}'.format(self.borkleplayer, self.pk, active_str)
+        return '{} turn: {}{}'.format(self.gameplayer, self.pk, active_str)
 
     def end_turn(self):
         self.active = False

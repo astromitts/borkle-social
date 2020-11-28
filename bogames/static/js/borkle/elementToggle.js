@@ -151,11 +151,3 @@ function clearGameMessage(selectId) {
 	toggleElementVisibility(gameMessageRow, 'off');
 	return 'off';
 }
-
-function toggleElementVisibility(target, visibility) {
-	if (visibility == 'on' && target.hasClass('hidden')) {
-		target.removeClass('hidden');
-	} else if (visibility == 'off' && !target.hasClass('hidden')) {
-		target.addClass('hidden');
-	}
-}

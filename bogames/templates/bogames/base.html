@@ -8,7 +8,7 @@
 	<meta name="description" content="">
 	<meta name="keywords" content="">
 	<meta name="author" content="Bo Morin">
-	<title>BoGames | {% block page_title %}Games by Bo.{% endblock %}</title>
+	<title>{% block page_title %}Borkle! | Games by Bo.{% endblock %}</title>
 	<link rel="shortcut icon" href="{% static 'images/favicon.ico' %}" />
 	<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
 	<link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
@@ -17,9 +17,13 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" > </script>
 	<script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
 	<script src="{% static 'js/base.js' %}"></script>
+	<script src="{% static 'js/boGamesUtils.js' %}"></script>
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nerko+One">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto+Sans+JP">
+	{% block extra_css %}
+	{% endblock %}
 	<link href="{% static 'css/app.css' %}" rel="stylesheet">
+
 	{% block extra_js %}
 	{% endblock %}
 </head>
@@ -48,7 +52,7 @@
 							<a class="nav-link" href="{%url 'session_manager_login' %}">Log in</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link" href="{%url 'about' %}">About</a>
+							<a class="nav-link" href="{%url 'borkle_about' %}">About</a>
 						</li>
 						<li class="nav-item">
 							<a class="nav-link" href="{%url 'borkle_score_chart' %}">How to score</a>

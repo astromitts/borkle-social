@@ -6,6 +6,7 @@ from django.db import models
 from django.urls import reverse
 from django.contrib.auth.models import User
 from django.db.models import Max
+
 import uuid
 import random
 from namer.models import get_random_name
@@ -22,15 +23,14 @@ class Player(models.Model):
     def username(self):
         return self.user.username
 
-    def join_game(self, game):
-        gameplayer = GamePlayer.objects.get(player=self, game=game)
+    def join_game(self, game, gameplayer_class):
+        gameplayer = gameplayer_class.objects.get(player=self, game=game)
         gameplayer.ready = True
         gameplayer.save()
-        if game.all_players_ready:
-            game.start_game()
+        return gameplayer
 
-    def decline_game(self, game):
-        gameplayer = GamePlayer.objects.get(player=self, game=game)
+    def decline_game(self, game, gameplayer_class):
+        gameplayer = gameplayer_class.objects.get(player=self, game=game)
         gameplayer.delete()
 
     @classmethod
@@ -67,8 +67,38 @@ class Game(models.Model):
     code_name = models.CharField(max_length=100, default=get_random_name, blank=True, unique=True)
     current_turn_index = models.IntegerField(default=1)
 
+
     def __str__(self):
         if self.code_name:
             return 'Game {}'.format(self.code_name)
         else:
             return 'Unsaved Game'
+
+    def set_status(self):
+        if self.all_players_ready and self.status == 'waiting':
+            self.start_game()
+
+    @property
+    def all_players_ready(self):
+        ready_player_count = self.gameplayer_set.filter(status='ready').count()
+        return ready_player_count == self.gameplayer_set.all().count()
+
+    @classmethod
+    def initialize_game(cls, players, gameplayer_class):
+        newgame = cls(
+            status='pending'
+        )
+        newgame.save()
+        for player in players:
+            gp = gameplayer_class(
+                player=player,
+                game=newgame
+            )
+            gp.save()
+        return newgame
+
+    def start_game(self):
+        self.status = 'active'
+        self.save()
+        first_player = random.choice(self.gameplayer_set.all())
+        first_player.start_turn()
