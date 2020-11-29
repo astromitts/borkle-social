@@ -6,10 +6,25 @@ from django.db import models
 from django.urls import reverse
 from django.contrib.auth.models import User
 from django.db.models import Max
+from django.utils.timezone import now
+
+from datetime import datetime
 
 import uuid
 import random
 from namer.models import get_random_name
+
+
+class ErrorLog(models.Model):
+    timestamp = models.DateTimeField(default=now)
+    status_code = models.IntegerField(blank=True, null=True)
+    title = models.CharField(max_length=300, blank=True, null=True)
+    error = models.TextField()
+    notes = models.TextField(blank=True, null=True)
+    source_url = models.CharField(max_length=200, blank=True, null=True)
+
+    def __str__(self):
+        return 'Error: {}, {}'.format(self.timestamp, self.title)
 
 
 class Player(models.Model):

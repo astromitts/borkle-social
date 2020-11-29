@@ -75,6 +75,7 @@ class InitializeGame(BoatFightBaseView):
         self.template = loader.get_template('bogames/generic_form.html')
 
     def get(self, request, *args, **kwargs):
+        asdsf
         form = self.formClass(
             initial={
                 'initializing_player_id': self.player.pk

@@ -6,7 +6,8 @@ from django.shortcuts import render, redirect
 from django.urls import resolve, reverse
 from django.urls.exceptions import Resolver404
 
-from borkle.models import Game
+from bs4 import BeautifulSoup
+from bogames.models import Game, ErrorLog
 
 
 json_response_game_not_found = {
@@ -100,11 +101,21 @@ def bogames_request_validation(get_response):
 
         response = get_response(request)
         status_code = str(response.status_code)
+
         if status_code.startswith('5') or status_code.startswith('4'):
             error_message = unkown_error_error_message
-            status_code = response.status_code
 
         if error_message and settings.ENVIRONMENT == 'prod':
+            status_code = response.status_code
+            content = BeautifulSoup(response.content)
+            summary = content.find('div', {'id': 'summary'})
+            error_log = ErrorLog(
+                status_code=response.status_code,
+                title=str(summary.find('h1')),
+                error=str(summary),
+                source_url=request.path
+            )
+            error_log.save()
             context = {
                 'message': error_message,
                 'status_code': status_code
