@@ -7,10 +7,10 @@ class Boat(object):
     def __init__(self, label, units):
         self.label = label
         self.units = units
-        self.image = 'images/boats/{}/{}.png'.format(label, label)
+        self.image = 'images/boats/{}/{}.png'.format(label.lower(), label)
         self.image_map = []
         for i in range(1, self.units + 1):
-            self.image_map.append('images/boats/{}/{}.png'.format(label, i))
+            self.image_map.append('images/boats/{}/{}.png'.format(label.lower(), i))
 
 
 SHIPS = {
