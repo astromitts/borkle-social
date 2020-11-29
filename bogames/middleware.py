@@ -62,6 +62,7 @@ def bogames_request_validation(get_response):
         status_code = 200
 
         is_api_request = '/api/' in request.path
+        is_static_request = '/static/' in request.path
         try:
             resolved_url = resolve(request.path)
             if not resolved_url.url_name in unauthentication_allowed_url_names:
@@ -107,15 +108,16 @@ def bogames_request_validation(get_response):
 
         if error_message and settings.ENVIRONMENT == 'prod':
             status_code = response.status_code
-            content = BeautifulSoup(response.content)
-            summary = content.find('div', {'id': 'summary'})
-            error_log = ErrorLog(
-                status_code=response.status_code,
-                title=str(summary.find('h1')),
-                error=str(summary),
-                source_url=request.path
-            )
-            error_log.save()
+            if not is_static_request:
+                content = BeautifulSoup(response.content)
+                summary = content.find('div', {'id': 'summary'})
+                error_log = ErrorLog(
+                    status_code=status_code,
+                    title=str(summary.find('h1')),
+                    error=str(summary),
+                    source_url=request.path
+                )
+                error_log.save()
             context = {
                 'message': error_message,
                 'status_code': status_code
