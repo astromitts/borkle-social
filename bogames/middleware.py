@@ -77,27 +77,18 @@ def bogames_request_validation(get_response):
                 try:
                     game = Game.objects.filter(uuid=resolved_url.kwargs['game_uuid']).first()
                     if not game:
-                        if is_api_request:
-                            if settings.ENVIRONMENT == 'prod':
+                        if settings.ENVIRONMENT == 'prod':
+                            if is_api_request:
                                 return JsonResponse(json_response_game_not_found, status=404)
-                        if not settings.DEBUG:
-                            error_message = game_not_found_message
+                            error_message = game_not_found_error_message
                             status_code = 404
-
-                    # game_player_ids = [gp.player.pk for gp in game.gameplayer_set.all()]
-                    # gameplayer_is_valid = request.session.get('player_id') in game_player_ids
-                    # if not gameplayer_is_valid:
-                    #     if is_api_request:
-                    #         return JsonResponse(json_response_player_not_in_game, status=403)
-                    #     error_message = game_permission_denied_error_message
-                    #     status_code = 403
 
                 except ValidationError:
                     if is_api_request:
                         if settings.ENVIRONMENT == 'prod':
                             return JsonResponse(json_response_game_not_found, status=500)
                     if settings.ENVIRONMENT == 'prod':
-                        error_message = game_not_found_message
+                        error_message = game_not_found_error_message
                         status_code = 404
 
         except Resolver404:
@@ -106,15 +97,19 @@ def bogames_request_validation(get_response):
                     return JsonResponse(json_page_not_found, status=403)
                 error_message = page_not_found_message
                 status_code = 404
-        if error_message:
+
+        response = get_response(request)
+        status_code = str(response.status_code)
+        if status_code.startswith('5') or status_code.startswith('4'):
+            error_message = unkown_error_error_message
+            status_code = response.status_code
+
+        if error_message and settings.ENVIRONMENT == 'prod':
             context = {
                 'message': error_message,
                 'status_code': status_code
             }
-            return render(request, 'bogame/errors/error.html', context=context, status=status_code)
-
-        response = get_response(request)
-
+            return render(request, 'bogames/errors/error.html', context=context, status=status_code)
 
         # Code to be executed for each request/response after
         # the view is called.

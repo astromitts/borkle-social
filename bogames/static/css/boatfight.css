@@ -2,52 +2,81 @@
   padding: 0.5rem;
 }
 
+.align-right {
+  text-align: right;
+}
+
 .boatfight_placement-board {
-  width: 20rem;
+  width: 20rem !important;
+  margin: 0 auto;
   border: 1px solid #ffffff;
 }
 .boatfight_placement-board__active {
   border: 1px solid #FF8D00;
 }
 .boatfight_placement-board .boatfight_gamecell {
-  border: 1px solid #000000;
+  border: 1px solid #a9a9a9;
   width: 2rem;
   height: 2rem;
 }
 .boatfight_placement-board .as-row {
   height: 2rem;
 }
-.boatfight_placement-board .filled {
-  background-color: #8A8A8A;
-}
-.boatfight_placement-board .pending {
-  background-color: #FF8D00;
-}
-
 .boatfight-boats {
   display: inline-block;
   height: 2rem;
 }
-.boatfight-boats_boat {
-  background-color: #8A8A8A;
-}
 .boatfight-boats_boat__selected {
   background-color: #FF8D00;
 }
-.boatfight-boats_carrier {
+.boatfight-boats_longship {
   width: 10rem;
 }
-.boatfight-boats_battleship {
+.boatfight-boats_longship img {
+  width: 10rem;
+  height: 2rem;
+}
+.boatfight-boats_knarr {
   width: 8rem;
 }
-.boatfight-boats_cruiser {
+.boatfight-boats_knarr img {
   width: 8rem;
+  height: 2rem;
 }
-.boatfight-boats_submarine {
+.boatfight-boats_karve {
   width: 6rem;
 }
-.boatfight-boats_destroyer {
+.boatfight-boats_karve img {
+  width: 6rem;
+  height: 2rem;
+}
+.boatfight-boats_kraken {
+  width: 6rem;
+}
+.boatfight-boats_kraken img {
+  width: 6rem;
+  height: 2rem;
+}
+.boatfight-boats_faering {
   width: 4rem;
+}
+.boatfight-boats_faering img {
+  width: 4rem;
+  height: 2rem;
+}
+
+img.boat-part {
+  width: 1.8rem;
+  height: 1.8rem;
+}
+img.boat-part_vertical {
+  transform: rotate(90deg);
+}
+img.boat-part_hit {
+  filter: grayscale(50%);
+}
+img.boat-part_sunk {
+  filter: grayscale(100%);
 }
 
 .boatfightboard_opponent .pending {
@@ -55,7 +84,7 @@
 }
 
 .missed {
-  background-color: green;
+  background-color: #00ADFF;
 }
 
 .hit {
@@ -74,8 +103,8 @@
   background-color: #222222;
 }
 
-.boat-placed {
-  background-color: #CCCCCC;
+.boat-placed img {
+  filter: grayscale(100%);
 }
 
 /*# sourceMappingURL=boatfight.css.map */

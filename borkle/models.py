@@ -22,9 +22,6 @@ class BorkleGame(Game):
         default='normal'
     )
 
-    def get_gameplayer_class(self):
-        return GamePlayer
-
     @classmethod
     def create(cls, max_score, invited_players, initial_player, code_name_prefix=None, game_type='normal'):
         game = cls()
@@ -90,12 +87,6 @@ class BorkleGame(Game):
         return ready_player_count == self.gameplayer_set.all().count()
 
     @property
-    def current_player(self):
-        if self.gameplayer_set.count() == 1:
-            return self.gameplayer_set.first()
-        return self.gameplayer_set.filter(is_current_player=True).first()
-
-    @property
     def all_players_had_last_turn(self):
         return self.gameplayer_set.filter(had_last_turn=True).count() == self.gameplayer_set.all().count()
 
@@ -158,11 +149,6 @@ class BorkleGame(Game):
 
     def get_gameplayer(self, player):
         return self.gameplayer_set.filter(player=player).first()
-
-    def boot_player(self, gameplayer):
-        if gameplayer.is_current_player:
-            self.advance_player()
-        gameplayer.delete()
 
     @property
     def winner(self):

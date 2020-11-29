@@ -1,4 +1,4 @@
-{% extends 'borkle/base.html' %}
+{% extends base_template %}
 {% load static %}
 
 {% block extra_js %}
@@ -11,7 +11,11 @@
 			<h2>Welcome, {{user.username}}</h2>
 			<div class="row">
 				<div class="col">
-					<a class="nav-link" href="{% url 'borkle_initialize_game' %}"><button class="game-btn">New Game</button></a>
+					<a class="nav-link" href="{% url start_game_path %}"><button class="game-btn">New Game</button></a>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col">
 					<h3>Active Games</h3>
 					<div id="active-games"></div>
 				</div>

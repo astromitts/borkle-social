@@ -44,18 +44,16 @@
 								<a class="nav-link" target="_blank" href="/admin/">Admin</a>
 							</li>
 						{% endif %}
+						
+						<li class="nav-item">
+							<a class="nav-link" href="{%url 'session_manager_logout' %}">Log out</a>
+						</li>
 					{% else %}
 						<li class="nav-item">
 							<a class="nav-link" href="{% url 'session_manager_register' %}">Register</a>
 						</li>
 						<li class="nav-item">
 							<a class="nav-link" href="{%url 'session_manager_login' %}">Log in</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" href="{%url 'borkle_about' %}">About</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" href="{%url 'borkle_score_chart' %}">How to score</a>
 						</li>
 					{% endif %}
 				</ul>

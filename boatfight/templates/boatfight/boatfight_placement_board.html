@@ -15,23 +15,42 @@
 	<div id="js-urls">
 		<input type='hidden' id='boatfight-setup-url' value='{% url "boatfight_game" game_uuid=game.uuid %}' />
 	</div>
-	<div id="boatfight">
-		<div id="boatfight_placement-board" class="as-table boatfight_placement-board">
-			{% for y in y_axis %}
-				<div class="as-row" id="y-{{y}}">
-					{% for x in x_axis %}
-						<div class="as-td boatfight_gamecell boatfight_gamecell__available" id="{{x}}-{{y}}" data-y="{{y}}" data-x="{{x}}">{{x}},{{y}}</div>
-					{% endfor %}
-				</div>
-			{% endfor %}
-		</div>
-		<div class="boatfight-boats">
+	<div class="row">
+		<div class="col align-right">
 			<div><button id="ready" class="game-btn" disabled>Ready!</button></div>
 			<div><button id="lock" class="game-btn" disabled>Place Boat</button></div>
 			<div><button id="flip" class="game-btn" disabled>Flip Orientation</button></div>
-			{% for boat_label, boat in boats_to_place.items %}
-				<div id="{{boat_label}}" class="boatfight-boats_boat boatfight-boats_{{boat_label}} boat-to-place" data-boat-size="{{boat.units}}">{{boat_label}}</div>
-			{% endfor %}
 		</div>
+		<div class="col">
+			<div class="boatfight-boats">
+				{% for boat_label, boat in boats_to_place.items %}
+					<div id="{{boat_label}}" class="boatfight-boats_boat boatfight-boats_{{boat_label}} boat-to-place" data-boat-size="{{boat.units}}">
+						{% if boat.image %}
+							<img src="{% static boat.image %}" />
+						{% endif %}
+					</div>
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+	<div class="row" id="boatfight">
+		<div class="col">
+			<div id="boatfight_placement-board" class="as-table boatfight_placement-board">
+				{% for y in y_axis %}
+					<div class="as-row" id="y-{{y}}">
+						{% for x in x_axis %}
+							<div class="as-td boatfight_gamecell boatfight_gamecell__available" id="{{x}}-{{y}}" data-y="{{y}}" data-x="{{x}}"></div>
+						{% endfor %}
+					</div>
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+	<div id="boatpart-image-cache" class="hidden">
+		{% for boat_label, boat in boats_to_place.items %}
+			{% for source in boat.image_map %}
+				<img id="{{boat_label}}-{{forloop.counter}}" class="boat-part" src="{% static source %}" />
+			{% endfor %}
+		{% endfor %}
 	</div>
 {% endblock %}

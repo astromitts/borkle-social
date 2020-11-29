@@ -20,6 +20,7 @@ function directionValid(axisOptions) {
 		var potentialDiv = $('div#' + optionId);
 		if (potentialDiv.length == 0 || potentialDiv.hasClass('filled')) {
 			optionWorks = false;
+
 		}
 	});
 	return optionWorks;
@@ -28,6 +29,7 @@ function directionValid(axisOptions) {
 function clearPendingCells() {
 	$('.pending').each(function(){
 		$(this).removeClass('pending');
+		$(this).html('');
 	});
 }
 
@@ -38,11 +40,13 @@ function clearFlippedCells(previousDivCells) {
 		previousDiv.attr('data-orientation', '');
 		previousDiv.attr('data-boat-size', '');
 		previousDiv.attr('data-boat-type', '');
+		previousDiv.html('');
 	});
 }
 
 function fillBoatPlacement(axisOptions, boatSize, orientation, boatType) {
 	clearPendingCells();
+	var cacheIndex = 1;
 	axisOptions.forEach(function fillCells(optionId) {
 		var potentialDiv = $('div#' + optionId);
 		potentialDiv.addClass('pending');
@@ -50,6 +54,13 @@ function fillBoatPlacement(axisOptions, boatSize, orientation, boatType) {
 		potentialDiv.attr('data-orientation', orientation);
 		potentialDiv.attr('data-boat-size', boatSize);
 		potentialDiv.attr('data-boat-type', boatType);
+		var cacheImageID = boatType + '-' + cacheIndex;
+		var divImage = getImageFromCache(cacheImageID);
+		if (orientation == 'y') {
+			divImage.setAttribute('class', 'boat-part boat-part_vertical');
+		}
+		potentialDiv.html(divImage);
+		cacheIndex += 1;
 	});
 }
 
@@ -84,6 +95,22 @@ function bindFlipBoatOrientation(target) {
 	});
 }
 
+function _boatIsAlreadyPlaced(boatType) {
+	var boatIsPlaced = false;
+	$('.pending').each(function(){
+		var pendingID = $(this).attr('data-boat-type');
+		boatIsPlaced = boatType == pendingID;
+	});
+	return boatIsPlaced;
+}
+
+function flashInvalidDivs(axisDivs) {
+	axisDivs.forEach(function checkXOptions(optionId) {
+		$('div#' + optionId).stop().css("background-color", "red")
+		.animate({ backgroundColor: "#FFFFFF"}, 500);
+	});
+}
+
 function placeBoat(orientationBase, boatSize, priorityOrientation, boatType) {
 	var yPos = parseInt(orientationBase.attr('data-y'));
 	var xPos = parseInt(orientationBase.attr('data-x'));
@@ -91,24 +118,28 @@ function placeBoat(orientationBase, boatSize, priorityOrientation, boatType) {
 	var yAxisOptions = getYOptions(xPos, yPos, boatSize);
 	var xOptionWorks = directionValid(xAxisOptions);
 	var yOptionWorks = directionValid(yAxisOptions);
-
+	var boatIsAlreadyPlace = _boatIsAlreadyPlaced(boatType);
 	var boatPlaced = false;
 
 	if (priorityOrientation == 'x') {	
 		if (xOptionWorks) {
 			fillBoatPlacement(xAxisOptions, boatSize, 'x', boatType);
 			boatPlaced = true;
-		} else if (yOptionWorks) {
+		} else if (yOptionWorks && !boatIsAlreadyPlace) {
 			fillBoatPlacement(yAxisOptions, boatSize, 'y', boatType);
 			boatPlaced = true;
+		} else {
+			flashInvalidDivs(xAxisOptions);
 		}
 	} else {
 		if (yOptionWorks) {
 			fillBoatPlacement(yAxisOptions, boatSize, 'y', boatType);
 			boatPlaced = true;
-		} else if (xOptionWorks) {
+		} else if (xOptionWorks && !boatIsAlreadyPlace) {
 			fillBoatPlacement(xAxisOptions, boatSize, 'x', boatType);
 			boatPlaced = true;
+		} else {
+			flashInvalidDivs(yAxisOptions);
 		}
 	}
 

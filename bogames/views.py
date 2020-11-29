@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.contrib import messages
 from django.urls import reverse
 from django.views import View
 from django.template import loader
@@ -19,6 +20,8 @@ class BoGameBase(View):
         self.leave_game_path = 'ERROR'
         self.dashboard_path = 'ERROR'
         self.dashboard_refresh_url = 'ERROR'
+        self.start_game_path = 'ERROR'
+        self.template_base = 'bogames/base.html'
         self.dashboard_api_js_file = 'js/borkle/dashboardApi.js'
         self.gamePlayerClass = GamePlayer
 
@@ -31,7 +34,14 @@ class LandingPage(BoGameBase):
         template = loader.get_template('bogames/landing.html')
         context = {
             'games': {
-                'Borkle': reverse(self.dashboard_path)
+                'Borkle': {
+                    'link_url': reverse('borkle_dashboard'),
+                    'logo': 'images/game-logos/borkle.png'
+                },
+                'BoatFight': {
+                    'link_url': reverse('boatfight_dashboard'),
+                    'logo': 'images/game-logos/boatfight.png'
+                },
             }
         }
         return HttpResponse(template.render(context, request))
@@ -41,9 +51,11 @@ class DashboardBase(BoGameBase):
     def get(self, request, *args, **kwargs):
         template = loader.get_template('bogames/dashboard.html')
         context = {
+            'base_template': self.template_base,
             'player': self.player,
             'dashboard_refresh_url': self.dashboard_refresh_url,
             'dashboard_api_js_file': self.dashboard_api_js_file,
+            'start_game_path': self.start_game_path,
         }
         return HttpResponse(template.render(context, request))
 
@@ -74,11 +86,16 @@ class DashboardApiBase(BoGameBase):
                 game_type = None
                 is_practice = False
 
+            if game.created_by:
+                created_by = game.created_by.username
+            else:
+                created_by = None
+
             append_to_list.append({
                 'dashboardStatus': status,
                 'uuid': game.uuid,
                 'codeName': game.code_name,
-                'createdBy': game.created_by.username,
+                'createdBy': created_by,
                 'isGameOwner': game.created_by == self.player,
                 'current_player_name': current_game_player,
                 'players': [self._format_player(gp, game.current_player) for gp in game.gameplayer_set.all()],
@@ -92,7 +109,7 @@ class DashboardApiBase(BoGameBase):
             })
         return append_to_list
 
-    def get(self, request, *args, **kwargs):
+    def _sort_player_games(self):
         player_instances = self.gamePlayerClass.objects.filter(player=self.player)
         player_games = {
             'active': [],
@@ -102,12 +119,18 @@ class DashboardApiBase(BoGameBase):
 
         for player_inst in player_instances:
             game = player_inst.game
-            if game.all_players_ready:
-                player_games['active'].append(game)
-            elif player_inst.ready:
-                player_games['pending'].append(game)
-            else:
-                player_games['invitations'].append(game)
+            if game.status != 'over':
+                if game.all_players_ready:
+                    player_games['active'].append(game)
+                elif player_inst.status == 'ready':
+                    player_games['pending'].append(game)
+                else:
+                    player_games['invitations'].append(game)
+        return player_games
+
+
+    def get(self, request, *args, **kwargs):
+        player_games = self._sort_player_games()
 
         data = {
             'playerName': self.player.username,
@@ -119,7 +142,7 @@ class DashboardApiBase(BoGameBase):
         return JsonResponse(data)
 
 
-class JoinGameView(BoGameBase):
+class JoinGameView(View):
     def get(self, request, *args, **kwargs):
         self.player.join_game(self.game, self.gamePlayerClass)
         if self.game.all_players_ready:
@@ -127,7 +150,7 @@ class JoinGameView(BoGameBase):
         return redirect(reverse(self.game_path, kwargs={'game_uuid': self.game.uuid}))
 
 
-class DeclineGameView(BoGameBase):
+class DeclineGameView(View):
     def get(self, request, *args, **kwargs):
         self.player.decline_game(self.game, self.gamePlayerClass)
         return redirect(reverse(self.dashboard_path))
@@ -143,6 +166,7 @@ class CancelGameView(View):
 
             template = loader.get_template('borkle/confirm_action.html')
             context = {
+                'base_template': self.template_base,
                 'cancel_url': cancel_url,
                 'form_header': 'Are you sure you want to cancel the game?'
             }
@@ -164,6 +188,7 @@ class LeaveGameView(View):
     def get(self, request, *args, **kwargs):
         template = loader.get_template('bogames/confirm_action.html')
         context = {
+            'base_template': self.template_base,
             'cancel_url': reverse(self.game_path, kwargs={'game_uuid': self.game.uuid}),
             'form_header': 'Are you sure you want to leave the game?'
         }

@@ -1,5 +1,5 @@
 {% extends 'boatfight/base.html' %}
-{% load static apptags %}
+{% load static boatfighttags %}
 
 {% block extra_js %}
 	<script src="{% static 'js/boatfight/boatFightUtils.js' %}"></script>
@@ -17,35 +17,45 @@
 		<input type='hidden' id='boatfight-fire-url' value='{% url "boatfight_api" game_uuid=game.uuid api_target="fire" %}' />
 		<input type="hidden" id="available-shots" value={{available_shots}} />
 	</div>
-		<div class="row winner-data hidden" id="winner">
-			<div class="big-message" id="winner-data"></div>
+	<div class="row winner-data hidden" id="winner">
+		<div class="big-message" id="winner-data"></div>
+	</div>
+	<div class="row">
+		<div class="col">
+				<h4>{{player.username}}</h4>
+				<div id="boatfightboard_player" class="as-table boatfight_placement-board boatfightboard_player">
+					{% for y in y_axis %}
+						<div class="as-row" id="y-{{y}}">
+							{% for x in x_axis %}
+								<div class="as-td boatfight_gamecell boatfight_gamecell__local" id="{{x}}-{{y}}" data-y="{{y}}" data-x="{{x}}"></div>
+							{% endfor %}
+						</div>
+					{% endfor %}
+				</div>
 		</div>
-		<div class="row">
-			<div class="col">
-					<div id="boatfightboard_player" class="as-table boatfight_placement-board boatfightboard_player">
-						{% for y in y_axis %}
-							<div class="as-row" id="y-{{y}}">
-								{% for x in x_axis %}
-									<div class="as-td boatfight_gamecell boatfight_gamecell__local" id="{{x}}-{{y}}" data-y="{{y}}" data-x="{{x}}"></div>
-								{% endfor %}
-							</div>
-						{% endfor %}
-					</div>
-			</div>
-			<div class="col">
-					<div id="boatfightboard_opponent" class="as-table boatfight_placement-board boatfightboard_opponent">
-						{% for y in y_axis %}
-							<div class="as-row" id="y-{{y}}">
-								{% for x in x_axis %}
-									<div class="as-td boatfight_gamecell boatfight_gamecell available" id="{{x}}-{{y}}" data-y="{{y}}" data-x="{{x}}"></div>
-								{% endfor %}
-							</div>
-						{% endfor %}
-					</div>
-					<div id="current-turn-tools" class="game-stats">
-						<button id="fire" class="game-btn" disabled>Fire!</button>
-						<div id="game-stats"></div>
-					</div>
-			</div>
+		<div class="col">
+				<h4>{{opponent.username}}</h4>
+				<div id="boatfightboard_opponent" class="as-table boatfight_placement-board boatfightboard_opponent">
+					{% for y in y_axis %}
+						<div class="as-row" id="y-{{y}}">
+							{% for x in x_axis %}
+								<div class="as-td boatfight_gamecell boatfight_gamecell available" id="{{x}}-{{y}}" data-y="{{y}}" data-x="{{x}}"></div>
+							{% endfor %}
+						</div>
+					{% endfor %}
+				</div>
+				<div id="current-turn-tools" class="game-stats">
+					<button id="fire" class="game-btn" disabled>Fire!</button>
+					<div id="game-stats"></div>
+				</div>
 		</div>
+	</div>
+
+	<div id="boatpart-image-cache" class="hidden">
+		{% for boat_label, boat in boats_to_place.items %}
+			{% for source in boat.image_map %}
+				<img id="{{boat_label}}-{{forloop.counter}}" class="boat-part {{placement_orientations|boat_orientation_class:boat_label}}" src="{% static source %}" />
+			{% endfor %}
+		{% endfor %}
+	</div>
 {% endblock %}

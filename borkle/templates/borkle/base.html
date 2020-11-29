@@ -9,16 +9,13 @@
 
 {% block game_navigation %}
 	<li class="nav-item active">
-		<a class="nav-link" href="{% url 'bogames_landingpage' %}">BoGames</a>
+		<a class="nav-link" href="{% url 'bogames_landingpage' %}">Home</a>
 	</li>
 	<li class="nav-item active">
 		<a class="nav-link" href="{% url 'borkle_dashboard' %}">Dashboard</a>
 	</li>
 	<li class="nav-item">
 		<a class="nav-link" href="{% url 'borkle_initialize_game' %}">New game</a>
-	</li>
-	<li class="nav-item">
-		<a class="nav-link" href="{%url 'session_manager_logout' %}">Log out</a>
 	</li>
 	<li class="nav-item active">
 		<a class="nav-link" href="{% url 'borkle_about' %}">About</a>

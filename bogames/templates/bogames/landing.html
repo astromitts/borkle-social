@@ -4,29 +4,26 @@
 
 {% block navbrand %}
 	<a class="navbar-brand" href="{% if user.is_authenticated %}{% url 'bogames_landingpage' %}{% else %}{% url 'borkle_about' %}{% endif %}">
-	<img id="header-image" src="{% static 'images/favicon-large.png' %}" />BoGames!</a>
+	<img id="header-image" src="{% static 'images/favicon-large.png' %}" />Borkle Games</a>
 {% endblock %}
 
 {% block game_navigation %}
-	<li class="nav-item active">
-		<a class="nav-link" href="{% url 'borkle_dashboard' %}">Borkle</a>
-	</li>
 {% endblock %}
 
 {% block main_content %}
 	<div class="row" id="landingpage">
-		<div class="col">
-			{% for game_title, link_url in games.items %}
+		{% for game_title, game_meta in games.items %}
+			<div class="col">
 				<div class="card">
-					<a class="game-card-link" href="{{link_url}}">
-						<img src="{% static 'images/favicon-large.png' %}" class="card-img-top" alt="image link to borkle game" />
+					<a class="game-card-link" href="{{game_meta.link_url}}">
+						<img src="{% static game_meta.logo %}" class="card-img-top" alt="image link to borkle game" />
 					</a>
 					<div class="card-body">
 						<h5 class="card-title">{{game_title}}</h5>
-						<a href="{{link_url}}" class="btn btn-primary">Play</a>
+						<a href="{{game_meta.link_url}}" class="btn btn-primary">Play</a>
 					</div>
 				</div>
-			{% endfor %}
-		</div>
+			</div>
+		{% endfor %}
 	</div>
 {% endblock %}

@@ -2,11 +2,11 @@
 function getGameBoardData(targetClass) {
 	var postData = {}
 	var boatCounts = {
-		'battleship': 0,
-		'carrier': 0,
-		'cruiser': 0,
-		'submarine': 0,
-		'destroyer': 0,
+		'longship': 0,
+		'kraken': 0,
+		'knarr': 0,
+		'karve': 0,
+		'faering': 0,
 	}
 	$('.' + targetClass).each(function(){
 		var boatType = $(this).attr('data-boat-type');

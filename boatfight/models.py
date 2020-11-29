@@ -7,32 +7,44 @@ class Boat(object):
     def __init__(self, label, units):
         self.label = label
         self.units = units
+        self.image = 'images/boats/{}/{}.png'.format(label, label)
+        self.image_map = []
+        for i in range(1, self.units + 1):
+            self.image_map.append('images/boats/{}/{}.png'.format(label, i))
 
 
 SHIPS = {
-    'carrier': Boat('Carrier', 5),
-    'battleship': Boat('Battleship', 4),
-    'cruiser': Boat('Cruiser', 3),
-    'submarine': Boat('Submarine', 3),
-    'destroyer': Boat('Destroyer', 2),
+    'longship': Boat('Longship', 5),
+    'knarr': Boat('Knarr', 4),
+    'karve': Boat('Karve', 3),
+    'kraken': Boat('Kraken', 3),
+    'faering': Boat('Faering', 2),
 }
 
+
 class BoatFightGame(Game):
+
+    def __str__(self):
+        return '<BoatFightGame: {}, CodeName: {}, UUID: {}>'.format(self.pk, self.code_name, self.uuid)
 
     def end_game(self):
         self.status = 'over'
         for gp in self.gameplayer_set.all():
             gp.turn_set.all().update(status='over')
             gp.is_current_player = False
+            if gp.available_shots > 0:
+                gp.status = 'won'
+            else:
+                gp.status = 'lost'
             gp.save()
         self.save()
 
     @property
     def winner(self):
-        for gp in self.gameplayer_set.all():
-            if gp.available_shots > 0:
-                return gp
-        return None
+        return self.gameplayer_set.get(status='won')
+
+    def get_gameplayer(self, player):
+        return self.gameplayer_set.filter(player=player).first()
 
 
 class GamePlayer(models.Model):
@@ -44,10 +56,15 @@ class GamePlayer(models.Model):
             ('challenged', 'challenged'),
             ('accepted', 'accepted'),
             ('ready', 'ready'),
+            ('won', 'won'),
+            ('lost', 'lost'),
         ),
         default='challenged'
     )
     is_current_player = models.BooleanField(default=False)
+
+    def __str__(self):
+        return '<GamePlayer: {}, {}> {}'.format(self.pk, self.player.username, self.game)
 
     @property
     def ships(self):
@@ -57,21 +74,32 @@ class GamePlayer(models.Model):
     def username(self):
         return self.player.username
 
+    @property
+    def has_boatplacement(self):
+        try:
+            boatplacement = self.boatplacement
+            return True
+        except GamePlayer.boatplacement.RelatedObjectDoesNotExist:
+            return False
 
     @property
     def available_shots(self):
-        self.boatplacement.update_boat_status()
-        boat_status_fields = [
-            self.boatplacement.battleship_status,
-            self.boatplacement.carrier_status,
-            self.boatplacement.cruiser_status,
-            self.boatplacement.submarine_status,
-            self.boatplacement.destroyer_status
-        ]
-        available_shots = 0
-        for field in boat_status_fields:
-            if field == 'active':
-                available_shots += 1
+        available_shots = 5
+        try:
+            available_shots = 0
+            self.boatplacement.update_boat_status()
+            boat_status_fields = [
+                self.boatplacement.knarr_status,
+                self.boatplacement.longship_status,
+                self.boatplacement.karve_status,
+                self.boatplacement.kraken_status,
+                self.boatplacement.faering_status
+            ]
+            for field in boat_status_fields:
+                if field == 'active':
+                    available_shots += 1
+        except GamePlayer.boatplacement.RelatedObjectDoesNotExist:
+            pass
         return available_shots
 
     @property
@@ -105,66 +133,97 @@ class BoatPlacement(models.Model):
         ('sunk', 'sunk')
     )
     player = models.OneToOneField(GamePlayer, on_delete=models.CASCADE)
-    carrier_status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='active')
-    carrier_1_x = models.IntegerField(default=0)
-    carrier_1_y = models.IntegerField(default=0)
-    carrier_1_hit = models.BooleanField(default=False)
-    carrier_2_x = models.IntegerField(default=0)
-    carrier_2_y = models.IntegerField(default=0)
-    carrier_2_hit = models.BooleanField(default=False)
-    carrier_3_x = models.IntegerField(default=0)
-    carrier_3_y = models.IntegerField(default=0)
-    carrier_3_hit = models.BooleanField(default=False)
-    carrier_4_x = models.IntegerField(default=0)
-    carrier_4_y = models.IntegerField(default=0)
-    carrier_4_hit = models.BooleanField(default=False)
-    carrier_5_x = models.IntegerField(default=0)
-    carrier_5_y = models.IntegerField(default=0)
-    carrier_5_hit = models.BooleanField(default=False)
+    longship_status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='active')
+    longship_1_x = models.IntegerField(default=0)
+    longship_1_y = models.IntegerField(default=0)
+    longship_1_hit = models.BooleanField(default=False)
+    longship_2_x = models.IntegerField(default=0)
+    longship_2_y = models.IntegerField(default=0)
+    longship_2_hit = models.BooleanField(default=False)
+    longship_3_x = models.IntegerField(default=0)
+    longship_3_y = models.IntegerField(default=0)
+    longship_3_hit = models.BooleanField(default=False)
+    longship_4_x = models.IntegerField(default=0)
+    longship_4_y = models.IntegerField(default=0)
+    longship_4_hit = models.BooleanField(default=False)
+    longship_5_x = models.IntegerField(default=0)
+    longship_5_y = models.IntegerField(default=0)
+    longship_5_hit = models.BooleanField(default=False)
 
-    battleship_status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='active')
-    battleship_1_x = models.IntegerField(default=0)
-    battleship_1_y = models.IntegerField(default=0)
-    battleship_1_hit = models.BooleanField(default=False)
-    battleship_2_x = models.IntegerField(default=0)
-    battleship_2_y = models.IntegerField(default=0)
-    battleship_2_hit = models.BooleanField(default=False)
-    battleship_3_x = models.IntegerField(default=0)
-    battleship_3_y = models.IntegerField(default=0)
-    battleship_3_hit = models.BooleanField(default=False)
-    battleship_4_x = models.IntegerField(default=0)
-    battleship_4_y = models.IntegerField(default=0)
-    battleship_4_hit = models.BooleanField(default=False)
+    knarr_status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='active')
+    knarr_1_x = models.IntegerField(default=0)
+    knarr_1_y = models.IntegerField(default=0)
+    knarr_1_hit = models.BooleanField(default=False)
+    knarr_2_x = models.IntegerField(default=0)
+    knarr_2_y = models.IntegerField(default=0)
+    knarr_2_hit = models.BooleanField(default=False)
+    knarr_3_x = models.IntegerField(default=0)
+    knarr_3_y = models.IntegerField(default=0)
+    knarr_3_hit = models.BooleanField(default=False)
+    knarr_4_x = models.IntegerField(default=0)
+    knarr_4_y = models.IntegerField(default=0)
+    knarr_4_hit = models.BooleanField(default=False)
 
-    cruiser_status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='active')
-    cruiser_1_x = models.IntegerField(default=0)
-    cruiser_1_y = models.IntegerField(default=0)
-    cruiser_1_hit = models.BooleanField(default=False)
-    cruiser_2_x = models.IntegerField(default=0)
-    cruiser_2_y = models.IntegerField(default=0)
-    cruiser_2_hit = models.BooleanField(default=False)
-    cruiser_3_x = models.IntegerField(default=0)
-    cruiser_3_y = models.IntegerField(default=0)
-    cruiser_3_hit = models.BooleanField(default=False)
+    karve_status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='active')
+    karve_1_x = models.IntegerField(default=0)
+    karve_1_y = models.IntegerField(default=0)
+    karve_1_hit = models.BooleanField(default=False)
+    karve_2_x = models.IntegerField(default=0)
+    karve_2_y = models.IntegerField(default=0)
+    karve_2_hit = models.BooleanField(default=False)
+    karve_3_x = models.IntegerField(default=0)
+    karve_3_y = models.IntegerField(default=0)
+    karve_3_hit = models.BooleanField(default=False)
 
-    submarine_status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='active')
-    submarine_1_x = models.IntegerField(default=0)
-    submarine_1_y = models.IntegerField(default=0)
-    submarine_1_hit = models.BooleanField(default=False)
-    submarine_2_x = models.IntegerField(default=0)
-    submarine_2_y = models.IntegerField(default=0)
-    submarine_2_hit = models.BooleanField(default=False)
-    submarine_3_x = models.IntegerField(default=0)
-    submarine_3_y = models.IntegerField(default=0)
-    submarine_3_hit = models.BooleanField(default=False)
+    kraken_status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='active')
+    kraken_1_x = models.IntegerField(default=0)
+    kraken_1_y = models.IntegerField(default=0)
+    kraken_1_hit = models.BooleanField(default=False)
+    kraken_2_x = models.IntegerField(default=0)
+    kraken_2_y = models.IntegerField(default=0)
+    kraken_2_hit = models.BooleanField(default=False)
+    kraken_3_x = models.IntegerField(default=0)
+    kraken_3_y = models.IntegerField(default=0)
+    kraken_3_hit = models.BooleanField(default=False)
 
-    destroyer_status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='active')
-    destroyer_1_x = models.IntegerField(default=0)
-    destroyer_1_y = models.IntegerField(default=0)
-    destroyer_1_hit = models.BooleanField(default=False)
-    destroyer_2_x = models.IntegerField(default=0)
-    destroyer_2_y = models.IntegerField(default=0)
-    destroyer_2_hit = models.BooleanField(default=False)
+    faering_status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='active')
+    faering_1_x = models.IntegerField(default=0)
+    faering_1_y = models.IntegerField(default=0)
+    faering_1_hit = models.BooleanField(default=False)
+    faering_2_x = models.IntegerField(default=0)
+    faering_2_y = models.IntegerField(default=0)
+    faering_2_hit = models.BooleanField(default=False)
+
+    def __str__(self):
+        return '<BoatPlacement: {}> {}'.format(self.pk, self.player)
+
+    def boat_orientation(self, boat_type):
+        x_1_coordinate = getattr(self, '{}_1_x'.format(boat_type))
+        x_2_coordinate = getattr(self, '{}_2_x'.format(boat_type))
+        if x_1_coordinate == x_2_coordinate:
+            return 'vertical'
+        return 'horizontal'
+
+    @property
+    def longship_orientation(self):
+        return self.boat_orientation('longship')
+
+    @property
+    def knarr_orientation(self):
+        return self.boat_orientation('knarr')
+
+    @property
+    def karve_orientation(self):
+        return self.boat_orientation('karve')
+
+    @property
+    def kraken_orientation(self):
+        return self.boat_orientation('kraken')
+
+    @property
+    def faering_orientation(self):
+        return self.boat_orientation('faering')
+
 
     @property
     def coordinates(self):

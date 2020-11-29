@@ -102,3 +102,14 @@ class Game(models.Model):
         self.save()
         first_player = random.choice(self.gameplayer_set.all())
         first_player.start_turn()
+
+    def boot_player(self, gameplayer):
+        if gameplayer.is_current_player:
+            self.advance_player()
+        gameplayer.delete()
+
+    @property
+    def current_player(self):
+        if self.gameplayer_set.count() == 1:
+            return self.gameplayer_set.first()
+        return self.gameplayer_set.filter(is_current_player=True).first()

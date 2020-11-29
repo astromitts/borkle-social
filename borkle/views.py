@@ -32,6 +32,8 @@ class BorkleBaseView(BoGameBase):
         self.join_path = 'borkle_game_accept_invitation_link'
         self.decline_path = 'borkle_game_decline_invitation_link'
         self.dashboard_refresh_url = 'borkle_dashboard_api'
+        self.start_game_path = 'borkle_initialize_game'
+        self.template_base = 'borkle/base.html'
         self.gamePlayerClass = GamePlayer
 
         if request.user.is_authenticated:
@@ -52,13 +54,6 @@ class BorkleBaseView(BoGameBase):
                         self.is_current_player = False
 
 
-class InitializeGame(BorkleBaseView):
-    def get(self, request, *args, **kwargs):
-        template = loader.get_template('borkle/start_game_landing_page.html')
-        context = {}
-        return HttpResponse(template.render(context, request))
-
-
 class JoinGame(BorkleBaseView, JoinGameView):
     pass
 
@@ -77,6 +72,23 @@ class Dashboard(BorkleBaseView, DashboardBase):
 
 
 class DashboardApi(BorkleBaseView, DashboardApiBase):
+    def _sort_player_games(self):
+        player_instances = self.gamePlayerClass.objects.filter(player=self.player)
+        player_games = {
+            'active': [],
+            'pending': [],
+            'invitations': [],
+        }
+
+        for player_inst in player_instances:
+            game = player_inst.game
+            if game.all_players_ready:
+                player_games['active'].append(game)
+            elif player_inst.ready:
+                player_games['pending'].append(game)
+            else:
+                player_games['invitations'].append(game)
+        return player_games
 
     def _format_player(self, player, current_player):
         return {
@@ -84,6 +96,13 @@ class DashboardApi(BorkleBaseView, DashboardApiBase):
             'ready': player.ready,
             'isCurrentPlayer': player == current_player,
         }
+
+
+class InitializeGame(BorkleBaseView):
+    def get(self, request, *args, **kwargs):
+        template = loader.get_template('borkle/start_game_landing_page.html')
+        context = {}
+        return HttpResponse(template.render(context, request))
 
 
 class InitializeDistributedGame(BorkleBaseView):

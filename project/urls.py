@@ -49,9 +49,14 @@ if 'boatfight' in settings.INSTALLED_APPS:
 
     boatfight_urls = [
         path('boatfight/', boatfight_views.Dashboard.as_view(), name='boatfight_dashboard'),
-        path('boatfight/start/', csrf_exempt(boatfight_views.InitializeGame.as_view()), name='boatfight_start'),
+        path('boatfight/dashboard/api/', boatfight_views.DashboardApi.as_view(), name='boatfight_dashboard_api'),
+        path('boatfight/startgame/', csrf_exempt(boatfight_views.InitializeGame.as_view()), name='boatfight_start'),
+        path('boatfight/game/<str:game_uuid>/leave/', boatfight_views.LeaveGame.as_view(), name='boatfight_leave_game'),
+        path('boatfight/game/<str:game_uuid>/cancel/', boatfight_views.CancelGame.as_view(), name='boatfight_game_cancel'),
+        path('boatfight/game/<str:game_uuid>/join/', boatfight_views.JoinGame.as_view(), name='boatfight_game_accept_invitation_link'),
         path('boatfight/game/<str:game_uuid>/play/', csrf_exempt(boatfight_views.GameBoard.as_view()), name='boatfight_game'),
         path('boatfight/game/<str:game_uuid>/api/<str:api_target>/', csrf_exempt(boatfight_views.BoatFightApi.as_view()), name='boatfight_api'),
+        path('borkle/game/<str:game_uuid>/decline/', base_views.DeclineGameView.as_view(), name='boatfight_game_decline_invitation_link'),
 
     ]
 

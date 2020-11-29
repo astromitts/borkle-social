@@ -1,19 +1,24 @@
 $cell-size: 2rem;
 $active-element-color: #FF8D00;
-$active-boat-color: #8A8A8A;
+$active-boat-color: #b16234;
 
 #boatfight {
 	padding: .5rem;	
 }
 
+.align-right {
+	text-align: right;
+}
+
 .boatfight_placement-board {
-	width: $cell-size * 10;
+	width: 20rem !important;
+	margin: 0 auto;
 	border: 1px solid #ffffff;
 	&__active {
 		border: 1px solid $active-element-color;
 	}
 	.boatfight_gamecell {
-		border: 1px solid #000000;
+		border: 1px solid #a9a9a9;
 		width: $cell-size;
 		height: $cell-size;
 	}
@@ -21,10 +26,9 @@ $active-boat-color: #8A8A8A;
 		height: $cell-size;
 	}
 	.filled {
-		background-color: $active-boat-color;
 	}
 	.pending {
-		background-color: $active-element-color;
+		
 	}
 }
 
@@ -32,28 +36,60 @@ $active-boat-color: #8A8A8A;
 	display: inline-block;
 	height: $cell-size;
 	&_boat {
-		background-color: $active-boat-color;
 	}
 	&_boat__selected {
 		background-color: $active-element-color;
 	}
-	&_carrier {
-		width: $cell-size * 5;
+	&_longship {
+		width: 10rem;
+		img {
+			width: 10rem;
+			height: 2rem;
+		}
 	}
-	&_battleship {
-		width: $cell-size * 4;
+	&_knarr {
+		width: 8rem;
+		img {
+			width: 8rem;
+			height: 2rem;
+		}
 	}
-	&_cruiser {
-		width: $cell-size * 4;
+	&_karve {
+		width: 6rem;
+		img {
+			width: 6rem;
+			height: 2rem;
+		}
 	}
-	&_submarine {
-		width: $cell-size * 3;
+	&_kraken {
+		width: 6rem;
+		img {
+			width: 6rem;
+			height: 2rem;
+		}
 	}
-	&_destroyer {
-		width: $cell-size * 2;
+	&_faering {
+		width: 4rem;
+		img {
+			width: 4rem;
+			height: 2rem;
+		}
 	}
 }
 
+img.boat-part {
+	width: 1.8rem;
+	height: 1.8rem;
+	&_vertical {
+		transform: rotate(90deg);
+	}
+	&_hit {
+		filter: grayscale(50%);
+	}
+	&_sunk {
+		filter: grayscale(100%);
+	}
+}
 .boatfightboard_opponent {
 	.pending {
 		background-color: orange;
@@ -62,7 +98,7 @@ $active-boat-color: #8A8A8A;
 
 
 .missed {
-	background-color: green;
+	background-color: #00ADFF;
 }
 .hit {
 	background-color: red;
@@ -80,5 +116,7 @@ $active-boat-color: #8A8A8A;
 }
 
 .boat-placed {
-	background-color: #CCCCCC;
+	img {
+		filter: grayscale(100%);
+	}
 }
