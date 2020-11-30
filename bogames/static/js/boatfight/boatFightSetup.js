@@ -163,25 +163,29 @@ function bindPlaceBoat() {
 				// selectedBoat.removeClass('boatfight-boats_boat__selected');
 				var gameBoard = $('#boatfight_placement-board');
 				gameBoard.removeClass('boatfight_placement-board__active');
-				$('#flip').removeAttr("disabled");
-				$('#lock').removeAttr("disabled");
+				showShipButtons();
 			}
 		}
 	});
 }
 
-
 function bindSelectBoatFromQueue() {
 	$('.boat-to-place').click(function selectBoat(){
-		$('.boat-to-place').removeClass('boatfight-boats_boat__selected');
-		$(this).addClass('boatfight-boats_boat__selected');
+		if ($(this).hasClass('boatfight-boats_boat__selected')) {
+			clearPendingCells();
+			$(this).removeClass('boatfight-boats_boat__selected');
+		} else if (!$(this).hasClass('boat-placed')) {
+			clearPendingCells();
+			$('.boatfight-boats_boat__selected').removeClass('boatfight-boats_boat__selected');
+			$(this).addClass('boatfight-boats_boat__selected');
+		}
 	});
 }
 
 function bindSelectBoatFromBoard(target) {
 	target.click(function selectBoat(){
 		if( $(this).hasClass('filled')) {
-			$('#ready').prop('disabled', true);
+			hideReadyButton();
 			$('.boat-to-place').removeClass('boatfight-boats_boat__selected');
 			var clickedBoatType = $(this).attr('data-boat-type');
 			var queuedBoat = $('#' + clickedBoatType);
@@ -194,10 +198,37 @@ function bindSelectBoatFromBoard(target) {
 			});
 			queuedBoat.removeClass('boat-placed');
 			queuedBoat.addClass('boatfight-boats_boat__selected');
-			$('#flip').removeAttr("disabled");
-			$('#lock').removeAttr("disabled");
+			showShipButtons();
 		}
 	});
+}
+
+function hideReadyButton() {
+	var readyDiv = $('#ready-button');
+	toggleElementVisibility(readyDiv, 'off');
+	showShipButtons();
+}
+
+function showReadyButton() {
+	var readyDiv = $('#ready-button');
+	toggleElementVisibility(readyDiv, 'on');
+	hideShipButtons();
+}
+
+function hideShipButtons() {
+	var lockDiv = $('#lock-button');
+	toggleElementVisibility(lockDiv, 'off');
+	
+	var flipDiv = $('#flip-button');
+	toggleElementVisibility(flipDiv, 'off');
+}
+
+function showShipButtons() {
+	var lockDiv = $('#lock-button');
+	toggleElementVisibility(lockDiv, 'on');
+	
+	var flipDiv = $('#flip-button');
+	toggleElementVisibility(flipDiv, 'on');
 }
 
 function bindLockBoat() {
@@ -213,11 +244,10 @@ function bindLockBoat() {
 			$(this).addClass('boatfight_gamecell__locked');
 			bindSelectBoatFromBoard($(this));
 		});
-		$('#lock').prop('disabled', true);
-		$('#flip').prop('disabled', true);
+		hideShipButtons();
 
 		if( $('.boat-placed').length == 5) {
-			$('#ready').removeAttr("disabled");
+			showReadyButton();
 		}
 	});
 }

@@ -208,7 +208,11 @@ class BoatFightApi(BoatFightBaseView):
                         'yPos': getattr(self.boatplacement, yfield)
                     }
                     data['boats'][boat_type]['positions'].append(position)
-            data['sunkShips'] = self.opponent.boatplacement.get_sunk_ships()
+
+            if self.game.all_players_ready:
+                data['sunkShips'] = self.opponent.boatplacement.get_sunk_ships()
+            else:
+                data['sunkShips'] = {}
 
         elif kwargs['api_target'] == 'gamestatus':
             if self.opponent.has_boatplacement and self.boatfighter.has_boatplacement:
@@ -222,14 +226,14 @@ class BoatFightApi(BoatFightBaseView):
                 }
                 opponent_shots = default_shots
                 player_shots = default_shots
-
-            data.update(
-                {
-                    'opponentShots': opponent_shots,
-                    'playerShots': player_shots,
-                    'sunkShips': self.opponent.boatplacement.get_sunk_ships()
-                }
-            )
+            if self.game.all_players_ready:
+                data['opponentShots'] = opponent_shots,
+                data['playerShots'] = player_shots,
+                data['sunkShips'] = self.opponent.boatplacement.get_sunk_ships()
+            else:
+                data['opponentShots'] = default_shots
+                data['playerShots'] = default_shots
+                data['sunkShips'] = {}
         return JsonResponse(data)
 
     def post(self, request, *args, **kwargs):
