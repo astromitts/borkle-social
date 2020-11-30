@@ -74,6 +74,9 @@ class Game(models.Model):
     """ Base class for a game model with fields common to all games
         Includes common methods and properties that should work on any
         game unless overwritten
+
+        There is an expectation that child Game models will have a GamePlayer
+        model defined and linked to it via FKeys
     """
     created_by = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL)
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)
