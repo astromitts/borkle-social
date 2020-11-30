@@ -52,6 +52,8 @@ class BoatFightBaseView(BoGameBase):
                     self.opponent = self.game.gameplayer_set.exclude(player=self.boatfighter.player).first()
                     self.boatplacement = BoatPlacement.objects.filter(player=self.boatfighter).first()
                     if self.game.status == 'active' and self.game.all_players_ready:
+                        if not self.game.current_player:
+                            self.game.start_game()
                         self.is_current_player = self.player == self.game.current_player.player
                         self.current_player = self.game.current_player
                     else:
@@ -227,8 +229,8 @@ class BoatFightApi(BoatFightBaseView):
                 opponent_shots = default_shots
                 player_shots = default_shots
             if self.game.all_players_ready:
-                data['opponentShots'] = opponent_shots,
-                data['playerShots'] = player_shots,
+                data['opponentShots'] = opponent_shots
+                data['playerShots'] = player_shots
                 data['sunkShips'] = self.opponent.boatplacement.get_sunk_ships()
             else:
                 data['opponentShots'] = default_shots
