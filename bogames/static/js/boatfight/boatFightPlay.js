@@ -17,6 +17,8 @@ function toggleWinner(winner) {
 
 function bindCellClick() {
 	$('.boatfight_gamecell').click(function(){
+
+		var gameType = document.getElementById('game-type').value;
 		var availableShots = parseInt(document.getElementById('available-shots').value);
 		var isAvailable = $(this).hasClass('available');
 		var isPending = $(this).hasClass('pending');
@@ -26,13 +28,17 @@ function bindCellClick() {
 			$(this).addClass('pending');
 			availableShots -= 1;
 			document.getElementById('available-shots').value = availableShots;
-			document.getElementById('available-shots-display').innerHTML = availableShots;
+			if (gameType == 'salvo') {
+				document.getElementById('available-shots-display').innerHTML = availableShots;
+			}
 		} else if (isPending) {
 			$(this).addClass('available');
 			$(this).removeClass('pending');
 			availableShots += 1;
 			document.getElementById('available-shots').value = availableShots;
-			document.getElementById('available-shots-display').innerHTML = availableShots;
+			if (gameType == 'salvo') {
+				document.getElementById('available-shots-display').innerHTML = availableShots;
+			}
 		}
 		if (availableShots == 0) {
 			$('button#fire').removeAttr('disabled');
@@ -52,20 +58,25 @@ function bindFireClick() {
 }
 
 function initiateTurn(gameData) {
-	var availableShots = gameData.player.availableShots;
-	document.getElementById('available-shots').value = availableShots;
+	var gameType = document.getElementById('game-type').value;
+
 	var gameStats = document.getElementById('game-stats');
 	gameStats.innerHTML = '';
 
 	var gameStatsHeader = document.createElement('div');
 	gameStatsHeader.setAttribute('class', 'game-stats_header');
 	gameStatsHeader.innerHTML = "It's your turn!"
-
-	var gameStatShots = document.createElement('div')
-	gameStatShots.innerHTML = 'You have <span id="available-shots-display">' + availableShots + '</span> shots left';
-	
 	gameStats.append(gameStatsHeader);
-	gameStats.append(gameStatShots);
+	
+	if (gameType == 'salvo') {
+		var availableShots = gameData.player.availableShots;
+		document.getElementById('available-shots').value = availableShots;
+		var gameStatShots = document.createElement('div')
+		gameStatShots.innerHTML = 'You have <span id="available-shots-display">' + availableShots + '</span> shots left';
+		gameStats.append(gameStatShots);
+	} else {
+		var availableShots = 1;
+	}
 
 	toggleOpponentBoard('on');
 	togglePlayerBoard('off');
@@ -77,6 +88,33 @@ function endTurn() {
 	});
 	toggleOpponentBoard('off');
 	togglePlayerBoard('on');
+}
+
+function revealSunkShips(sunkShips) {
+	for (var boatType of Object.keys(sunkShips)){
+	var cacheIndex = 1;
+	for (var positionIndex of Object.keys(sunkShips[boatType].coordinates)){
+		var position = sunkShips[boatType].coordinates[positionIndex];
+		var targetID = position.xPos + '-' +position.yPos;
+		var boatSquare = $('#boatfightboard_opponent #' + targetID);
+		if (!boatSquare.hasClass('filled')) {
+			boatSquare.addClass('filled');
+		}
+		if (boatSquare.find('img').length == 0) {
+			boatSquare.attr('data-boat-type', boatType);
+			var cacheImageID = boatType + '-' + cacheIndex;
+			var divImage = getImageFromCache(cacheImageID);
+			if (sunkShips[boatType].orientation == 'vertical') {
+				var classList = 'boat-part boat-part_vertical';
+			} else {
+				var classList = 'boat-part';
+			}
+			divImage.className = classList;
+			boatSquare.html(divImage);
+		}
+		cacheIndex += 1;
+	}
+}
 }
 
 function setUpBoard(setUpUrl) {
@@ -92,7 +130,7 @@ function setUpBoard(setUpUrl) {
 				for (var positionIndex of Object.keys(gameSetup.boats[boatType].positions)){
 					var position = gameSetup.boats[boatType].positions[positionIndex];
 					var targetID = position.xPos + '-' +position.yPos;
-					var boatSquare = $('#' + targetID);
+					var boatSquare = $('#boatfightboard_player #' + targetID);
 					boatSquare.addClass('filled');
 					boatSquare.attr('data-boat-type', boatType);
 					var cacheImageID = boatType + '-' + cacheIndex;
@@ -101,6 +139,8 @@ function setUpBoard(setUpUrl) {
 					cacheIndex += 1;
 				}
 			}
+			revealSunkShips(gameSetup.sunkShips);
+
 			if(gameSetup.player.isCurrentPlayer) {
 				initiateTurn(gameSetup);
 			} else {
@@ -145,6 +185,7 @@ function updatePlayerShots(playerShots) {
 function updateGame(gameData, turnInitiated) {
 	updatePlayerShots(gameData.playerShots);
 	updateOpponentShots(gameData.opponentShots);
+	revealSunkShips(gameData.sunkShips);
 	if(gameData.gameStatus == 'over') {
 		toggleWinner(gameData.winner);
 	} else {
@@ -160,6 +201,7 @@ function updateGame(gameData, turnInitiated) {
 	}
 	return turnInitiated;
 }
+
 $(document).ready(function playGame(){ 
 	var setUpUrl = $('input#boatfight-setup-url').val();
 	var statusUrl = $('input#boatfight-status-url').val();
@@ -190,6 +232,9 @@ $(document).ready(function playGame(){
 				dataType: 'json',
 				success: function (gameData) {
 					turnInitiated = updateGame(gameData, turnInitiated);
+					if (gameData.gameStatus == 'over') {
+						clearInterval(gameLoop);
+					}
 				}
 			});
 		}, 1000)

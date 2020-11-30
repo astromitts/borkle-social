@@ -6,8 +6,13 @@ $active-boat-color: #b16234;
 	padding: .5rem;	
 }
 
-.align-right {
-	text-align: right;
+#winner-data {
+	margin: 0 auto;
+}
+
+.boatfight-board-component {
+	width: 20rem;
+	margin: 0 auto;
 }
 
 .boatfight_placement-board {
@@ -105,10 +110,6 @@ img.boat-part {
 }
 .sunk {
 	background-color: black;
-}
-
-.game-stats {
-	display: inline-block;
 }
 
 .game-btn:disabled {

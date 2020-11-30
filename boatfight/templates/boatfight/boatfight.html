@@ -16,13 +16,17 @@
 		<input type='hidden' id='boatfight-status-url' value='{% url "boatfight_api" game_uuid=game.uuid api_target="gamestatus" %}' />
 		<input type='hidden' id='boatfight-fire-url' value='{% url "boatfight_api" game_uuid=game.uuid api_target="fire" %}' />
 		<input type="hidden" id="available-shots" value={{available_shots}} />
+		<input type="hidden" id="game-type" value={{game.game_type}} />
 	</div>
 	<div class="row winner-data hidden" id="winner">
-		<div class="big-message" id="winner-data"></div>
+		<div class="big-message" id="winner-data" style="margin: 0 auto; padding-top: 1.5rem;"></div>
+	</div>
+	<div class="row">
+		<div class="col align-center"><h4>Boat Fight: {{game.game_type}}</h4></div>
 	</div>
 	<div class="row">
 		<div class="col">
-				<h4>{{player.username}}</h4>
+				<div class="boatfight-board-component"><h5>{{player.username}}</h5></div>
 				<div id="boatfightboard_player" class="as-table boatfight_placement-board boatfightboard_player">
 					{% for y in y_axis %}
 						<div class="as-row" id="y-{{y}}">
@@ -34,7 +38,7 @@
 				</div>
 		</div>
 		<div class="col">
-				<h4>{{opponent.username}}</h4>
+				<div class="boatfight-board-component"><h5>{{opponent.username}}</h5></div>
 				<div id="boatfightboard_opponent" class="as-table boatfight_placement-board boatfightboard_opponent">
 					{% for y in y_axis %}
 						<div class="as-row" id="y-{{y}}">
@@ -44,7 +48,7 @@
 						</div>
 					{% endfor %}
 				</div>
-				<div id="current-turn-tools" class="game-stats">
+				<div id="current-turn-tools" class="boatfight-board-component game-stats">
 					<button id="fire" class="game-btn" disabled>Fire!</button>
 					<div id="game-stats"></div>
 				</div>

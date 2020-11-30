@@ -23,6 +23,13 @@ SHIPS = {
 
 
 class BoatFightGame(Game):
+    game_type = models.CharField(
+        max_length=10,
+        choices=(
+            ('salvo', 'Salvo'),
+            ('classic', 'Classic'),
+        )
+    )
 
     def __str__(self):
         return '<BoatFightGame: {}, CodeName: {}, UUID: {}>'.format(self.pk, self.code_name, self.uuid)
@@ -45,6 +52,43 @@ class BoatFightGame(Game):
 
     def get_gameplayer(self, player):
         return self.gameplayer_set.filter(player=player).first()
+
+    def set_status(self):
+        if self.status == 'active':
+            loser = None
+            winner = None
+            for gameplayer in self.gameplayer_set.all():
+                boatplacement = gameplayer.boatplacement
+                sunk_count = 0
+                if boatplacement.longship_status == 'sunk':
+                    sunk_count += 1
+                if boatplacement.knarr_status == 'sunk':
+                    sunk_count += 1
+                if boatplacement.karve_status == 'sunk':
+                    sunk_count += 1
+                if boatplacement.kraken_status == 'sunk':
+                    sunk_count += 1
+                if boatplacement.faering_status == 'sunk':
+                    sunk_count += 1
+                if sunk_count == 5:
+                    loser = gameplayer
+                else:
+                    winner = gameplayer
+
+            if loser:
+                self.status = 'over'
+                loser.turn_set.all().update(status='over')
+                loser.is_current_player = False
+                loser.status = 'lost'
+
+                winner.turn_set.all().update(status='over')
+                winner.is_current_player = False
+                winner.status = 'won'
+                loser.save()
+                winner.save()
+                self.save()
+        elif self.all_players_ready and self.status == 'waiting':
+            self.start_game()
 
 
 class GamePlayer(models.Model):
@@ -84,22 +128,25 @@ class GamePlayer(models.Model):
 
     @property
     def available_shots(self):
-        available_shots = 5
-        try:
-            available_shots = 0
-            self.boatplacement.update_boat_status()
-            boat_status_fields = [
-                self.boatplacement.knarr_status,
-                self.boatplacement.longship_status,
-                self.boatplacement.karve_status,
-                self.boatplacement.kraken_status,
-                self.boatplacement.faering_status
-            ]
-            for field in boat_status_fields:
-                if field == 'active':
-                    available_shots += 1
-        except GamePlayer.boatplacement.RelatedObjectDoesNotExist:
-            pass
+        if self.game.game_type == 'classic':
+            available_shots = 1
+        else:
+            available_shots = 5
+            try:
+                available_shots = 0
+                self.boatplacement.update_boat_status()
+                boat_status_fields = [
+                    self.boatplacement.knarr_status,
+                    self.boatplacement.longship_status,
+                    self.boatplacement.karve_status,
+                    self.boatplacement.kraken_status,
+                    self.boatplacement.faering_status
+                ]
+                for field in boat_status_fields:
+                    if field == 'active':
+                        available_shots += 1
+            except GamePlayer.boatplacement.RelatedObjectDoesNotExist:
+                pass
         return available_shots
 
     @property
@@ -249,6 +296,22 @@ class BoatPlacement(models.Model):
                     y_coordinate = getattr(self, '{}_{}_y'.format(ship_label, i))
                     coordinates.append((x_coordinate, y_coordinate))
         return coordinates
+
+    def get_sunk_ships(self):
+        sunk_ships = {}
+        for ship_label, boat in SHIPS.items():
+            status_field = '{}_status'.format(ship_label)
+            if getattr(self, status_field) == 'sunk':
+                sunk_ships[ship_label] = {
+                    'coordinates': [],
+                    'orientation': getattr(self, '{}_orientation'.format(ship_label))
+                }
+                for i in range(1, boat.units + 1):
+                    x_coordinate = getattr(self, '{}_{}_x'.format(ship_label, i))
+                    y_coordinate = getattr(self, '{}_{}_y'.format(ship_label, i))
+                    sunk_ships[ship_label]['coordinates'].append({'xPos': x_coordinate, 'yPos': y_coordinate})
+        return sunk_ships
+
 
     def check_hits(self, shots):
         boat_coordinates = self.coordinates

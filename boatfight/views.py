@@ -94,6 +94,9 @@ class InitializeGame(BoatFightBaseView):
                 Player.get_by_username(request.POST['opponent'])
             ]
             game = BoatFightGame.initialize_game(players, GamePlayer)
+            game.game_type = request.POST['game_type']
+            game.created_by = self.player
+            game.save()
             return redirect(reverse('boatfight_game', kwargs={'game_uuid': game.uuid}))
         context = {
             'form': form,
@@ -186,11 +189,12 @@ class BoatFightApi(BoatFightBaseView):
             'player': self._player(self.boatfighter),
             'opponent': self._opponent(),
             'gameStatus': self.game.status,
+            'gameType': self.game.game_type,
         }
 
+        self.game.set_status()
         if self.game.status == 'over':
-            self.game.end_game()
-            data.update({'winner': self.game.winner.username})
+            data['winner'] = self.game.winner.username,
 
         if kwargs['api_target'] == 'boardsetup':
             data['boats'] = {}
@@ -204,6 +208,7 @@ class BoatFightApi(BoatFightBaseView):
                         'yPos': getattr(self.boatplacement, yfield)
                     }
                     data['boats'][boat_type]['positions'].append(position)
+            data['sunkShips'] = self.opponent.boatplacement.get_sunk_ships()
 
         elif kwargs['api_target'] == 'gamestatus':
             if self.opponent.has_boatplacement and self.boatfighter.has_boatplacement:
@@ -222,6 +227,7 @@ class BoatFightApi(BoatFightBaseView):
                 {
                     'opponentShots': opponent_shots,
                     'playerShots': player_shots,
+                    'sunkShips': self.opponent.boatplacement.get_sunk_ships()
                 }
             )
         return JsonResponse(data)

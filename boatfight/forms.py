@@ -2,7 +2,8 @@ from django.forms import (
     Form,
     IntegerField,
     CharField,
-    HiddenInput
+    HiddenInput,
+    ChoiceField
 )
 from django.core.exceptions import ValidationError
 from bogames.form_utils import _validate_player
@@ -12,6 +13,7 @@ from bogames.models import Player
 class InitializeGameForm(Form):
     initializing_player_id = IntegerField(widget=HiddenInput())
     opponent = CharField(required=False)
+    game_type = ChoiceField(choices=(('salvo', 'Salvo'), ('classic', 'Classic')))
 
     class Meta:
         widgets = {
