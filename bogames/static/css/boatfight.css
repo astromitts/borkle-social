@@ -81,7 +81,7 @@ img.boat-part_hit {
   filter: grayscale(50%);
 }
 img.boat-part_sunk {
-  filter: grayscale(100%);
+  filter: grayscale(60%);
 }
 
 .boatfightboard_opponent .pending {
@@ -97,7 +97,7 @@ img.boat-part_sunk {
 }
 
 .sunk {
-  background-color: black;
+  background-color: #F5B6B6;
 }
 
 .game-btn:disabled {

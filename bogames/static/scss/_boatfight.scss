@@ -92,7 +92,7 @@ img.boat-part {
 		filter: grayscale(50%);
 	}
 	&_sunk {
-		filter: grayscale(100%);
+		filter: grayscale(60%);
 	}
 }
 .boatfightboard_opponent {
@@ -109,7 +109,7 @@ img.boat-part {
 	background-color: red;
 }
 .sunk {
-	background-color: black;
+	background-color: #F5B6B6;
 }
 
 .game-btn:disabled {
