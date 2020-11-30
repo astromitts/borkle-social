@@ -10,6 +10,8 @@ from borkle.models import GamePlayer
 
 
 class BoGameBase(View):
+    """ Base View Class for game views to inherit
+    """
     def setup(self, request, *args, **kwargs):
         super(BoGameBase, self).setup(request, *args, **kwargs)
         self.player = Player.objects.get(user=request.user)
@@ -30,6 +32,8 @@ class BoGameBase(View):
 
 
 class LandingPage(BoGameBase):
+    """ The main landing page View for the site
+    """
     def get(self, request, *args, **kwargs):
         template = loader.get_template('bogames/landing.html')
         context = {
@@ -48,6 +52,8 @@ class LandingPage(BoGameBase):
 
 
 class DashboardBase(BoGameBase):
+    """ Base class for Dashboard Views
+    """
     def get(self, request, *args, **kwargs):
         template = loader.get_template('bogames/dashboard.html')
         context = {
@@ -61,6 +67,8 @@ class DashboardBase(BoGameBase):
 
 
 class DashboardApiBase(BoGameBase):
+    """ Base class for Dashboard API refresh calls
+    """
 
     def _format_player(self, player, current_player):
         return {
@@ -143,6 +151,8 @@ class DashboardApiBase(BoGameBase):
 
 
 class JoinGameView(View):
+    """ Base view class for Join Game/Accept Invitation views
+    """
     def get(self, request, *args, **kwargs):
         self.player.join_game(self.game, self.gamePlayerClass)
         if self.game.all_players_ready:
@@ -151,12 +161,16 @@ class JoinGameView(View):
 
 
 class DeclineGameView(View):
+    """ Base view class for declining a game invitation
+    """
     def get(self, request, *args, **kwargs):
         self.player.decline_game(self.game, self.gamePlayerClass)
         return redirect(reverse(self.dashboard_path))
 
 
 class CancelGameView(View):
+    """ Base view class for cancelling a game
+    """
     def get(self, request, *args, **kwargs):
         if self.game.created_by == self.player:
             if request.GET.get('src', '') == 'game':
@@ -184,6 +198,8 @@ class CancelGameView(View):
 
 
 class LeaveGameView(View):
+    """ Base view class for leaving a game
+    """
 
     def get(self, request, *args, **kwargs):
         template = loader.get_template('bogames/confirm_action.html')

@@ -4,6 +4,8 @@ from bogames.models import Game, Player
 
 
 class Boat(object):
+    """ Useful Class for storing display information for boats
+    """
     def __init__(self, label, units):
         self.label = label
         self.units = units
@@ -23,6 +25,8 @@ SHIPS = {
 
 
 class BoatFightGame(Game):
+    """ BoatFight Game model, inherits bogames.models.Game
+    """
     game_type = models.CharField(
         max_length=10,
         choices=(
@@ -35,6 +39,8 @@ class BoatFightGame(Game):
         return '<BoatFightGame: {}, CodeName: {}, UUID: {}>'.format(self.pk, self.code_name, self.uuid)
 
     def end_game(self):
+        """ Custom logic for how to end a BoatFight game
+        """
         self.status = 'over'
         for gp in self.gameplayer_set.all():
             gp.turn_set.all().update(status='over')
@@ -48,12 +54,13 @@ class BoatFightGame(Game):
 
     @property
     def winner(self):
+        """ Return the GamePlayer with status='won'
+        """
         return self.gameplayer_set.get(status='won')
 
-    def get_gameplayer(self, player):
-        return self.gameplayer_set.filter(player=player).first()
-
     def set_status(self):
+        """ Set game status based on logical context and return it
+        """
         if self.status == 'active':
             loser = None
             winner = None
@@ -92,6 +99,8 @@ class BoatFightGame(Game):
 
 
 class GamePlayer(models.Model):
+    """ GamePlayer Model for BoatFight Game
+    """
     player = models.ForeignKey(Player, on_delete=models.CASCADE)
     game = models.ForeignKey(BoatFightGame, on_delete=models.CASCADE)
     status = models.CharField(
@@ -175,6 +184,9 @@ class GamePlayer(models.Model):
 
 
 class BoatPlacement(models.Model):
+    """ BoatPlacement Model for a BoatFight GamePlayer
+        Represents where ships have been placed on the board and their hit status
+    """
     STATUS_CHOICES = (
         ('active', 'active'),
         ('sunk', 'sunk')
@@ -373,6 +385,9 @@ class BoatPlacement(models.Model):
 
 
 class Turn(models.Model):
+    """ BoatFight Turn Model
+        Stores information for each turn of each GamePlayer
+    """
     SHOT_STATUS = [
         ('hit', 'hit'),
         ('miss', 'miss'),

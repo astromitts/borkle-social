@@ -10,6 +10,8 @@ from borkle.utils import get_dice_image_path
 
 
 class GameStatusApi(BorkleBaseView):
+    """ API Endpoints for front end game play
+    """
     def _scoreboard(self):
         scoreboard = []
 
@@ -252,7 +254,8 @@ class GameStatusApi(BorkleBaseView):
 
 
 class GameBoardApiVersion(BorkleBaseView):
-
+    """ The game play landing page
+    """
     def get(self, request, *args, **kwargs):
 
         template = loader.get_template('borkle/api_gameboard.html')

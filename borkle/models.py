@@ -13,6 +13,8 @@ from namer.models import get_random_name
 
 
 class BorkleGame(Game):
+    """ Borkle Game Model - inherets from bogames.models.Game
+    """
     max_score = models.IntegerField(default=10000)
     num_players = models.IntegerField(default=1)
     last_turn = models.BooleanField(default=False)
@@ -24,6 +26,8 @@ class BorkleGame(Game):
 
     @classmethod
     def create(cls, max_score, invited_players, initial_player, code_name_prefix=None, game_type='normal'):
+        """ Create a new BorkleGame instance and create GamePlayer instamces for each invited player
+        """
         game = cls()
         game.max_score = max_score
         game.num_players = len(invited_players) + 1
@@ -48,6 +52,8 @@ class BorkleGame(Game):
         return game, initial_gameplayer
 
     def start_turn(self):
+        """ Start a turn for a GamePlayer
+        """
         self.is_current_player = True
         self.save()
         new_turn = Turn(
@@ -59,6 +65,8 @@ class BorkleGame(Game):
         new_turn.save()
 
     def end_turn(self):
+        """ End a turn for a GamePlayer
+        """
         self.is_current_player = False
         self.current_turn.set_score()
         self.update_score()
@@ -91,12 +99,16 @@ class BorkleGame(Game):
         return self.gameplayer_set.filter(had_last_turn=True).count() == self.gameplayer_set.all().count()
 
     def start_game(self):
+        """ Start game and start first turn for a random GamePlayer
+        """
         self.status = 'active'
         self.save()
         first_player = random.choice(self.gameplayer_set.all())
         first_player.start_turn()
 
     def advance_player(self):
+        """ End the current player's turn and start the next player's turn
+        """
         if self.gameplayer_set.count() == 1:
             self.current_player.end_turn()
             self.current_turn_index += 1
@@ -121,12 +133,16 @@ class BorkleGame(Game):
 
     @property
     def set_count(self):
+        """ Return total number of scored sets
+        """
         set_count = 0
         for turn in self.turn_set.all():
             set_count += turn.scoreset_set.count()
         return set_count
 
     def get_status(self):
+        """ Update the current game status as needed and return it
+        """
         if self.all_players_ready and self.status == 'waiting':
             self.start_game()
         elif self.all_players_had_last_turn and self.status == 'active':
@@ -146,12 +162,11 @@ class BorkleGame(Game):
             self.code_name = random_name
         super(Game, self).save(*args, **kwargs)
 
-
-    def get_gameplayer(self, player):
-        return self.gameplayer_set.filter(player=player).first()
-
     @property
     def winner(self):
+        """ Return GamePlater instance(s) of winning player(s)
+            Note: there is no tie break function so ties are possible
+        """
         winner = None
         max_score = self.gameplayer_set.all().aggregate(maxscore=Max('total_score'))['maxscore']
         winner_qs = self.gameplayer_set.filter(total_score=max_score)
@@ -159,6 +174,8 @@ class BorkleGame(Game):
 
     @property
     def turn_history(self):
+        """ Return details of each GamePlayers' turns
+        """
         history = {}
         for i in reversed(range(1, self.current_turn_index + 1)):
             for player in self.gameplayer_set.all():
@@ -179,6 +196,11 @@ class BorkleGame(Game):
 
 
 class GamePlayer(models.Model):
+    """ GamePlayer Model for a BorkleGame
+        There should be one GamePlayer instance per player per game
+
+        Hold information about player status, score, and turns
+    """
     player = models.ForeignKey(Player, null=True, on_delete=models.CASCADE, related_name='gameplayer_player')
     game = models.ForeignKey(BorkleGame, on_delete=models.CASCADE)
     ready = models.BooleanField(default=False)
@@ -261,6 +283,10 @@ class GamePlayer(models.Model):
 
 
 class Turn(models.Model):
+    """ Turn model for BorkleGame
+
+        Represents scored dice sets and total score for each turn in the game
+    """
     gameplayer = models.ForeignKey(GamePlayer, on_delete=models.CASCADE)
     game = models.ForeignKey(BorkleGame, on_delete=models.CASCADE)
     score = models.IntegerField(default=0)
@@ -426,6 +452,10 @@ class Turn(models.Model):
 
 
 class ScoreSet(models.Model):
+    """ ScoreSet Model for BorkleGame
+
+        Represents selected sets of dice with valid scores for a given Turn
+    """
     turn = models.ForeignKey(Turn, on_delete=models.CASCADE)
     roll = models.IntegerField(default=1)
     score = models.IntegerField(default=0)

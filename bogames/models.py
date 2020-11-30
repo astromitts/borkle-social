@@ -16,6 +16,8 @@ from namer.models import get_random_name
 
 
 class ErrorLog(models.Model):
+    """ Cheat around need for setting up real logs
+    """
     timestamp = models.DateTimeField(default=now)
     status_code = models.IntegerField(blank=True, null=True)
     title = models.CharField(max_length=300, blank=True, null=True)
@@ -28,6 +30,8 @@ class ErrorLog(models.Model):
 
 
 class Player(models.Model):
+    """ Represents a unique site user and links to their Django User instance
+    """
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)
 
@@ -67,6 +71,10 @@ class Player(models.Model):
 
 
 class Game(models.Model):
+    """ Base class for a game model with fields common to all games
+        Includes common methods and properties that should work on any
+        game unless overwritten
+    """
     created_by = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL)
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)
     status = models.CharField(
@@ -90,16 +98,23 @@ class Game(models.Model):
             return 'Unsaved Game'
 
     def set_status(self):
+        """ If all players have accepted the game invitation and
+            the Game status is still 'waiting', kick off the start_game function
+        """
         if self.all_players_ready and self.status == 'waiting':
             self.start_game()
 
     @property
     def all_players_ready(self):
+        """ Returns Boolean True if all players in the game are ready
+        """
         ready_player_count = self.gameplayer_set.filter(status='ready').count()
         return ready_player_count == self.gameplayer_set.all().count()
 
     @classmethod
     def initialize_game(cls, players, gameplayer_class):
+        """ Initialize a new Game instance
+        """
         newgame = cls(
             status='pending'
         )
@@ -113,18 +128,29 @@ class Game(models.Model):
         return newgame
 
     def start_game(self):
+        """ Set Game status to active and start the first turn for a random player
+        """
         self.status = 'active'
         self.save()
         first_player = random.choice(self.gameplayer_set.all())
         first_player.start_turn()
 
     def boot_player(self, gameplayer):
+        """ Remove a player from a Game
+        """
         if gameplayer.is_current_player:
             self.advance_player()
         gameplayer.delete()
 
     @property
     def current_player(self):
+        """ Return the GamePlayer instance for the player with is_current_player status
+        """
         if self.gameplayer_set.count() == 1:
             return self.gameplayer_set.first()
         return self.gameplayer_set.filter(is_current_player=True).first()
+
+    def get_gameplayer(self, player):
+        """ Get the GamePlayer instance of given Player
+        """
+        return self.gameplayer_set.filter(player=player).first()
