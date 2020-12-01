@@ -18,3 +18,7 @@
 		<a class="nav-link" href="{% url 'boatfight_start' %}">New game</a>
 	</li>
 {% endblock %}
+
+{% block extra_css %}
+	<link href="{% static 'css/boatfight.css' %}" rel="stylesheet">
+{% endblock %}

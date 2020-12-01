@@ -97,6 +97,11 @@ class BoatFightGame(Game):
         elif self.all_players_ready and self.status == 'waiting':
             self.start_game()
 
+    def boot_player(self, gameplayer):
+        gameplayer.status = 'conceded'
+        gameplayer.boatplacement.sink_all_ships()
+        gameplayer.save()
+
 
 class GamePlayer(models.Model):
     """ GamePlayer Model for BoatFight Game
@@ -108,6 +113,7 @@ class GamePlayer(models.Model):
         choices=(
             ('challenged', 'challenged'),
             ('accepted', 'accepted'),
+            ('conceded', 'conceded'),
             ('ready', 'ready'),
             ('won', 'won'),
             ('lost', 'lost'),
@@ -172,7 +178,7 @@ class GamePlayer(models.Model):
         self.save()
         new_turn_index = 1
         if self.current_turn:
-            new_turn_index = self.current_turn + 1
+            new_turn_index = self.current_turn.turn_index + 1
             self.end_turn
         new_turn = Turn(
             gameplayer=self,
@@ -382,6 +388,15 @@ class BoatPlacement(models.Model):
     def get_player_shots(self, opponent):
         player_sunk_coordinates = opponent.boatplacement.sunk_coordinates
         return self.sort_shots(self.player.turn_set.all(), player_sunk_coordinates)
+
+    def sink_all_ships(self):
+        for ship_label, boat in SHIPS.items():
+            status_field = '{}_status'.format(ship_label)
+            for i in range(1, boat.units + 1):
+                hit_field = '{}_{}_hit'.format(ship_label, i)
+                setattr(self, hit_field, True)
+            setattr(self, status_field, 'sunk')
+        self.save()
 
 
 class Turn(models.Model):

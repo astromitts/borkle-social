@@ -1,0 +1,213 @@
+@import '_variables';
+
+.how-to-score {
+	padding: 1rem;	
+}
+
+.dashboard {
+	padding: .5rem;
+	h2 { 
+		color: $htag-font-color;
+		font-size: 1rem;
+		text-align: right;
+	}
+	h3 {
+		color: $htag-font-color;
+		font-size: 1.1rem;
+	}
+	h5 {
+		color: #828282;
+	    font-size: 1rem;
+	}
+	.card {
+  		margin-bottom: 1rem;
+  		width: 18rem;
+  		border-radius: 10px;
+	}
+	button.cancel-link {
+		float: right;
+	}
+	.codename {
+		display: block;
+	    font-size: .8rem;
+	}
+}
+
+.start-game-buttons {
+	text-align: center;
+	padding: 3rem;
+	a {
+		display: block;
+		margin-bottom: 2rem;
+	}
+}
+
+.game-header {
+	margin: auto 0;
+    display: block;
+    padding-top: 1rem;
+    text-align: center;
+    width: 100%;
+    h1 {
+		font-size: .8rem;
+		color: $htag-font-color;
+		font-weight: bold;
+	}
+}
+
+#game-tools {
+	margin-top: 1rem;
+	margin-bottom: 1rem;
+}
+
+.col-game-buttons {
+	display: inline-block;
+	float: left;
+	padding: 0;
+	width: 6rem;
+}
+
+.col-game-dice {
+	display: inline-block;
+	float: right;
+	padding-left: 0;
+}
+
+table.dice-table_active td {
+	height: 6rem;
+	width: 6rem;
+}
+
+img.rolled-dice {
+	width: 6rem;
+	height: 6rem;
+}
+
+img.selected {
+	width: 5rem;
+	height: 5rem;
+}
+
+
+table#scoreset_table {
+	width: 100%;
+}
+
+#selected-dice-score {
+	font-weight: bold;
+}
+
+img.scored-dice {
+	width: 2rem;
+	height: 2rem;
+}
+
+div.selected-dice-slot_active {
+	box-shadow: inset 0px -1px 20px 1px $dice-board-box-shadow-color;
+	border-radius: 1rem;
+	padding: 1rem;
+	margin: .5rem 0rem;
+}
+
+div#scored-sets-slots {
+	margin-top: 1rem;
+	box-shadow: inset 0px -1px 20px 1px $dice-board-box-shadow-color;    
+	padding: 1rem .5rem;
+    border-radius: 10px;
+}
+
+#scoreset_table {
+	.as-tr {
+		height: 3.5rem;
+	}
+	.scored-dice-images {
+  		min-width: 8rem;
+	}
+	.span-undo-btn {
+		width: 4rem;
+	}
+}
+
+tr.scoreboard_myscore {
+	font-weight: bold;
+}
+
+tr.scoreboard {
+	&_currentplayer {
+		box-shadow: inset 0px 0px 12px 0px $current-player-color;
+	}
+	&_waiting {
+		color: #BBBBBB;
+	}
+}
+
+tr.player-left-game {
+	background-color: $game-button-danger;
+	text-align: center;
+}
+
+
+div#rolled-dice {    
+	border-radius: 10px;
+    box-shadow: inset 0px -1px 20px 1px $dice-board-box-shadow-color;
+    padding: .2rem;
+    min-height: 18rem;
+    min-width: 12rem;
+}
+
+table#game-button-table {
+	min-height: 18rem;
+}
+
+div#roll-button {
+	margin-bottom: 7rem;
+}
+
+
+#dashboard-game-categories {
+	.card {
+		margin-bottom: .75rem;
+	}
+}
+
+#scorecards {
+	display: table;
+	width: 100%;
+}
+
+.scorecards {
+	&-tr {
+		display: table-row;
+	}
+	&-td {
+		display: table-cell;
+	}
+}
+
+button.scorecard-nav {
+	color: $game-play-highlight-font-color;
+	height: 16rem;
+	background-color: $game-play-highlight;
+	width: 1.75rem;
+	border: none;
+	&_next {
+		border-top-right-radius: 5px;
+		border-bottom-right-radius: 5px;
+		box-shadow: -2px 2px 2px $button-box-shadow-color;
+	}
+	&_prev {
+		border-top-left-radius: 5px;
+		border-bottom-left-radius: 5px;
+		box-shadow: 2px 2px 2px $button-box-shadow-color;
+	}
+}
+
+.shrink-at-md {
+	margin: 0 auto;
+	@media (min-width: #{$screen-md-min}) {
+		width: 75%;
+	}
+	@media (min-width: #{$screen-md-min}) {
+		width: 60%;
+	}
+}

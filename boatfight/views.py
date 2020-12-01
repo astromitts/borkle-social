@@ -11,6 +11,7 @@ from bogames.models import Player
 from bogames.views import (
     DashboardBase,
     DashboardApiBase,
+    DeclineGameView,
     BoGameBase,
     JoinGameView,
     CancelGameView,
@@ -34,6 +35,7 @@ class BoatFightBaseView(BoGameBase):
         self.decline_path = 'boatfight_game_decline_invitation_link'
         self.dashboard_refresh_url = 'boatfight_dashboard_api'
         self.start_game_path = 'boatfight_start'
+        self.dashboard_path = 'boatfight_dashboard'
         self.template_base = 'boatfight/base.html'
         self.gamePlayerClass = GamePlayer
 
@@ -118,9 +120,14 @@ class LeaveGame(BoatFightBaseView, LeaveGameView):
     pass
 
 
+class DeclineGame(BoatFightBaseView, DeclineGameView):
+    pass
+
+
 class Dashboard(BoatFightBaseView, DashboardBase):
     def setup(self, request, *args, **kwargs):
         super(Dashboard, self).setup(request, *args, **kwargs)
+
 
 class DashboardApi(BoatFightBaseView, DashboardApiBase):
     pass
@@ -217,18 +224,18 @@ class BoatFightApi(BoatFightBaseView):
                 data['sunkShips'] = {}
 
         elif kwargs['api_target'] == 'gamestatus':
+            default_shots = {
+                'hits': [],
+                'misses': [],
+                'sunk': []
+            }
             if self.opponent.has_boatplacement and self.boatfighter.has_boatplacement:
                 opponent_shots = self.boatfighter.boatplacement.get_opponent_shots(self.opponent)
                 player_shots = self.boatfighter.boatplacement.get_player_shots(self.opponent)
             else:
-                default_shots = {
-                    'hits': [],
-                    'misses': [],
-                    'sunk': []
-                }
                 opponent_shots = default_shots
                 player_shots = default_shots
-            if self.game.all_players_ready:
+            if self.game.all_players_ready or self.opponent.status == 'conceded':
                 data['opponentShots'] = opponent_shots
                 data['playerShots'] = player_shots
                 data['sunkShips'] = self.opponent.boatplacement.get_sunk_ships()

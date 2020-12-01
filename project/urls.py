@@ -56,7 +56,7 @@ if 'boatfight' in settings.INSTALLED_APPS:
         path('boatfight/game/<str:game_uuid>/join/', boatfight_views.JoinGame.as_view(), name='boatfight_game_accept_invitation_link'),
         path('boatfight/game/<str:game_uuid>/play/', csrf_exempt(boatfight_views.GameBoard.as_view()), name='boatfight_game'),
         path('boatfight/game/<str:game_uuid>/api/<str:api_target>/', csrf_exempt(boatfight_views.BoatFightApi.as_view()), name='boatfight_api'),
-        path('borkle/game/<str:game_uuid>/decline/', base_views.DeclineGameView.as_view(), name='boatfight_game_decline_invitation_link'),
+        path('boatfight/game/<str:game_uuid>/decline/', boatfight_views.DeclineGame.as_view(), name='boatfight_game_decline_invitation_link'),
 
     ]
 

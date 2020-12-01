@@ -66,7 +66,7 @@ def bogames_request_validation(get_response):
         try:
             resolved_url = resolve(request.path)
             if not resolved_url.url_name in unauthentication_allowed_url_names:
-                if not request.session.get('user_is_authenticated') and settings.ENVIRONMENT == 'prod':
+                if not request.session.get('user_is_authenticated'):
                     if is_api_request:
                         return JsonResponse(json_response_game_not_found, status=403)
 

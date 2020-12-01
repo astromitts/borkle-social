@@ -16,20 +16,24 @@
 		<input type='hidden' id='boatfight-setup-url' value='{% url "boatfight_game" game_uuid=game.uuid %}' />
 	</div>
 	<div class="row">
-		<div class="col align-right">
-			<div id="ready-button" class="hidden"><button id="ready" class="game-btn">Ready!</button></div>
-			<div id="lock-button" class="hidden"><button id="lock" class="game-btn">Place Boat</button></div>
-			<div id="flip-button" class="hidden"><button id="flip" class="game-btn">Flip Orientation</button></div>
-		</div>
 		<div class="col">
-			<div class="boatfight-boats">
-				{% for boat_label, boat in boats_to_place.items %}
-					<div id="{{boat_label}}" class="boatfight-boats_boat boatfight-boats_{{boat_label}} boat-to-place" data-boat-size="{{boat.units}}">
-						{% if boat.image %}
-							<img src="{% static boat.image %}" />
-						{% endif %}
+			<div class="setup-tools">
+				<div class="setup-tools_left align-right">
+					<div id="ready-button" class="hidden"><button id="ready" class="game-btn">Ready!</button></div>
+					<div id="lock-button" class="hidden"><button id="lock" class="game-btn">Place Boat</button></div>
+					<div id="flip-button" class="hidden margin_t4"><button id="flip" class="game-btn">Flip Orientation</button></div>
+				</div>
+				<div class="setup-tools_right">
+					<div class="boatfight-boats">
+						{% for boat_label, boat in boats_to_place.items %}
+							<div id="{{boat_label}}" class="boatfight-boats_boat boatfight-boats_{{boat_label}} boat-to-place" data-boat-size="{{boat.units}}">
+								{% if boat.image %}
+									<img src="{% static boat.image %}" />
+								{% endif %}
+							</div>
+						{% endfor %}
 					</div>
-				{% endfor %}
+				</div>
 			</div>
 		</div>
 	</div>
@@ -45,6 +49,9 @@
 				{% endfor %}
 			</div>
 		</div>
+	</div>
+	<div class="leave-game">		
+		<a href="{% url 'boatfight_leave_game' game_uuid=game.uuid %}"><button class="btn game-btn game-btn_red">Leave Game</button></a>
 	</div>
 	<div id="boatpart-image-cache" class="hidden">
 		{% for boat_label, boat in boats_to_place.items %}

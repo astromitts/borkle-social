@@ -178,7 +178,7 @@ class CancelGameView(View):
             else:
                 cancel_url = reverse(self.dashboard_path)
 
-            template = loader.get_template('borkle/confirm_action.html')
+            template = loader.get_template('bogames/confirm_action.html')
             context = {
                 'base_template': self.template_base,
                 'cancel_url': cancel_url,

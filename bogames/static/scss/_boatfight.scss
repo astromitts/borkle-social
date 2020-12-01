@@ -1,3 +1,5 @@
+@import '_variables';
+
 $cell-size: 2rem;
 $active-element-color: #FF8D00;
 $active-boat-color: #b16234;
@@ -9,6 +11,47 @@ $active-boat-color: #b16234;
 #winner-data {
 	margin: 0 auto;
 }
+.setup-tools {
+	box-shadow: inset 0 0 14px 6px $dice-board-box-shadow-color;
+	margin-top: 1rem;
+    border-radius: 15px;
+    margin: 0 auto;
+	width: 20rem;
+	height: 13rem;
+	padding-top: 1rem;
+	&_left {
+		display: inline-block;
+		width: 9rem;
+	}
+	&_right {
+		display: inline-block;
+	}
+}
+
+.boatfight-gameboard {
+	box-shadow: inset 0 0 14px 6px $dice-board-box-shadow-color;
+    margin: 0 auto;
+	margin-top: 1rem;
+    border-radius: 15px;
+	padding-top: .5rem;
+	text-align: center;
+    &_smaller {
+		height: 24rem;
+		@media (min-width: #{$screen-md-min}) {
+			height: 31rem;
+		}
+    }
+    &_bigger {
+    	height: 31rem;
+    }
+    &_smallest {
+    	height: 24rem;
+    }
+	@media (min-width: #{$screen-md-min}) {
+    	width: 24rem;
+    	padding: 2rem;
+	}
+}
 
 .boatfight-board-component {
 	width: 20rem;
@@ -16,12 +59,8 @@ $active-boat-color: #b16234;
 }
 
 .boatfight_placement-board {
-	width: 20rem !important;
 	margin: 0 auto;
-	border: 1px solid #ffffff;
-	&__active {
-		border: 1px solid $active-element-color;
-	}
+	width: 20rem !important;
 	.boatfight_gamecell {
 		border: 1px solid #a9a9a9;
 		width: $cell-size;
@@ -29,11 +68,6 @@ $active-boat-color: #b16234;
 	}
 	.as-row {
 		height: $cell-size;
-	}
-	.filled {
-	}
-	.pending {
-		
 	}
 }
 

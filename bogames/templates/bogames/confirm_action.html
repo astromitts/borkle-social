@@ -1,13 +1,15 @@
 {% extends base_template %}
 
 {% block main_content %}
-	<h2>{{form_header}}</h2>
-	<form class="form" method="POST" action="">
-		{% csrf_token %}
-		<input type="submit" class="btn btn-danger" value="Confirm" />
-	</form>
-	
-	<form class="form" method="GET" action="{{cancel_url}}">
-		<input type="submit" class="btn btn-primary margin_t75" value="Cancel" />
-	</form>
+	<div class="dashboard">
+		<p>{{form_header}}</p>
+		<form class="form" method="POST" action="">
+			{% csrf_token %}
+			<input type="submit" class="btn btn-danger" value="Confirm" />
+		</form>
+		
+		<form class="form" method="GET" action="{{cancel_url}}">
+			<input type="submit" class="btn btn-primary margin_t75" value="Cancel" />
+		</form>
+	</div>
 {% endblock %}

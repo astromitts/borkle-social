@@ -1,0 +1,51 @@
+$nav-color: transparent;
+$htag-font-color: #313131;
+
+$navbrand-font: 'Nerko One';
+$body-font: 'Noto Sans JP';
+
+$game-play-highlight: #4c4c4a;
+$game-play-highlight-font-color: #FFFFFF;
+
+$game-play-lowlight: #e4ecc4;
+
+$game-button-main: #e4ecc4;
+$game-button-main-text: #000000;
+$game-button-main-border: #676767;
+$game-button-main-hover: #899266;
+$game-play-gray: #EAEDED;
+
+$game-button-danger: #e85757;
+$game-button-danger-border: #676767;
+$game-button-danger-hover: #a01f1f;
+
+$game-button-text-color: #e2e0e0;
+
+$game-play-secondary: #e4ecc4;
+
+$gradient-1: #B9D8C2;
+$gradient-2: #9AC2C9;
+
+$button-box-shadow-color: #7d7c7c;
+$dice-board-box-shadow-color: #6f9ba2;
+
+$current-player-color: #f9d553;
+$game-alert-color: #fce8a5;
+
+$dashboard-header-font-color: #636262;
+
+
+// Small tablets and large smartphones (landscape view)
+$screen-sm-min: 576px;
+
+// Small tablets (portrait view)
+$screen-md-min: 768px;
+
+// Small tablets (portrait view)
+$screen-md-landscape-min: 768px;
+
+// Tablets and small desktops
+$screen-lg-min: 992px;
+
+// Large tablets and desktops
+$screen-xl-min: 1200px;

@@ -6,18 +6,60 @@
   margin: 0 auto;
 }
 
+.setup-tools {
+  box-shadow: inset 0 0 14px 6px #6f9ba2;
+  margin-top: 1rem;
+  border-radius: 15px;
+  margin: 0 auto;
+  width: 20rem;
+  height: 13rem;
+  padding-top: 1rem;
+}
+.setup-tools_left {
+  display: inline-block;
+  width: 9rem;
+}
+.setup-tools_right {
+  display: inline-block;
+}
+
+.boatfight-gameboard {
+  box-shadow: inset 0 0 14px 6px #6f9ba2;
+  margin: 0 auto;
+  margin-top: 1rem;
+  border-radius: 15px;
+  padding-top: 0.5rem;
+  text-align: center;
+}
+.boatfight-gameboard_smaller {
+  height: 24rem;
+}
+@media (min-width: 768px) {
+  .boatfight-gameboard_smaller {
+    height: 31rem;
+  }
+}
+.boatfight-gameboard_bigger {
+  height: 31rem;
+}
+.boatfight-gameboard_smallest {
+  height: 24rem;
+}
+@media (min-width: 768px) {
+  .boatfight-gameboard {
+    width: 24rem;
+    padding: 2rem;
+  }
+}
+
 .boatfight-board-component {
   width: 20rem;
   margin: 0 auto;
 }
 
 .boatfight_placement-board {
-  width: 20rem !important;
   margin: 0 auto;
-  border: 1px solid #ffffff;
-}
-.boatfight_placement-board__active {
-  border: 1px solid #FF8D00;
+  width: 20rem !important;
 }
 .boatfight_placement-board .boatfight_gamecell {
   border: 1px solid #a9a9a9;
@@ -27,6 +69,7 @@
 .boatfight_placement-board .as-row {
   height: 2rem;
 }
+
 .boatfight-boats {
   display: inline-block;
   height: 2rem;

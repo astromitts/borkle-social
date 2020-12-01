@@ -6,10 +6,6 @@
 	<script src="{% static 'js/boatfight/boatFightPlay.js' %}"></script>
 {% endblock %}
 
-{% block extra_css %}
-	<link href="{% static 'css/boatfight.css' %}" rel="stylesheet">
-{% endblock %}
-
 {% block main_content %}
 	<div id="js-urls">
 		<input type='hidden' id='boatfight-setup-url' value='{% url "boatfight_api" game_uuid=game.uuid api_target="boardsetup" %}' />
@@ -26,6 +22,7 @@
 	</div>
 	<div class="row">
 		<div class="col">
+			<div class="boatfight-gameboard boatfight-gameboard_smaller">
 				<div class="boatfight-board-component"><h5>{{player.username}}</h5></div>
 				<div id="boatfightboard_player" class="as-table boatfight_placement-board boatfightboard_player">
 					{% for y in y_axis %}
@@ -36,8 +33,10 @@
 						</div>
 					{% endfor %}
 				</div>
+			</div>
 		</div>
 		<div class="col">
+			<div class="boatfight-gameboard boatfight-gameboard_bigger">
 				<div class="boatfight-board-component"><h5>{{opponent.username}}</h5></div>
 				<div id="boatfightboard_opponent" class="as-table boatfight_placement-board boatfightboard_opponent">
 					{% for y in y_axis %}
@@ -52,7 +51,12 @@
 					<button id="fire" class="game-btn" disabled>Fire!</button>
 					<div id="game-stats"></div>
 				</div>
+			</div>
 		</div>
+	</div>	
+	
+	<div class="leave-game">		
+		<a href="{% url 'boatfight_leave_game' game_uuid=game.uuid %}"><button class="btn game-btn game-btn_red">Leave Game</button></a>
 	</div>
 
 	<div id="boatpart-image-cache" class="hidden">
