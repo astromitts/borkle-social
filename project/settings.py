@@ -136,7 +136,7 @@ LOGIN_SUCCESS_REDIRECT = 'borkle_dashboard'
 PW_RESET_SUCCESS_REDIRECT = 'session_manager_index'
 LOGIN_REDIRECT_URL = '/dashboard/'
 
-HOST = '127.0.0.1:8000'
+HOST = 'http://127.0.0.1:8000'
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '10.0.0.132']
 
@@ -156,3 +156,4 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 ENVIRONMENT = 'prod'
+FROM_ADDRESS = 'gamemaster@borkle.app'

@@ -11,7 +11,14 @@ from django.urls import reverse
 
 from urllib.parse import urlparse
 
-from session_manager.forms import CreateUserForm, LoginUserForm, ResetPasswordForm
+from session_manager.forms import (
+    CreateUserForm,
+    LoginUserNameForm,
+    LoginUserPasswordForm,
+    LoginUserTokenForm,
+    ResetPasswordForm,
+)
+
 from session_manager.models import SessionManager, UserToken
 
 
@@ -70,9 +77,11 @@ class LoginUserView(View):
                 if token.is_valid:
                     # a valid token/user combination was given, so log in and delete the token
                     login(request, token.user)
+                    request.session['user_is_authenticated'] = True
+                    request.session['user_id'] = token.user.pk
                     # messages.success(request, 'Log in successful.')
                     token.delete()
-                    return redirect(reverse(settings.LOGIN_SUCCESS_REDIRECT))
+                    return redirect(reverse('bogames_landingpage'))
                 else:
                     # provided token was found, but it is expired
                     # clean up the token
@@ -83,47 +92,94 @@ class LoginUserView(View):
                 messages.error(request, token_error_message)
 
         # no token was provided, or it was invalid, so just present the login form
-        form = LoginUserForm()
+        form = LoginUserNameForm()
         self.context.update({
             'form': form,
+            'form_step': 1
         })
         return HttpResponse(self.template.render(self.context, request))
 
     def post(self, request, *args, **kwargs):
         # we should only get here if they submitted the form instead of a token in the URL
         # standard Django form handling here
-        form = LoginUserForm(request.POST)
-        if form.is_valid():
-            if '@' in request.POST['username_or_email']:
-                user, error_reason = SessionManager.check_user_login_by_email(
-                    email=request.POST['username_or_email'],
-                    password=request.POST['password']
-                )
+        if 'password' in request.POST:
+            form = LoginUserPasswordForm(request.POST)
+            if form.is_valid():
+                user = SessionManager.get_user_by_id(request.POST['user_id'])
+                if SessionManager.check_password(user, request.POST['password']):
+                    login(request, user)
+                    request.session['user_is_authenticated'] = True
+                    # messages.success(request, 'Log in successful.')
+                    if request.session.get('login_redirect_from'):
+                        return redirect(request.session['login_redirect_from'])
+                    return redirect(reverse(settings.LOGIN_SUCCESS_REDIRECT))
+                else:
+                    messages.error(request, 'Password incorrect.')
             else:
-                user, error_reason = SessionManager.check_user_login_by_username(
-                    username=request.POST['username_or_email'],
-                    password=request.POST['password']
-                )
-            if not user:
-                messages.error(request, error_reason)
-                self.context.update({
-                    'form': form,
-                })
-                return HttpResponse(self.template.render(self.context, request))
+                messages.error(request, 'Something went wrong. Please correct errors below.')
+
+        elif 'send_token' in request.POST:
+            user = SessionManager.get_user_by_id(request.session['user_id'])
+            token = UserToken(
+                user=user,
+                token_type='login',
+            )
+            token.save()
+            token.send_login_email()
+            messages.success(
+                request,
+                'An email has been sent to {} containing a temporary log in token. It will expire in 24 hours.'.format(user.email)
+            )
+            form = LoginUserTokenForm(initial={'user_id': user.pk})
+            self.context.update({'form_step': 2})
+        elif 'login_token' in request.POST:
+            token, token_error_message = UserToken.get_token(
+                token=request.POST['login_token'],
+                username=SessionManager.get_user_by_id(request.session['user_id']).username,
+                token_type='login'
+            )
+            if token:
+                if token.is_valid:
+                    # a valid token/user combination was given, so log in and delete the token
+                    login(request, token.user)
+                    request.session['user_is_authenticated'] = True
+                    request.session['user_id'] = token.user.pk
+                    # messages.success(request, 'Log in successful.')
+                    token.delete()
+                    return redirect(reverse('bogames_landingpage'))
+                else:
+                    # provided token was found, but it is expired
+                    # clean up the token
+                    token.delete()
+                    messages.error(request, 'Token is expired.')
             else:
-                login(request, user)
-                request.session['user_is_authenticated'] = True
-                request.session['user_id'] = user.pk
-                # messages.success(request, 'Log in successful.')
-                if request.session.get('login_redirect_from'):
-                    return redirect(request.session['login_redirect_from'])
-                return redirect(reverse(settings.LOGIN_SUCCESS_REDIRECT))
+                messages.error(request, 'Token not found. Perhaps you already used it?')
+            return redirect(reverse('session_manager_login'))
         else:
-            messages.error(request, 'Something went wrong. Please correct errors below.')
-            self.context.update({
-                'form': form,
-            })
-            return HttpResponse(self.template.render(self.context, request))
+            form = LoginUserNameForm(request.POST)
+            self.context.update({'form_step': 1})
+            if form.is_valid():
+                if '@' in request.POST['username_or_email']:
+
+                    user = SessionManager.get_user_by_email(username=request.POST['username_or_email'])
+                else:
+                    user = SessionManager.get_user_by_username(username=request.POST['username_or_email'])
+
+                if not user:
+                    messages.error(request, error_reason)
+                    self.context.update({
+                        'form': form,
+                    })
+                    messages.error(request, 'Something went wrong. Please correct errors below.')
+                else:
+                    request.session['user_id'] = user.pk
+                    form = LoginUserPasswordForm(initial={'user_id': user.pk})
+                    self.context.update({'form_step': 2})
+
+        self.context.update({
+            'form': form,
+        })
+        return HttpResponse(self.template.render(self.context, request))
 
 
 class ResetPasswordWithTokenView(View):

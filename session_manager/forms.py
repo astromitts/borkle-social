@@ -1,4 +1,10 @@
-from django.forms import ModelForm, PasswordInput, CharField, HiddenInput
+from django.forms import (
+    ModelForm,
+    PasswordInput,
+    CharField,
+    HiddenInput,
+    IntegerField,
+)
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.utils.safestring import mark_safe
@@ -86,11 +92,30 @@ class ResetPasswordForm(ModelForm):
         }
 
 
-class LoginUserForm(ModelForm):
+class LoginUserNameForm(ModelForm):
     username_or_email = CharField(required=True)
     class Meta:
         model = User
-        fields = ['username_or_email', 'password']
+        fields = ['username_or_email',]
+
+
+class LoginUserPasswordForm(ModelForm):
+    user_id = IntegerField(required=True, widget=HiddenInput())
+    class Meta:
+        model = User
+        fields = ['password']
         widgets = {
             'password': PasswordInput(),
+            'user_id': HiddenInput(),
+        }
+
+
+class LoginUserTokenForm(ModelForm):
+    user_id = IntegerField(required=True, widget=HiddenInput())
+    login_token = CharField(required=True)
+    class Meta:
+        model = User
+        fields = ['login_token']
+        widgets = {
+            'user_id': HiddenInput(),
         }

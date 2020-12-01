@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "3502e76f5916f9147a53c8a2f3c746a56c79e75f3eac66d714e2ed025de91c96"
+            "sha256": "4745bae21113ca4638f05092a858fd9ebbaffb0af5e0d164e6848adf5f274d66"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -237,6 +237,13 @@
             ],
             "version": "==1.7.1"
         },
+        "python-http-client": {
+            "hashes": [
+                "sha256:f5cb0d407b30ed699c2f7ac4ba2ba8a1f2352d44bd9db6ea3bab98d081b433ce"
+            ],
+            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
+            "version": "==3.3.1"
+        },
         "python3-openid": {
             "hashes": [
                 "sha256:33fbf6928f401e0b790151ed2b5290b02545e8775f982485205a066f874aaeaf",
@@ -269,6 +276,14 @@
             "index": "pypi",
             "version": "==1.3.0"
         },
+        "sendgrid": {
+            "hashes": [
+                "sha256:177f959aab5882297fe07efe7db3c67d84fef2d55e3e1038edd4a20f3eb5f059",
+                "sha256:f6a4608e696e5851dd12a716abf97240f947027855e2205dff112c3fdc1bc127"
+            ],
+            "index": "pypi",
+            "version": "==6.4.7"
+        },
         "six": {
             "hashes": [
                 "sha256:30639c035cdb23534cd4aa2dd52c3bf48f06e5f4a941509c8bafd8ce11080259",
@@ -292,6 +307,12 @@
             ],
             "index": "pypi",
             "version": "==0.4.1"
+        },
+        "starkbank-ecdsa": {
+            "hashes": [
+                "sha256:423f81bb55c896a3c85ee98ac7da98826721eaee918f5c0c1dfff99e1972da0c"
+            ],
+            "version": "==1.1.0"
         },
         "urllib3": {
             "hashes": [

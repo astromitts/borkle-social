@@ -19,3 +19,5 @@ ALLOWED_HOSTS = ['borkle-game.herokuapp.com', 'herokuapp.com', 'www.borkle.app']
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 ENVIRONMENT = 'prod'
+
+HOST = 'https://www.borkle.app'

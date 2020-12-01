@@ -1,5 +1,20 @@
 from datetime import datetime, timedelta
+from django.conf import settings
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
 import pytz
+
+
+def send_email(subject, html_body, to_emails):
+    message = Mail(
+        from_email=settings.FROM_ADDRESS,
+        to_emails=to_emails,
+        subject=subject,
+        html_content=html_body
+    )
+    sg = SendGridAPIClient(settings.SENDGRID_API_KEY)
+    response = sg.send(message)
+    return response
 
 
 def twentyfourhoursfromnow():

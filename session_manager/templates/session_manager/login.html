@@ -2,9 +2,19 @@
 {% load socialaccount %}
 {% block main_content %}
 <div class="session">
-{% include 'session_manager/generic_form.html' with form=form submit_text='Log in' %}
-
-	<div>Need an account? <a href="{% url 'session_manager_register' %}"><button class="btn btn-primary btn-large">Register here</button></a>
+{% include 'session_manager/generic_form.html' with form=form submit_text='Next' %}
+	
+	{% if form_step == 2 %}
+		<form id="send-email-link" method="POST" action="">
+			{% csrf_token %}
+			<input name="send_token" value="true" type="hidden" />
+			<div>
+				Want to log in token via an email instead? <input type="submit" class="btn btn-primary btn-large" value="Send Me Token!" />
+			</div>
+		</form>
+	{% elif form_step == 1%}
+		<div>Need an account? <a href="{% url 'session_manager_register' %}"><button class="btn btn-primary btn-large">Register here</button></a>
+	{% endif %}
 
 	{% comment %} or <a href="{% provider_login_url 'google' %}"><button class="btn btn-primary btn-large">Login with Google</button></a>{% endcomment %}</div>
 </div>

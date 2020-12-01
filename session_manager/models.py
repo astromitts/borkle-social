@@ -2,6 +2,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
 from django.urls import reverse
+from django.template.loader import render_to_string
 
 from datetime import datetime, timedelta
 import pytz
@@ -10,7 +11,7 @@ import hashlib
 import random
 import string
 
-from session_manager.utils import twentyfourhoursfromnow
+from session_manager.utils import twentyfourhoursfromnow, send_email
 
 
 class SessionManager(models.Model):
@@ -33,6 +34,12 @@ class SessionManager(models.Model):
         return User.objects.filter(username__iexact=username).first()
 
     @classmethod
+    def get_user_by_email(cls, email):
+        """ Retrieve User if one with a matching email exists
+        """
+        return User.objects.filter(email__iexact=email).first()
+
+    @classmethod
     def get_user_by_id(cls, pk):
         """ Get the User of given primary key
         """
@@ -50,6 +57,13 @@ class SessionManager(models.Model):
         new_user.set_password(password)
         new_user.save()
         return new_user
+
+    @classmethod
+    def check_password(cls, user, password):
+        if user.check_password(password):
+            return True
+        else:
+            return False
 
     @classmethod
     def check_user_login_by_email(cls, email, password):
@@ -96,7 +110,6 @@ class UserToken(models.Model):
     token = models.CharField(max_length=64, blank=True)
     token_type = models.CharField(
         max_length=20,
-        unique=True,
         choices=(
             ('reset', 'reset'),
             ('login', 'login'),
@@ -121,6 +134,7 @@ class UserToken(models.Model):
         """
         if not self.token:
             self.token = self._generate_login_token()
+        UserToken.objects.filter(user=self.user, token_type=self.token_type).exclude(pk=self.pk).delete()
         super(UserToken, self).save(*args, **kwargs)
 
     @property
@@ -165,3 +179,18 @@ class UserToken(models.Model):
             return True
         else:
             return False
+
+    def get_login_email_body(self):
+        template = 'session_manager/emails/login_token.html'
+        return render_to_string(
+            template,
+            context={
+                'token': self
+            }
+        )
+
+    def send_login_email(self):
+        subject = 'Your borkle.app login token has arrived!'
+        to_email = self.user.email
+        email_body = self.get_login_email_body()
+        send_email(subject, email_body, to_email)
