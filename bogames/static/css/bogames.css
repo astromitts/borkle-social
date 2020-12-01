@@ -49,14 +49,44 @@ img#header-image {
 #landingpage {
   padding: 1rem;
 }
-#landingpage .card {
-  width: 10rem;
+#landingpage a:hover {
+  text-decoration: none;
 }
-#landingpage .card a.game-card-link {
-  width: 8rem;
-  height: 8rem;
+#landingpage a .card {
+  width: 7rem;
+  border-radius: 15px;
+}
+#landingpage a .card:hover {
+  box-shadow: 0 0 10px 0px #9AC2C9;
+}
+@media (min-width: 768px) {
+  #landingpage a .card {
+    width: 10rem;
+  }
+}
+#landingpage a .card img {
+  width: 6rem;
+  height: 6rem;
   margin: 0 auto;
   margin-top: 1rem;
+}
+@media (min-width: 768px) {
+  #landingpage a .card img {
+    width: 8rem;
+    height: 8rem;
+  }
+}
+#landingpage a .card .card-body h5 {
+  color: #000000;
+  font-size: 0.9rem;
+}
+#landingpage a .card .card-body h5:hover {
+  text-decoration: none;
+}
+@media (min-width: 768px) {
+  #landingpage a .card .card-body h5 {
+    font-size: 1.5rem;
+  }
 }
 
 .session {
@@ -164,6 +194,11 @@ img#header-image {
 .dashboard h3 {
   font-size: 1.2rem;
   color: #636262;
+}
+.dashboard .card {
+  margin-bottom: 1rem;
+  border-color: #636262;
+  border-radius: 15px;
 }
 
 #game-container {

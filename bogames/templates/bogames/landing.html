@@ -14,15 +14,14 @@
 	<div class="row" id="landingpage">
 		{% for game_title, game_meta in games.items %}
 			<div class="col">
+				<a class="game-card-link" href="{{game_meta.link_url}}">
 				<div class="card">
-					<a class="game-card-link" href="{{game_meta.link_url}}">
-						<img src="{% static game_meta.logo %}" class="card-img-top" alt="image link to borkle game" />
-					</a>
+					<img src="{% static game_meta.logo %}" class="card-img-top" alt="image link to borkle game" />
 					<div class="card-body">
 						<h5 class="card-title">{{game_title}}</h5>
-						<a href="{{game_meta.link_url}}" class="btn btn-primary">Play</a>
 					</div>
 				</div>
+				</a>
 			</div>
 		{% endfor %}
 	</div>

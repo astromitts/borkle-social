@@ -51,13 +51,41 @@ img#header-image{
 
 #landingpage {
 	padding: 1rem;
-	.card {
-		width: 10rem;
-		a.game-card-link {
-			width: 8rem;
-			height: 8rem;
-			margin: 0 auto;
-			margin-top: 1rem;
+	a {
+		&:hover {
+			text-decoration: none;
+		}
+		.card {
+			&:hover {
+				box-shadow: 0 0 10px 0px $gradient-2;
+			}
+			width: 7rem;
+			border-radius: 15px;
+			@media (min-width: #{$screen-md-min}) {
+				width: 10rem;
+			}
+			img {
+				width: 6rem;
+				height: 6rem;
+				margin: 0 auto;
+				margin-top: 1rem;
+				@media (min-width: #{$screen-md-min}) {
+					width: 8rem;
+					height: 8rem;
+				}
+			}
+			.card-body {
+				h5 {
+					&:hover {
+						text-decoration: none;
+					}
+					color: #000000;
+					font-size: .9rem;
+					@media (min-width: #{$screen-md-min}) {
+						font-size: 1.5rem;
+					}
+				}
+			}
 		}
 	}
 }
@@ -165,6 +193,11 @@ img#header-image{
 	h3 {
 		font-size: 1.2rem;
 		color: $dashboard-header-font-color;
+	}
+	.card {
+		margin-bottom: 1rem;
+		border-color: $dashboard-header-font-color;
+		border-radius: 15px;
 	}
 }
 
