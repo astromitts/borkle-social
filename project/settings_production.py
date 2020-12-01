@@ -21,3 +21,5 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 ENVIRONMENT = 'prod'
 
 HOST = 'https://www.borkle.app'
+
+SENDGRID_API_KEY = os.environ['SENDGRID_API_KEY']
