@@ -2,14 +2,22 @@
 
 {% block main_content %}
 <div class="dashboard">
-	<h2>Welcome!</h2> 
-	<div>You are logged in as</div>
-	<ul>
-		<li><b>Username:</b> {{request.user.username}}</li>
-		<li><b>Email:</b> {{request.user.email}}</li>
-	</ul>
-
-	<div><a href="{% url 'session_manager_profile_reset_password' %}">Reset password</a></div>
-	<div><a href="{% url 'session_manager_logout' %}">Log out</a></div>
+	<div class="row">
+		<div class="col"> 
+			<h3>You are logged in as</h3>
+			<ul>
+				<li><b>Username:</b> {{request.user.username}}</li>
+				<li><b>Email:</b> {{request.user.email}}</li>
+			</ul>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col">
+			<a href="{% url 'session_manager_profile_reset_password' %}"><button class="game-btn">Reset&nbsp;Password</button></a>
+		</div>
+		<div class="col">
+			<a href="{% url 'session_manager_logout' %}"><button class="game-btn game-btn_red float-right">Log out</button></a>
+		</div>
+	</div>
 </div>
 {% endblock %}
