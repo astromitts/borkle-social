@@ -59,7 +59,7 @@
 					{% endif %}
 				</ul>
 				{% if user.is_authenticated %}
-					<span class="navbar-text">Logged in as: {{user.username}}</span>
+					<span class="navbar-text"><a href="{%url 'session_manager_index' %}">Logged in as: {{user.username}}</a></span>
 				{% endif %}
 			</div>
 		</div>

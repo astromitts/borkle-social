@@ -17,7 +17,7 @@ urlpatterns = [
     path('logout/', session_views.LogOutUserView.as_view(), name='session_manager_logout'),
     path('resetpassword/', session_views.ResetPasswordWithTokenView.as_view(), name='session_manager_token_reset_password'),
     path('profile/resetpassword/', session_views.ResetPasswordFromProfileView.as_view(), name='session_manager_profile_reset_password'),
-    path('session/', session_views.Index.as_view(), name='session_manager_index'),
+    path('profile/', session_views.Index.as_view(), name='session_manager_index'),
 ]
 
 if 'borkle' in settings.INSTALLED_APPS:

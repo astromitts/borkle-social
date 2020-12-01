@@ -230,11 +230,12 @@ class ResetPasswordWithTokenView(View):
 class ResetPasswordFromProfileView(View):
     def setup(self, request, *args, **kwargs):
         super(ResetPasswordFromProfileView, self).setup(request, *args, **kwargs)
-        self.template = loader.get_template('session_manager/generic_form.html')
+        self.template = loader.get_template('session_manager/reset_password.html')
         self.context = {}
+        self.user = request.user
 
     def get(self, request, *args, **kwargs):
-        form = ResetPasswordForm(initial={'user_id': self.request.user.id})
+        form = ResetPasswordForm(initial={'user_id': self.user.id})
         self.context.update({'form': form})
         return HttpResponse(self.template.render(self.context, request))
 
@@ -245,7 +246,8 @@ class ResetPasswordFromProfileView(View):
             user.set_password(request.POST['password'])
             user.save()
             messages.success(request, 'Your password has been reset. Please log in again to continue.')
-            return redirect(reverse(settings.PW_RESET_SUCCESS_REDIRECT))
+            request.logout(user)
+            return redirect(reverse('session_manager_login'))
         self.context.update({'form': form})
         return HttpResponse(self.template.render(self.context, request))
 

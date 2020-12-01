@@ -12,6 +12,28 @@ from django.utils.safestring import mark_safe
 from session_manager.models import SessionManager
 from session_manager.utils import special_chars
 
+def _get_password_errors(clean_password):
+    has_alpha = False
+    has_number = False
+    has_special = False
+    pw_errors = []
+    if len(clean_password) < 8:
+        pw_errors.append('<li>Must be at least 8 characters.</li>')
+    for char in clean_password:
+        if char.isalpha():
+            has_alpha = True
+        if char.isnumeric():
+            has_number = True
+        if char in special_chars:
+            has_special = True
+    if not has_alpha:
+        pw_errors.append('<li>Must contain at least one letter.</li>')
+    if not has_number:
+        pw_errors.append('<li>Must contain at least one number.</li>')
+    if not has_special:
+        pw_errors.append('<li>Must contain at least one special character ({}).</li>'.format(', '.join(special_chars)))
+    return pw_errors
+
 
 class CreateUserForm(ModelForm):
 
@@ -33,27 +55,8 @@ class CreateUserForm(ModelForm):
         data = self.cleaned_data
         errors = []
 
-        has_alpha = False
-        has_number = False
-        has_special = False
         clean_password = data['password']
-        pw_errors = []
-        if len(clean_password) < 8:
-            pw_errors.append('<li>Must be at least 8 characters.</li>')
-        for char in clean_password:
-            if char.isalpha():
-                has_alpha = True
-            if char.isnumeric():
-                has_number = True
-            if char in special_chars:
-                has_special = True
-        if not has_alpha:
-            pw_errors.append('<li>Must contain at least one letter.</li>')
-        if not has_number:
-            pw_errors.append('<li>Must contain at least one number.</li>')
-        if not has_special:
-            pw_errors.append('<li>Must contain at least one special character ({}).</li>'.format(', '.join(special_chars)))
-
+        pw_errors = _get_password_errors(clean_password)
         if pw_errors:
             errors.append('Invalid password: <ul>{}</ul>'.format(''.join(pw_errors)))
 
@@ -91,6 +94,16 @@ class ResetPasswordForm(ModelForm):
             'user_id': HiddenInput()
         }
 
+    def clean(self):
+        super(ResetPasswordForm, self).clean()
+        data = self.cleaned_data
+        errors = []
+        clean_password = data['password']
+        pw_errors = _get_password_errors(clean_password)
+        if pw_errors:
+            error_message = 'Invalid password: <ul>{}</ul>'.format(''.join(pw_errors))
+            raise ValidationError(mark_safe(error_message))
+        return data
 
 class LoginUserNameForm(ModelForm):
     username_or_email = CharField(required=True)
