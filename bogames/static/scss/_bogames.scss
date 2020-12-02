@@ -135,9 +135,9 @@ img#header-image{
 }
 
 .winner-data {
-    background-color: #a1ecdd;
+    background-color: $game-winner-color;
     border-radius: 8px;
-    height: 5rem;
+    min-height: 5rem;
     margin-left: .2rem;
     margin-right: .2rem;
 }

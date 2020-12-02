@@ -137,7 +137,7 @@ img#header-image {
 .winner-data {
   background-color: #a1ecdd;
   border-radius: 8px;
-  height: 5rem;
+  min-height: 5rem;
   margin-left: 0.2rem;
   margin-right: 0.2rem;
 }

@@ -15,6 +15,22 @@ function doAsyncPost(targetUrl, postData) {
 	});
 }
 
+function doNonAsyncPost(targetUrl, postData) {
+	var resultData;
+	$.ajax({
+		method: 'POST',
+		url: targetUrl,
+		dataType: 'json',
+		data: postData,
+		async: false,
+		success: function successFunction(data) {
+			resultData = data;
+		}
+	});
+	return resultData;
+}
+
+
 function doNonAsyncGet(targetUrl) {
 	var resultData;
 	$.ajax({
@@ -27,6 +43,18 @@ function doNonAsyncGet(targetUrl) {
 		}
 	});
 	return resultData;
+}
+
+function doAsyncGet(targetUrl, successFunction) {
+	var resultData;
+	$.ajax({
+		method: 'GET',
+		url: targetUrl,
+		dataType: 'json',
+		success: function _successFunction(resultData) {
+			successFunction(resultData);
+		}
+	});
 }
 
 function getImageFromCache(imageId) {

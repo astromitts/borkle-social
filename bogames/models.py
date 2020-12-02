@@ -44,8 +44,13 @@ class Player(models.Model):
 
     def join_game(self, game, gameplayer_class):
         gameplayer = gameplayer_class.objects.get(player=self, game=game)
-        gameplayer.ready = True
+        if hasattr(gameplayer, 'ready'):
+            gameplayer.ready = True
+        if hasattr(gameplayer, 'status'):
+            gameplayer.status = 'ready'
         gameplayer.save()
+        if game.all_players_ready:
+            game.start_game()
         return gameplayer
 
     def decline_game(self, game, gameplayer_class):
@@ -157,3 +162,25 @@ class Game(models.Model):
         """ Get the GamePlayer instance of given Player
         """
         return self.gameplayer_set.filter(player=player).first()
+
+
+class GamePlayer(models.Model):
+    """ GamePlayer Model for BoatFight Game
+    """
+    player = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='base_gameplayer')
+    status = models.CharField(
+        max_length=10,
+        choices=(
+            ('challenged', 'challenged'),
+            ('accepted', 'accepted'),
+            ('conceded', 'conceded'),
+            ('ready', 'ready'),
+            ('won', 'won'),
+            ('lost', 'lost'),
+        ),
+        default='challenged'
+    )
+    is_current_player = models.BooleanField(default=False)
+
+    def __str__(self):
+        return '<GamePlayer: {}, {}>'.format(self.pk, self.player.username)

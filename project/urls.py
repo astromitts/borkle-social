@@ -61,3 +61,21 @@ if 'boatfight' in settings.INSTALLED_APPS:
     ]
 
     urlpatterns = urlpatterns + boatfight_urls
+
+if 'boxdots' in settings.INSTALLED_APPS:
+    import boxdots.views as boxdots_views
+
+    boxdots_urls = [
+        path('boxdots/', boxdots_views.Dashboard.as_view(), name='boxdots_dashboard'),
+        path('boxdots/dashboard/api/', boxdots_views.DashboardApi.as_view(), name='boxdots_dashboard_api'),
+        path('boxdots/startgame/', csrf_exempt(boxdots_views.InitializeGame.as_view()), name='boxdots_start'),
+        path('boxdots/game/<str:game_uuid>/leave/', boxdots_views.LeaveGame.as_view(), name='boxdots_leave_game'),
+        path('boxdots/game/<str:game_uuid>/cancel/', boxdots_views.CancelGame.as_view(), name='boxdots_game_cancel'),
+        path('boxdots/game/<str:game_uuid>/join/', boxdots_views.JoinGame.as_view(), name='boxdots_game_accept_invitation_link'),
+        path('boxdots/game/<str:game_uuid>/play/', csrf_exempt(boxdots_views.BoxDotGameView.as_view()), name='boxdots_game'),
+        path('boxdots/game/<str:game_uuid>/api/<str:api_target>/', csrf_exempt(boxdots_views.BoxDotGameApi.as_view()), name='boxdots_api'),
+        path('boxdots/game/<str:game_uuid>/decline/', boxdots_views.DeclineGame.as_view(), name='boxdots_game_decline_invitation_link'),
+
+    ]
+
+    urlpatterns = urlpatterns + boxdots_urls

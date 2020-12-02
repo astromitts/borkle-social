@@ -1,0 +1,24 @@
+{% extends 'bogames/base.html' %}
+{% load static apptags %}
+{% block page_title %}Box Dots! Connect dots.{% endblock %}
+
+{% block navbrand %}
+	<a class="navbar-brand" href="{% if user.is_authenticated %}{% url 'boxdots_dashboard' %}{% else %}{% url 'borkle_about' %}{% endif %}">
+	<img id="header-image" src="{% static 'images/favicon-large.png' %}" />BoxDots!</a>
+{% endblock %}
+
+{% block game_navigation %}
+	<li class="nav-item active">
+		<a class="nav-link" href="{% url 'bogames_landingpage' %}">Home</a>
+	</li>
+	<li class="nav-item active">
+		<a class="nav-link" href="{% url 'boxdots_dashboard' %}">Dashboard</a>
+	</li>
+	<li class="nav-item">
+		<a class="nav-link" href="{% url 'boxdots_start' %}">New game</a>
+	</li>
+{% endblock %}
+
+{% block extra_css %}
+	<link href="{% static 'css/boxdots.css' %}" rel="stylesheet">
+{% endblock %}

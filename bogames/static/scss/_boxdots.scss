@@ -1,0 +1,73 @@
+@import '_variables';
+$cell-size: 3rem;
+$circle-size: 2.5rem;
+
+$gamecell-color: $game-winner-color;
+$gamecell-winner-color: #0063a9;
+
+$local-player-color: #ff7a7a;
+$remote-player-color: #727272;
+
+.circle {
+    background-color: #fff;
+    border: 1px solid $local-player-color; 
+    border-radius:50%;
+    -moz-border-radius:50%;
+    -webkit-border-radius:50%;   
+    height: $circle-size;
+    width: $circle-size;
+    margin: 0 auto;
+	margin-top: .2rem;
+}
+
+.boxdots-positioner {
+	&_active {
+		.boxdots-gameboard_gamecell {
+			background-color: #353535 !important;
+		}
+		.circle {
+			&:hover {
+				background-color: $local-player-color;
+			}
+		}
+	}
+	&_inactive {
+		.boxdots-gameboard_gamecell {
+			background-color: #DEDEDE !important;
+		}
+	}
+}
+
+#boxdots-tile-positioner {
+	margin-top: 1rem;
+	margin-bottom: 1rem;
+	.selected {
+		background-color: $local-player-color;
+	}
+}
+
+.boxdots-gameboard {
+	margin: 0 auto;
+	width: 20rem !important;
+	margin: 0 auto;
+	&_gamecell {
+		border: 1px solid #a9a9a9;
+		width: $cell-size;
+		height: $cell-size;
+		background-color: $gamecell-color;
+	}
+	&_winner {
+		background-color: $gamecell-winner-color;
+	}
+	.as-row {
+		height: $cell-size;
+	}
+	.circle_filled {
+		&__local_player {
+			background-color: $local-player-color !important;
+		}
+		&__remote_player {
+			background-color: $remote-player-color !important;
+		}
+	}
+}

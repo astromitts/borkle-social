@@ -1,0 +1,59 @@
+{% extends 'boxdots/base.html' %}
+{% load static boatfighttags %}
+
+{% block extra_js %}
+	<script src="{% static 'js/boxdots/boxDotsPlay.js' %}"></script>
+{% endblock %}
+
+{% block main_content %}
+	<div id="js-urls">
+		<input type='hidden' id='getboard-url' value='{% url "boxdots_api" game_uuid=game.uuid api_target="getboard" %}' />
+		<input type='hidden' id='updateboard-url' value='{% url "boxdots_api" game_uuid=game.uuid api_target="updateboard" %}' />
+		<input type='hidden' id='endgame-url' value='{% url "boxdots_api" game_uuid=game.uuid api_target="endgame" %}' />
+		<input type='hidden' id='draw-url' value='{% url "boxdots_api" game_uuid=game.uuid api_target="drawgame" %}' />
+		<input type='hidden' id='gameplayer-id' value='{{gameplayer.pk}}' type='hidden' />
+		<input type='hidden' id='remaining-tiles' value='42' type='hidden' />
+	</div>
+	<div class="row winner-data hidden" id="winner">
+		<div class="big-message" id="winner-data" style="margin: 0 auto; padding-top: 1.5rem;">
+			The winner is <span class="winner-name"></span>! They connected <span id="winner-count"></span> dots!
+			<br />Congratulations to <span class="winner-name"></span>!!!
+		</div>
+	</div>
+	<div class="row winner-data hidden" id="draw">
+		<div class="big-message" id="winner-data" style="margin: 0 auto; padding-top: 1.5rem;">
+			It's a tie! I hope you both had fun, at least.
+		</div>
+	</div>
+	<div class="row">
+		<div class="col align-center"><h4>Box Dots</h4></div>
+	</div>
+	<div class="row">
+		<div class="col">
+			<div id="boxdots-tile-positioner" class="as-table boxdots-gameboard">
+				<div class="as-row boxdots-positioner boxdots-positioner_inactive" id="boxdots-positioner-row">
+					{% for x in x_axis %}
+						<div class="as-td boxdots-gameboard_gamecell" id="selector-{{x}}" data-x="{{x}}">
+							<div class="circle"></div>
+						</div>
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col">
+				<div id="boxdots-gameboard" class="as-table boxdots-gameboard">
+					{% for y in y_axis %}
+						<div class="as-row" id="y-{{y}}">
+							{% for x in x_axis %}
+								<div class="as-td boxdots-gameboard_gamecell" id="{{x}}-{{y}}" data-y="{{y}}" data-x="{{x}}">
+									<div class="circle"></div>
+								</div>
+							{% endfor %}
+						</div>
+					{% endfor %}
+				</div>
+		</div>
+	</div>
+{% endblock %}

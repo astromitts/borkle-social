@@ -1,0 +1,55 @@
+.circle {
+  background-color: #fff;
+  border: 1px solid #ff7a7a;
+  border-radius: 50%;
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
+  height: 2.5rem;
+  width: 2.5rem;
+  margin: 0 auto;
+  margin-top: 0.2rem;
+}
+
+.boxdots-positioner_active .boxdots-gameboard_gamecell {
+  background-color: #353535 !important;
+}
+.boxdots-positioner_active .circle:hover {
+  background-color: #ff7a7a;
+}
+.boxdots-positioner_inactive .boxdots-gameboard_gamecell {
+  background-color: #DEDEDE !important;
+}
+
+#boxdots-tile-positioner {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+#boxdots-tile-positioner .selected {
+  background-color: #ff7a7a;
+}
+
+.boxdots-gameboard {
+  margin: 0 auto;
+  width: 20rem !important;
+  margin: 0 auto;
+}
+.boxdots-gameboard_gamecell {
+  border: 1px solid #a9a9a9;
+  width: 3rem;
+  height: 3rem;
+  background-color: #a1ecdd;
+}
+.boxdots-gameboard_winner {
+  background-color: #0063a9;
+}
+.boxdots-gameboard .as-row {
+  height: 3rem;
+}
+.boxdots-gameboard .circle_filled__local_player {
+  background-color: #ff7a7a !important;
+}
+.boxdots-gameboard .circle_filled__remote_player {
+  background-color: #727272 !important;
+}
+
+/*# sourceMappingURL=boxdots.css.map */
