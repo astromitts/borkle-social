@@ -8,6 +8,20 @@ $gamecell-winner-color: #0063a9;
 $local-player-color: #ff7a7a;
 $remote-player-color: #727272;
 
+.game-tools {
+	margin-bottom: 1rem;
+	&_container {
+		margin: 0 auto;
+		width: 20rem;
+		height: 6rem;
+		box-shadow: inset 0 0 14px 6px $dice-board-box-shadow-color;
+		border-radius: 15px;
+		button {
+			margin-top: 1.5rem;
+		}
+	}	
+}
+
 .circle {
     background-color: #fff;
     border: 1px solid $local-player-color; 

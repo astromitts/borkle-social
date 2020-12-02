@@ -302,7 +302,7 @@ function refreshBoard(gameData) {
 		circle.addClass(tileClass);
 	}
 	var tilePlacer = $('#boxdots-positioner-row');
-	var gameTools = $('#game-tools');
+	var gameTools = $('#drop-tile');
 	if ( gameData.isCurrentPlayer == true && gameData.gameStatus == 'active' ) {
 		if (!tilePlacer.hasClass('boxdots-positioner_active')) {
 			tilePlacer.addClass('boxdots-positioner_active');
@@ -321,11 +321,13 @@ function refreshBoard(gameData) {
 
 function displayWinnerData(winnerName, winnerCoordinates) {
 	var winnerDiv = $('#winner');
+	var gameToolsDiv = $('#game-tools');
 	$('span.winner-name').each(function(){
 		$(this).html(winnerName);
 	});
 	$('span#winner-count').html(gameData.winningCoordinates.length);
 	toggleElementVisibility(winnerDiv, 'on');
+	toggleElementVisibility(gameToolsDiv, 'off');
 	for (var idx of Object.keys(gameData.winningCoordinates)){
 		var coordinates = gameData.winningCoordinates[idx];
 		$('div#' + coordinates.x + '-' + coordinates.y).addClass('boxdots-gameboard_winner');
@@ -334,6 +336,8 @@ function displayWinnerData(winnerName, winnerCoordinates) {
 
 function displayDrawData() {
 	var drawDiv = $('#draw');
+	var gameToolsDiv = $('#game-tools');
+	toggleElementVisibility(gameToolsDiv, 'off');
 	toggleElementVisibility(drawDiv, 'on');
 }
 

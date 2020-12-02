@@ -14,22 +14,27 @@
 		<input type='hidden' id='gameplayer-id' value='{{gameplayer.pk}}' type='hidden' />
 		<input type='hidden' id='remaining-tiles' value='42' type='hidden' />
 	</div>
+	<div class="row">
+		<div class="col align-center"><h4>Box Dots</h4></div>
+	</div>	
 	<div class="row winner-data hidden" id="winner">
-		<div class="big-message" id="winner-data" style="margin: 0 auto; padding-top: 1.5rem;">
-			The winner is <span class="winner-name"></span>! They connected <span id="winner-count"></span> dots!
+		<div class="big-message" id="winner-data" style="margin: 0 auto;">
+			The winner is <span class="winner-name"></span>!<br />
+			They connected <span id="winner-count"></span> dots!
 			<br />Congratulations to <span class="winner-name"></span>!!!
 		</div>
 	</div>
 	<div class="row winner-data hidden" id="draw">
-		<div class="big-message" id="winner-data" style="margin: 0 auto; padding-top: 1.5rem;">
+		<div class="big-message" id="winner-data" style="margin: 0 auto;">
 			It's a tie! I hope you both had fun, at least.
 		</div>
 	</div>
-	<div class="row">
-		<div class="col align-center"><h4>Box Dots</h4></div>
-	</div>	
-	<div class="row hidden" id="game-tools">
-		<div class="col align-center"><button class="game-btn" id="drop-tile">Drop Tile</button></div>
+	<div class="row" class="game-tools" id="game-tools">
+		<div class="col align-center">
+			<div class="game-tools_container">
+				<button id="drop-tile" class="game-btn hidden">Drop Tile</button>
+			</div>
+		</div>
 	</div>
 	<div class="row">
 		<div class="col">
