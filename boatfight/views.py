@@ -86,7 +86,8 @@ class InitializeGame(BoatFightBaseView):
         )
         context = {
             'form': form,
-            'form_header': 'Start a boat fight!'
+            'form_header': 'Start a boat fight!',
+            'base_template': self.template_base,
         }
         return HttpResponse(self.template.render(context, request))
 
@@ -104,7 +105,8 @@ class InitializeGame(BoatFightBaseView):
             return redirect(reverse('boatfight_game', kwargs={'game_uuid': game.uuid}))
         context = {
             'form': form,
-            'form_header': 'Start a boat fight!'
+            'form_header': 'Start a boat fight!',
+            'base_template': self.template_base,
         }
         return HttpResponse(self.template.render(context, request))
 

@@ -116,7 +116,8 @@ class InitializeDistributedGame(BorkleBaseView):
         )
         context = {
             'form': form,
-            'form_header': 'Start a game!'
+            'form_header': 'Start a game!',
+            'base_template': self.template_base,
         }
         return HttpResponse(template.render(context, request))
 
@@ -141,7 +142,8 @@ class InitializeDistributedGame(BorkleBaseView):
         template = loader.get_template('bogames/generic_form.html')
         context = {
             'form': form,
-            'form_header': 'Start a game!'
+            'form_header': 'Start a game!',
+            'base_template': self.template_base,
         }
         return HttpResponse(template.render(context, request))
 

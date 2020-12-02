@@ -82,7 +82,8 @@ class InitializeGame(BoxDotBaseView):
         )
         context = {
             'form': form,
-            'form_header': 'Start a Box Dot game!'
+            'form_header': 'Start a Box Dot game!',
+            'base_template': self.template_base,
         }
         return HttpResponse(self.template.render(context, request))
 
@@ -102,7 +103,8 @@ class InitializeGame(BoxDotBaseView):
             return redirect(reverse('boxdots_game', kwargs={'game_uuid': game.uuid}))
         context = {
             'form': form,
-            'form_header': 'Start a Box Dot game!'
+            'form_header': 'Start a Box Dot game!',
+            'base_template': self.template_base,
         }
         return HttpResponse(self.template.render(context, request))
 

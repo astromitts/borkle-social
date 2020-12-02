@@ -46,6 +46,10 @@ class LandingPage(BoGameBase):
                     'link_url': reverse('boatfight_dashboard'),
                     'logo': 'images/game-logos/boatfight.png'
                 },
+                'BoxDots': {
+                    'link_url': reverse('boxdots_dashboard'),
+                    'logo': 'images/game-logos/boxdots-icon.png'
+                },
             }
         }
         return HttpResponse(template.render(context, request))

@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'bogames',
     'borkle',
     'boatfight',
+    'boxdots',
     'namer',
     'allauth',   # <--
     'allauth.account',   # <--
