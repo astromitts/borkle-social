@@ -18,6 +18,9 @@ $remote-player-color: #727272;
     width: $circle-size;
     margin: 0 auto;
 	margin-top: .2rem;
+	&_pending {
+		background-color: #ff7a7a73 !important;
+	}
 }
 
 .boxdots-positioner {

@@ -85,12 +85,22 @@ class DashboardApiBase(BoGameBase):
     def _add_formatted_games(self, games, append_to_list, status):
         for game in games:
             player_gameplayer = game.get_gameplayer(self.player)
-            if game.current_player and game.current_player.current_turn:
-                current_game_player = game.current_player.username
-                is_current_player = game.current_player.current_turn == player_gameplayer
+            if hasattr(game.current_player, 'current_turn'):
+                if game.current_player and game.current_player.current_turn:
+                    current_game_player = game.current_player.username
+                    is_current_player = game.current_player.current_turn == player_gameplayer
+                else:
+                    current_game_player = None
+                    is_current_player = False
             else:
-                current_game_player = None
-                is_current_player = False
+                current_game_player_obj = game.gameplayer_set.filter(is_current_player=True).first()
+                if current_game_player_obj:
+                    current_game_player = current_game_player_obj.username
+                    is_current_player = current_game_player == player_gameplayer
+                else:
+                    current_game_player = None
+                    is_current_player = False
+
             if hasattr(game, 'game_type'):
                 game_type = game.game_type
                 is_practice = game.game_type == 'practice'

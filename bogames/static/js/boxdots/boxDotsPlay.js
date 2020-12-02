@@ -195,10 +195,24 @@ function sendDrawData() {
 	doNonAsyncPost(endGameUrl, postData);
 }
 
+function getBottomMostOpenSpot(xPos) {
+	placementDiv = null;
+	boardHeight.forEach(function(yPos){
+		var possiblePlacementDiv = $('#' + xPos + '-' +yPos);
+		if(!possiblePlacementDiv.find('.circle').hasClass('circle_filled')) {
+			if(placementDiv == null) {
+				placementDiv = possiblePlacementDiv;
+			}
+		}
+	});
+	return placementDiv;
+}
+
 function bindDropTile() {
-	$('#boxdots-tile-positioner .circle').click(function dropTile(){
-		if ($(this).hasClass('selected')) {
-			var xPos = $(this).parent().attr('data-x');
+	$('button#drop-tile').click(function(){
+		target = $('.selected');
+		if (target.length == 1 ){
+			var xPos = target.parent().attr('data-x');
 			var potentialTiles = [];
 			var finalTile = null;
 			for (var idx of Object.keys(boardHeight)){
@@ -222,7 +236,7 @@ function bindDropTile() {
 				var finalCirlce = finalTile.find('.circle');
 				finalCirlce.addClass('circle_filled');
 				finalCirlce.addClass('circle_filled__local_player')
-				$(this).removeClass('selected');
+				target.removeClass('selected');
 				var finalXpos = parseInt(finalTile.attr('data-x'));
 				var finalYpos = parseInt(finalTile.attr('data-y'));
 				var remainingTiles = updateRemainingTiles();
@@ -242,10 +256,22 @@ function bindSelectDropPosition() {
 	$('#boxdots-tile-positioner .circle').click(function selectDropPosition(){
 		var isActivePlayer = $(this).parent().parent().hasClass('boxdots-positioner_active');
 		if (isActivePlayer) {
-			$('#boxdots-tile-positioner .selected').each(function clearSelected(){
+			var xPos = $(this).parent().attr('data-x');
+			$('.circle_pending').each(function(){
+				$(this).removeClass('circle_pending');
+			});
+
+			$('.selected').each(function(){
 				$(this).removeClass('selected');
 			});
-			$(this).addClass('selected');
+			if(!$(this).hasClass('selected')) {
+				var possiblePlacement = getBottomMostOpenSpot(xPos);
+				if (possiblePlacement != null) {
+					$(this).addClass('selected');
+					possiblePlacement.find('.circle').addClass('circle_pending');
+					//$(this).bind('click', bindDropTile($(this)));
+				}
+			} 
 		}
 	});
 }
@@ -276,15 +302,18 @@ function refreshBoard(gameData) {
 		circle.addClass(tileClass);
 	}
 	var tilePlacer = $('#boxdots-positioner-row');
+	var gameTools = $('#game-tools');
 	if ( gameData.isCurrentPlayer == true && gameData.gameStatus == 'active' ) {
 		if (!tilePlacer.hasClass('boxdots-positioner_active')) {
 			tilePlacer.addClass('boxdots-positioner_active');
 			tilePlacer.removeClass('boxdots-positioner_inactive');
+			toggleElementVisibility(gameTools, 'on');
 		}
 	} else {
 		if (tilePlacer.hasClass('boxdots-positioner_active')) {
 			tilePlacer.removeClass('boxdots-positioner_active');
 			tilePlacer.addClass('boxdots-positioner_inactive');
+			toggleElementVisibility(gameTools, 'off');
 		}
 	}
 	updateRemainingTiles();

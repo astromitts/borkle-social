@@ -9,6 +9,9 @@
   margin: 0 auto;
   margin-top: 0.2rem;
 }
+.circle_pending {
+  background-color: #ff7a7a73 !important;
+}
 
 .boxdots-positioner_active .boxdots-gameboard_gamecell {
   background-color: #353535 !important;
