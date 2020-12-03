@@ -208,6 +208,54 @@ function getBottomMostOpenSpot(xPos) {
 	return placementDiv;
 }
 
+function animateTileRed(tile) {
+	var circle = tile.find('.circle');
+	circle.animate(
+		{ 
+			backgroundColor: "#FF7A7A",
+		}, 50
+	);
+}
+
+function animateTileWhite(tile) {
+	var circle = tile.find('.circle');
+	circle.animate(
+		{ 
+			backgroundColor: "#FFFFFF",
+		}, 50
+	);
+}
+
+function placeFinalTile(finalTile) {
+
+	var finalCirlce = finalTile.find('.circle');
+
+	finalCirlce.animate(
+		{ 
+			backgroundColor: "#FF7A7A",
+		}, 100
+	);
+
+	var testAnimationInterval = setInterval(function () {
+		if (! $.timers.length) {
+			clearInterval(testAnimationInterval);
+			finalCirlce.addClass('circle_filled');
+			finalCirlce.addClass('circle_filled__local_player')
+			target.removeClass('selected');
+			var finalXpos = parseInt(finalTile.attr('data-x'));
+			var finalYpos = parseInt(finalTile.attr('data-y'));
+			var remainingTiles = updateRemainingTiles();
+			var winningRows = checkForFourInARow(finalXpos, finalYpos);
+			if ( winningRows.length > 0 ) {
+				sendWinnerData(winningRows);
+			} else if (remainingTiles == 0) {
+				sendDrawData();
+			}
+			updateBoard(finalTile.attr('data-x'), finalTile.attr('data-y'));
+		}
+	}, 25);
+}
+
 function bindDropTile() {
 	$('button#drop-tile').click(function(){
 		target = $('.selected');
@@ -225,28 +273,29 @@ function bindDropTile() {
 					potentialTiles.push(potentialTile);
 				}
 			}
-
-			potentialTiles.reverse();
-			potentialTiles.forEach(function(tile){
-				var circle = tile.find('.circle');
-				circle.stop().css("background-color", "red")
-					.animate({ backgroundColor: "#FFFFFF"}, 500);
-			});
 			if (finalTile != null) {
-				var finalCirlce = finalTile.find('.circle');
-				finalCirlce.addClass('circle_filled');
-				finalCirlce.addClass('circle_filled__local_player')
-				target.removeClass('selected');
-				var finalXpos = parseInt(finalTile.attr('data-x'));
-				var finalYpos = parseInt(finalTile.attr('data-y'));
-				var remainingTiles = updateRemainingTiles();
-				var winningRows = checkForFourInARow(finalXpos, finalYpos);
-				if ( winningRows.length > 0 ) {
-					sendWinnerData(winningRows);
-				} else if (remainingTiles == 0) {
-					sendDrawData();
-				}
-				updateBoard(finalTile.attr('data-x'), finalTile.attr('data-y'));
+				$('.circle_pending').removeClass('circle_pending');
+				potentialTiles.reverse();
+				var animatedTiles = 0;
+				potentialTiles.forEach(function(tile){
+					var flashedRed = false;
+					var testAnimationInterval = setInterval(function () {
+				        if (! $.timers.length) { // any page animations finished
+							if (!flashedRed) {
+								animateTileRed(tile);
+								flashedRed = true;
+							} else {
+					            clearInterval(testAnimationInterval);
+					            animateTileWhite(tile);
+					            animatedTiles += 1;
+					            if (animatedTiles == potentialTiles.length) {
+					            	placeFinalTile(finalTile);
+					            }
+							}
+				        }
+				    }, 25);
+				});
+
 			}
 		}
 	});
@@ -322,11 +371,13 @@ function refreshBoard(gameData) {
 function displayWinnerData(winnerName, winnerCoordinates) {
 	var winnerDiv = $('#winner');
 	var gameToolsDiv = $('#game-tools');
+	var playAgainDiv = $('#play-again');
 	$('span.winner-name').each(function(){
 		$(this).html(winnerName);
 	});
 	$('span#winner-count').html(gameData.winningCoordinates.length);
 	toggleElementVisibility(winnerDiv, 'on');
+	toggleElementVisibility(playAgainDiv, 'on');
 	toggleElementVisibility(gameToolsDiv, 'off');
 	for (var idx of Object.keys(gameData.winningCoordinates)){
 		var coordinates = gameData.winningCoordinates[idx];
@@ -337,8 +388,10 @@ function displayWinnerData(winnerName, winnerCoordinates) {
 function displayDrawData() {
 	var drawDiv = $('#draw');
 	var gameToolsDiv = $('#game-tools');
+	var playAgainDiv = $('#play-again');
 	toggleElementVisibility(gameToolsDiv, 'off');
 	toggleElementVisibility(drawDiv, 'on');
+	toggleElementVisibility(playAgainDiv, 'on');
 }
 
 

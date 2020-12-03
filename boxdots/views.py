@@ -90,10 +90,12 @@ class InitializeGame(BoxDotBaseView):
     def post(self, request, *args, **kwargs):
         form = self.formClass(request.POST)
         if form.is_valid():
+            opponent = Player.get_by_username(request.POST['opponent'])
             players = [
                 self.player,
-                Player.get_by_username(request.POST['opponent'])
+                opponent,
             ]
+
             game = BoxDotGame.initialize_game(players, GamePlayer)
             game.created_by = self.player
             game.save()
