@@ -273,7 +273,7 @@ function bindDropTile() {
 					potentialTiles.push(potentialTile);
 				}
 			}
-			if (finalTile != null) {
+			if (finalTile != null && potentialTiles.length > 0) {
 				$('.circle_pending').removeClass('circle_pending');
 				potentialTiles.reverse();
 				var animatedTiles = 0;
@@ -296,6 +296,8 @@ function bindDropTile() {
 				    }, 25);
 				});
 
+			} else if(finalTile != null) {
+				placeFinalTile(finalTile);
 			}
 		}
 	});
