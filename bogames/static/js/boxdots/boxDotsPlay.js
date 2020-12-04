@@ -241,15 +241,16 @@ function placeFinalTile(finalTile) {
 			clearInterval(testAnimationInterval);
 			finalCirlce.addClass('circle_filled');
 			finalCirlce.addClass('circle_filled__local_player')
-			target.removeClass('selected');
 			var finalXpos = parseInt(finalTile.attr('data-x'));
 			var finalYpos = parseInt(finalTile.attr('data-y'));
 			var remainingTiles = updateRemainingTiles();
 			var winningRows = checkForFourInARow(finalXpos, finalYpos);
 			if ( winningRows.length > 0 ) {
 				sendWinnerData(winningRows);
+				manualRefresh();
 			} else if (remainingTiles == 0) {
 				sendDrawData();
+				manualRefresh();
 			}
 			updateBoard(finalTile.attr('data-x'), finalTile.attr('data-y'));
 		}
@@ -258,8 +259,11 @@ function placeFinalTile(finalTile) {
 
 function bindDropTile() {
 	$('button#drop-tile').click(function(){
-		target = $('.selected');
+		var target = $('.selected');
+		var button = $('button#drop-tile');
 		if (target.length == 1 ){
+			target.removeClass('selected');
+			toggleElementVisibility(button, 'off');
 			var xPos = target.parent().attr('data-x');
 			var potentialTiles = [];
 			var finalTile = null;
@@ -298,6 +302,8 @@ function bindDropTile() {
 
 			} else if(finalTile != null) {
 				placeFinalTile(finalTile);
+			} else {
+				toggleElementVisibility(button, 'on');
 			}
 		}
 	});
@@ -337,11 +343,10 @@ function updateRemainingTiles() {
 	return currentRemainingTiles;
 }
 
-function refreshBoard(gameData) {
-	var localPlayerId = parseInt($('#gameplayer-id').val());
+function refreshBoard(apiData) {
+	var localPlayerId = apiData.localPlayer.id;
 	var tileClass;
-	for (var idx of Object.keys(gameData.placedTiles)){
-		var coordinates = gameData.placedTiles[idx];
+	apiData.gameData.placedTiles.forEach(function(coordinates){
 		var tilePlayer = parseInt(coordinates.filledById);
 		if (tilePlayer == localPlayerId) {
 			tileClass = 'circle_filled__local_player';
@@ -351,10 +356,11 @@ function refreshBoard(gameData) {
 		var circle = $('#' + coordinates.x + '-' + coordinates.y).find('.circle');
 		circle.addClass('circle_filled');
 		circle.addClass(tileClass);
-	}
+
+	});
 	var tilePlacer = $('#boxdots-positioner-row');
 	var gameTools = $('#drop-tile');
-	if ( gameData.isCurrentPlayer == true && gameData.gameStatus == 'active' ) {
+	if ( apiData.localPlayer.isCurrentPlayer == true && apiData.metaData.gameStatus == 'active' ) {
 		if (!tilePlacer.hasClass('boxdots-positioner_active')) {
 			tilePlacer.addClass('boxdots-positioner_active');
 			tilePlacer.removeClass('boxdots-positioner_inactive');
@@ -370,21 +376,20 @@ function refreshBoard(gameData) {
 	updateRemainingTiles();
 }
 
-function displayWinnerData(winnerName, winnerCoordinates) {
+function displayWinnerData(apiData) {
 	var winnerDiv = $('#winner');
 	var gameToolsDiv = $('#game-tools');
 	var playAgainDiv = $('#play-again');
 	$('span.winner-name').each(function(){
-		$(this).html(winnerName);
+		$(this).html(apiData.gameData.winner);
 	});
-	$('span#winner-count').html(gameData.winningCoordinates.length);
+	$('span#winner-count').html(apiData.gameData.winningCoordinates.length);
 	toggleElementVisibility(winnerDiv, 'on');
 	toggleElementVisibility(playAgainDiv, 'on');
 	toggleElementVisibility(gameToolsDiv, 'off');
-	for (var idx of Object.keys(gameData.winningCoordinates)){
-		var coordinates = gameData.winningCoordinates[idx];
+	apiData.gameData.winningCoordinates.forEach(function(coordinates){
 		$('div#' + coordinates.x + '-' + coordinates.y).addClass('boxdots-gameboard_winner');
-	}
+	});
 }
 
 function displayDrawData() {
@@ -394,6 +399,34 @@ function displayDrawData() {
 	toggleElementVisibility(gameToolsDiv, 'off');
 	toggleElementVisibility(drawDiv, 'on');
 	toggleElementVisibility(playAgainDiv, 'on');
+}
+
+function manualRefresh() {
+	var refreshUrl = $('#getboard-url').val();
+	$.ajax({
+		method: 'GET',
+		url: refreshUrl,
+		dataType: 'json',
+		success: function successFunction(data) {
+			gameData = data;
+			refreshBoard(gameData);
+			if (gameData.metaData.gameStatus == 'over') {
+				if (gameData.gameData.winner) {
+					displayWinnerData(gameData);
+				} else {
+					displayDrawData();
+				}
+			}
+		}
+	});
+}
+
+function bindManualRefresh() {
+	var manualRefreshDiv = $('div#manual-refresh');
+	toggleElementVisibility(manualRefreshDiv, 'on');
+	$('button#manual-refresh').click(function doManualRefresh(){
+		manualRefresh();
+	});
 }
 
 
@@ -413,9 +446,9 @@ $(document).ready(function playGame(){
 					success: function successFunction(data) {
 						gameData = data;
 						refreshBoard(gameData);
-						if (gameData.gameStatus == 'over') {
-							if (gameData.winner) {
-								displayWinnerData(gameData.winner, gameData.winningCoordinates);
+						if (gameData.metaData.gameStatus == 'over') {
+							if (gameData.gameData.winner) {
+								displayWinnerData(gameData);
 							} else {
 								displayDrawData();
 							}
@@ -425,6 +458,7 @@ $(document).ready(function playGame(){
 				});
 		}, 1000);
 	} else {
-		refreshBoard();
+		manualRefresh();
+		bindManualRefresh();
 	}
 });

@@ -28,7 +28,11 @@ class BoGameBase(View):
         self.gamePlayerClass = GamePlayer
 
         if kwargs.get('game_uuid'):
-            self.game = Game.objects.get(uuid=kwargs['game_uuid'])
+            self.game = self.get_game(kwargs['game_uuid'])
+
+    def get_game(self, uuid):
+        return Game.objects.get(uuid=uuid)
+
 
 
 class LandingPage(BoGameBase):
@@ -74,12 +78,11 @@ class DashboardApiBase(BoGameBase):
     """ Base class for Dashboard API refresh calls
     """
 
-    def _format_player(self, player, current_player):
+    def _format_player(self, player):
         return {
             'username': player.username,
             'ready': player.status == 'ready',
             'status': player.status,
-            'isCurrentPlayer': player == current_player,
         }
 
     def _add_formatted_games(self, games, append_to_list, status):
@@ -120,7 +123,7 @@ class DashboardApiBase(BoGameBase):
                 'createdBy': created_by,
                 'isGameOwner': game.created_by == self.player,
                 'current_player_name': current_game_player,
-                'players': [self._format_player(gp, game.current_player) for gp in game.gameplayer_set.all()],
+                'players': [self._format_player(gp) for gp in game.gameplayer_set.all()],
                 'isCurrentPlayer': is_current_player,
                 'isPracticeGame': is_practice,
                 'gameType': game_type,
@@ -162,6 +165,36 @@ class DashboardApiBase(BoGameBase):
         data['games'] = self._add_formatted_games(player_games['pending'], data['games'], 'pending')
         data['games'] = self._add_formatted_games(player_games['invitations'], data['games'], 'invited')
         return JsonResponse(data)
+
+
+class DashBoardDataGameBase(DashboardApiBase):
+
+    def _add_formatted_games(self, games, append_to_list, status):
+        for game in games:
+            gameplayers = game.gameplayer_set.all()
+            player_gameplayer = game.get_gameplayer(self.player)
+            is_current_player = False
+            current_game_player = None
+            for gp in gameplayers:
+                if gp == player_gameplayer and gp.data['isCurrentPlayer']:
+                    is_current_player = True
+                elif gp.data['isCurrentPlayer']:
+                    current_game_player = gp.username
+
+            append_to_list.append({
+                'dashboardStatus': status,
+                'uuid': game.uuid,
+                'codeName': game.code_name,
+                'current_player_name': current_game_player,
+                'players': [self._format_player(gp) for gp in gameplayers],
+                'isCurrentPlayer': is_current_player,
+                'link': reverse(self.game_path, kwargs={'game_uuid': game.uuid}),
+                'cancelLink': reverse(self.cancel_path, kwargs={'game_uuid': game.uuid}),
+                'joinLink': reverse(self.join_path, kwargs={'game_uuid': game.uuid}),
+                'declineLink': reverse(self.decline_path, kwargs={'game_uuid': game.uuid})
+            })
+        return append_to_list
+
 
 
 class JoinGameView(View):

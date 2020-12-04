@@ -10,6 +10,8 @@ from django.utils.timezone import now
 
 from datetime import datetime
 
+import json
+import jsonfield
 import uuid
 import random
 from namer.models import get_random_name
@@ -46,8 +48,11 @@ class Player(models.Model):
         gameplayer = gameplayer_class.objects.get(player=self, game=game)
         if hasattr(gameplayer, 'ready'):
             gameplayer.ready = True
-        if hasattr(gameplayer, 'status'):
+        elif hasattr(gameplayer, 'data'):
+            gameplayer.data['status'] = 'ready'
+        elif hasattr(gameplayer, 'status'):
             gameplayer.status = 'ready'
+
         gameplayer.save()
         if game.all_players_ready:
             game.start_game()
@@ -164,6 +169,7 @@ class Game(models.Model):
         return self.gameplayer_set.filter(player=player).first()
 
 
+
 class GamePlayer(models.Model):
     """ GamePlayer Model for BoatFight Game
     """
@@ -184,3 +190,167 @@ class GamePlayer(models.Model):
 
     def __str__(self):
         return '<GamePlayer: {}, {}>'.format(self.pk, self.player.username)
+
+
+class DataGame(models.Model):
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False)
+    code_name = models.CharField(max_length=100, default=get_random_name, blank=True, unique=True)
+    meta = jsonfield.JSONField(blank=True)
+    data = jsonfield.JSONField(blank=True)
+
+    def __str__(self):
+        return json.dumps(self.meta)
+
+    @property
+    def _default_game_meta(self):
+        return {
+            'gameStatus': 'pending',
+            'codeName': self.code_name,
+            'uuid': str(self.uuid),
+        }
+
+    @property
+    def _default_game_data(self):
+        return {}
+
+    @property
+    def status(self):
+        return self.meta['gameStatus']
+
+    @property
+    def all_players(self):
+        players = []
+        for player in self.gameplayer_set.all():
+            players.append(player.data)
+
+    def get_opponent_for_local_player(self, local_player):
+        return self.gameplayer_set.exclude(pk=local_player.pk).first()
+
+    def get_player_set(self, local_player):
+        opponent = self.get_opponent_for_local_player(local_player)
+        if not opponent:
+            opponent_data = {}
+        else:
+            opponent_data = opponent.data
+
+        return {
+            'player': local_player.data,
+            'opponent': opponent_data
+        }
+
+    def update_meta(self, key, value):
+        self.meta[key] = value
+        self.save()
+
+    def update_data(self, key, value):
+        self.data[key] = value
+        self.save()
+
+    def save(self):
+        if not self.data:
+            self.data = self._default_game_data
+        if not self.meta:
+            self.meta = self._default_game_meta
+        super(DataGame, self).save()
+
+    @property
+    def all_players_ready(self):
+        for gp in self.gameplayer_set.all():
+            if gp.data['status'] not in ['active', 'ready', 'won', 'lost']:
+                return False
+        return True
+
+    def get_gameplayer(self, player):
+        """ Get the GamePlayer instance of given Player
+        """
+        return self.gameplayer_set.filter(player=player).first()
+
+    @property
+    def current_player(self):
+        for gp in self.gameplayer_set.all():
+            if gp.data['isCurrentPlayer'] == True:
+                return gp
+        return None
+
+    def start_game(self):
+        """ Set Game status to active and start the first turn for a random player
+        """
+        self.meta.update({'gameStatus': 'active'})
+        first_player = random.choice(self.gameplayer_set.all())
+        if first_player:
+            first_player.start_turn()
+        self.save()
+
+    @classmethod
+    def initialize_game(cls, players, gameplayer_class):
+        """ Initialize a new Game instance
+        """
+        newgame = cls()
+        newgame.save()
+        for player in players:
+            gp = gameplayer_class(
+                player=player,
+                game=newgame
+            )
+            gp.save()
+        return newgame
+
+
+class DataGamePlayer(models.Model):
+    player = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='database_gameplayer')
+    data = jsonfield.JSONField(blank=True)
+
+    def _default_data(self):
+        return {
+            "id": self.pk,
+            "playerId": self.player.pk,
+            "userName": self.username,
+            "status": "waiting",
+            "isCurrentPlayer": False,
+            "gameUUID": str(self.game.uuid),
+        }
+
+    @property
+    def str_keys(self):
+        return ['id', 'playerId', 'userName', 'status', 'isCurrentPlayer', 'gameUUID']
+
+
+    def __str__(self):
+        str_data = {}
+        for key in self.str_keys:
+            str_data[key] = self.data.get(key)
+        return json.dumps(str_data)
+
+    @property
+    def username(self):
+        return self.player.username
+
+    @property
+    def status(self):
+        return self.data['status']
+
+    @property
+    def opponent(self):
+        return self.game.get_opponent_for_local_player(self)
+
+
+    def set_status(self, status):
+        self.data['status'] = status
+        self.save()
+
+    def start_turn(self):
+        opponent = self.opponent
+        opponent.data['isCurrentPlayer'] = False
+        opponent.save()
+
+        self.data['isCurrentPlayer'] = True
+        self.save()
+
+
+    def save(self):
+        if not self.data:
+            self.data = self._default_data
+        super(DataGamePlayer, self).save()
+        if not self.data["id"]:
+            self.data["id"] = self.pk
+            self.save()

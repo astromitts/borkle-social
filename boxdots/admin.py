@@ -1,7 +1,6 @@
 from django.contrib import admin
-from boxdots.models import BoxDotGame, GamePlayer, Turn
+from boxdots.models import BoxDotDataGame, GamePlayer
 
 
-admin.site.register(BoxDotGame)
+admin.site.register(BoxDotDataGame)
 admin.site.register(GamePlayer)
-admin.site.register(Turn)

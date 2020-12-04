@@ -8,7 +8,7 @@ from django.http import HttpResponse, JsonResponse
 from bogames.models import Player
 from bogames.views import (
     DashboardBase,
-    DashboardApiBase,
+    DashBoardDataGameBase,
     DeclineGameView,
     BoGameBase,
     JoinGameView,
@@ -16,10 +16,10 @@ from bogames.views import (
     LeaveGameView,
 )
 from boxdots.forms import InitializeGameForm
+from bogames.models import DataGame
 from boxdots.models import (
-    BoxDotGame,
+    BoxDotDataGame as BoxDotGame,
     GamePlayer,
-    Turn,
 )
 import json
 
@@ -49,14 +49,11 @@ class BoxDotBaseView(BoGameBase):
                 if self.game:
                     self.gameplayer = GamePlayer.objects.filter(game=self.game, player=self.player).first()
                     self.opponent = self.game.gameplayer_set.exclude(player=self.gameplayer.player).first()
-                    if self.game.all_players_ready and (self.game.status != 'active' or self.game.data['gameStatus'] != 'active'):
+                    if self.game.all_players_ready and self.game.status in ['waiting', 'pending']:
                         self.game.start_game()
-                    if self.game.all_players_ready and self.game.status == 'active' and self.game.data['gameStatus'] == 'active':
-                        self.is_current_player = self.player == self.game.current_player.player
-                        self.current_player = self.game.current_player
-                    else:
-                        self.is_current_player = False
-                        self.current_player = None
+
+    def get_game(self, uuid):
+        return DataGame.objects.get(uuid=uuid)
 
 
 class Dashboard(BoxDotBaseView, DashboardBase):
@@ -65,7 +62,7 @@ class Dashboard(BoxDotBaseView, DashboardBase):
         self.refresh_url = reverse('borkle_dashboard_api')
 
 
-class DashboardApi(BoxDotBaseView, DashboardApiBase):
+class DashboardApi(BoxDotBaseView, DashBoardDataGameBase):
     pass
 
 class InitializeGame(BoxDotBaseView):
@@ -100,7 +97,7 @@ class InitializeGame(BoxDotBaseView):
             game.created_by = self.player
             game.save()
             initializing_gameplayer = GamePlayer.objects.get(game=game, player=self.player)
-            initializing_gameplayer.status = 'ready'
+            initializing_gameplayer.set_status('ready')
             initializing_gameplayer.save()
             return redirect(reverse('boxdots_game', kwargs={'game_uuid': game.uuid}))
         context = {
@@ -130,6 +127,10 @@ class DeclineGame(BoxDotBaseView, DeclineGameView):
 class BoxDotGameView(BoxDotBaseView):
     def get(self, request, *args, **kwargs):
         template = loader.get_template('boxdots/gameboard.html')
+        if self.gameplayer.data['status'] == 'waiting':
+            self.gameplayer.data['status'] = 'ready'
+            self.gameplayer.save()
+
         context = {
             'game': self.game,
             'gameplayer': self.gameplayer,
@@ -142,8 +143,13 @@ class BoxDotGameView(BoxDotBaseView):
 class BoxDotGameApi(BoxDotBaseView):
     def get(self, request, *args, **kwargs):
         if kwargs['api_target'] == 'getboard':
-            data = self.game.data
-            data['isCurrentPlayer'] = self.gameplayer.is_current_player
+            player_set = self.game.get_player_set(self.gameplayer)
+            data = {
+                'metaData': self.game.meta,
+                'gameData': self.game.data,
+                'localPlayer': player_set['player'],
+                'opponentPlayer': player_set['opponent'],
+            }
             return JsonResponse(data)
 
 
@@ -153,7 +159,7 @@ class BoxDotGameApi(BoxDotBaseView):
             ypos = request.POST['y']
             gameplayer_id = request.POST['gameplayer_id']
             self.game.update_board(xpos, ypos, gameplayer_id)
-            self.game.advance_player()
+            self.game.advance_player(self.gameplayer, self.opponent)
             return JsonResponse(self.game.data)
         elif kwargs['api_target'] == 'endgame':
             coords = json.loads(request.POST['coordinates'])
