@@ -8,10 +8,16 @@ function toggleOpponentBoard(visibility) {
 	return visibility;
 }
 
-function toggleWinner(winner) {
+function toggleWinner(gameData) {
 	var winnerDiv = $('#winner');
 	var winnerDisplay = $('#winner-data');
-	winnerDisplay.html('The winner is ' + winner + '!!!');
+	var displayHTML = 'The winner is ' + gameData.winner + '!!!';
+	if (gameData.lossType == 'conceded') {
+		displayHTML += '<br />' + gameData.loser + ' conceded the game :(';
+	} else {
+		displayHTML += '<br />' + gameData.loser + ' lost all their ships :(';
+	}
+	winnerDisplay.html(displayHTML);
 	toggleElementVisibility(winnerDiv, 'on');
 }
 
@@ -91,30 +97,31 @@ function endTurn() {
 }
 
 function revealSunkShips(sunkShips) {
-	for (var boatType of Object.keys(sunkShips)){
-	var cacheIndex = 1;
-	for (var positionIndex of Object.keys(sunkShips[boatType].coordinates)){
-		var position = sunkShips[boatType].coordinates[positionIndex];
-		var targetID = position.xPos + '-' +position.yPos;
-		var boatSquare = $('#boatfightboard_opponent #' + targetID);
-		if (!boatSquare.hasClass('filled')) {
-			boatSquare.addClass('filled');
-		}
-		if (boatSquare.find('img').length == 0) {
-			boatSquare.attr('data-boat-type', boatType);
-			var cacheImageID = boatType + '-' + cacheIndex;
-			var divImage = getImageFromCache(cacheImageID);
-			if (sunkShips[boatType].orientation == 'vertical') {
-				var classList = 'boat-part boat-part_vertical';
-			} else {
-				var classList = 'boat-part';
+	sunkShips.forEach(function revealSunkShip(ship){
+		var cacheIndex = 1;
+		var orientation = ship.orientation;
+		var boatType = ship.display.label;
+		ship.coordinates.forEach(function revealShipPart (position){
+			var targetID = position.x + '-' +position.y;
+			var boatSquare = $('#boatfightboard_opponent #' + targetID);
+			if (!boatSquare.hasClass('filled')) {
+				boatSquare.addClass('filled');
 			}
-			divImage.className = classList;
-			boatSquare.html(divImage);
-		}
-		cacheIndex += 1;
-	}
-}
+			if (boatSquare.find('img').length == 0) {
+				boatSquare.attr('data-boat-type', boatType);
+				var cacheImageID = boatType + '-' + cacheIndex;
+				var divImage = getImageFromCache(cacheImageID);
+				if (orientation == 'vertical') {
+					var classList = 'boat-part boat-part_vertical';
+				} else {
+					var classList = 'boat-part';
+				}
+				divImage.className = classList;
+				boatSquare.html(divImage);
+			}
+			cacheIndex += 1;
+		});
+	});
 }
 
 function setUpBoard(setUpUrl) {
@@ -125,20 +132,21 @@ function setUpBoard(setUpUrl) {
 		dataType: 'json',
 		async: false,
 		success: function (gameSetup) {
-			for (var boatType of Object.keys(gameSetup.boats)){
+			gameSetup.boats.forEach(function placeBoat(boat){
 				var cacheIndex = 1;
-				for (var positionIndex of Object.keys(gameSetup.boats[boatType].positions)){
-					var position = gameSetup.boats[boatType].positions[positionIndex];
-					var targetID = position.xPos + '-' +position.yPos;
+				boat.coordinates.forEach(function placeBoatCoordinate(coordinate){
+					var targetID = coordinate.x + '-' +coordinate.y;
 					var boatSquare = $('#boatfightboard_player #' + targetID);
+					var boatType = boat.display.label;
 					boatSquare.addClass('filled');
 					boatSquare.attr('data-boat-type', boatType);
 					var cacheImageID = boatType + '-' + cacheIndex;
 					var divImage = getImageFromCache(cacheImageID);
 					boatSquare.html(divImage);
 					cacheIndex += 1;
-				}
-			}
+				});
+
+			});
 			revealSunkShips(gameSetup.sunkShips);
 
 			if(gameSetup.player.isCurrentPlayer) {
@@ -153,10 +161,11 @@ function setUpBoard(setUpUrl) {
 	return setupData;
 }
 
-function updateShots(shots, targetBoard, className, imageClassName) {
-	for (var coordinateIndex of Object.keys(shots)){
-		var xPos = shots[coordinateIndex][0];
-		var yPos = shots[coordinateIndex][1];
+function updateShots(shots, targetBoard) {
+	shots.forEach(function revealShot(shot){
+		var xPos = shot.x;
+		var yPos = shot.y;
+		var className = shot.status;
 		var targetDiv = $(targetBoard).find('#' + + xPos + '-' + yPos);
 		if (!targetDiv.hasClass(className)) {
 			targetDiv.addClass(className);
@@ -164,22 +173,15 @@ function updateShots(shots, targetBoard, className, imageClassName) {
 				targetDiv.removeClass('filled');
 			}
 		}
-		if (imageClassName) {
-			targetDiv.find('img').addClass(imageClassName);
-		}
-	}
+	});
 }
 
 function updateOpponentShots(opponentShots) {
-	updateShots(opponentShots.hits, 'div#boatfightboard_player', 'hit', 'boat-part_hit');
-	updateShots(opponentShots.misses, 'div#boatfightboard_player', 'missed', false);
-	updateShots(opponentShots.sunk, 'div#boatfightboard_player', 'sunk', 'boat-part_sunk');
+	updateShots(opponentShots, 'div#boatfightboard_player');
 }
 
 function updatePlayerShots(playerShots) {
-	updateShots(playerShots.hits, 'div#boatfightboard_opponent', 'hit', false);
-	updateShots(playerShots.misses, 'div#boatfightboard_opponent', 'missed', false);
-	updateShots(playerShots.sunk, 'div#boatfightboard_opponent', 'sunk', false);
+	updateShots(playerShots, 'div#boatfightboard_opponent');
 }
 
 function updateGame(gameData, turnInitiated) {
@@ -187,7 +189,7 @@ function updateGame(gameData, turnInitiated) {
 	updateOpponentShots(gameData.opponentShots);
 	revealSunkShips(gameData.sunkShips);
 	if(gameData.gameStatus == 'over') {
-		toggleWinner(gameData.winner);
+		toggleWinner(gameData);
 	} else {
 		if(gameData.player.isCurrentPlayer && !turnInitiated) {
 			initiateTurn(gameData);
@@ -209,6 +211,8 @@ $(document).ready(function playGame(){
 	bindCellClick();
 	bindFireClick();
 
+	var manualRefresh = false;
+
 	if (setupData.gameStatus == 'over') {
 		var autoRefresh = false;
 		$.ajax({
@@ -220,7 +224,7 @@ $(document).ready(function playGame(){
 			}
 		});
 	} else {
-		var autoRefresh = true;
+		var autoRefresh = !manualRefresh;
 	}
 
 	if (autoRefresh) {
@@ -238,5 +242,23 @@ $(document).ready(function playGame(){
 				}
 			});
 		}, 1000)
+	}
+
+	if (manualRefresh) {
+		var manualRefreshDiv = $('div#manual-refresh');
+		toggleElementVisibility(manualRefreshDiv, 'on');
+		$('button#manual-refresh').click(function doManualRefresh(){
+			$.ajax({
+				method: 'GET',
+				url: statusUrl,
+				dataType: 'json',
+				success: function (gameData) {
+					turnInitiated = updateGame(gameData, turnInitiated);
+					if (gameData.gameStatus == 'over') {
+						clearInterval(gameLoop);
+					}
+				}
+			});
+		});
 	}
 });

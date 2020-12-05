@@ -11,7 +11,6 @@ from django.utils.timezone import now
 from datetime import datetime
 
 import json
-import jsonfield
 import uuid
 import random
 from namer.models import get_random_name
@@ -195,8 +194,8 @@ class GamePlayer(models.Model):
 class DataGame(models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)
     code_name = models.CharField(max_length=100, default=get_random_name, blank=True, unique=True)
-    meta = jsonfield.JSONField(blank=True)
-    data = jsonfield.JSONField(blank=True)
+    meta = models.JSONField(blank=True)
+    data = models.JSONField(blank=True)
 
     def __str__(self):
         return json.dumps(self.meta)
@@ -267,10 +266,7 @@ class DataGame(models.Model):
 
     @property
     def current_player(self):
-        for gp in self.gameplayer_set.all():
-            if gp.data['isCurrentPlayer'] == True:
-                return gp
-        return None
+        self.gameplayer_set.filter(data__isCurrentPlayer=True).first()
 
     def start_game(self):
         """ Set Game status to active and start the first turn for a random player
@@ -298,7 +294,7 @@ class DataGame(models.Model):
 
 class DataGamePlayer(models.Model):
     player = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='database_gameplayer')
-    data = jsonfield.JSONField(blank=True)
+    data = models.JSONField(blank=True)
 
     def _default_data(self):
         return {

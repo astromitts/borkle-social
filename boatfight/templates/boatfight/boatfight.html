@@ -15,10 +15,13 @@
 		<input type="hidden" id="game-type" value={{game.game_type}} />
 	</div>
 	<div class="row winner-data hidden" id="winner">
-		<div class="big-message" id="winner-data" style="margin: 0 auto; padding-top: 1.5rem;"></div>
+		<div class="big-message" id="winner-data" style="margin: 0 auto; padding-top: .8rem;"></div>
 	</div>
 	<div class="row">
 		<div class="col align-center"><h4>Boat Fight: {{game.game_type}}</h4></div>
+	</div>
+	<div class="row hidden" id="manual-refresh">
+		<div class="col align-center"><button id="manual-refresh">REFRESH</button></div>
 	</div>
 	<div class="row">
 		<div class="col">
@@ -60,9 +63,9 @@
 	</div>
 
 	<div id="boatpart-image-cache" class="hidden">
-		{% for boat_label, boat in boats_to_place.items %}
-			{% for source in boat.image_map %}
-				<img id="{{boat_label}}-{{forloop.counter}}" class="boat-part {{placement_orientations|boat_orientation_class:boat_label}}" src="{% static source %}" />
+		{% for boat in boats_to_place %}
+			{% for source in boat.display.imageMap %}
+				<img id="{{boat.display.label}}-{{forloop.counter}}" class="boat-part boat-part_{{boat.orientation}}" src="{% static source %}" />
 			{% endfor %}
 		{% endfor %}
 	</div>

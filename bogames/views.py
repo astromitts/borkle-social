@@ -173,19 +173,15 @@ class DashBoardDataGameBase(DashboardApiBase):
         for game in games:
             gameplayers = game.gameplayer_set.all()
             player_gameplayer = game.get_gameplayer(self.player)
-            is_current_player = False
-            current_game_player = None
-            for gp in gameplayers:
-                if gp == player_gameplayer and gp.data['isCurrentPlayer']:
-                    is_current_player = True
-                elif gp.data['isCurrentPlayer']:
-                    current_game_player = gp.username
+            current_game_player = game.gameplayer_set.filter(
+                data__isCurrentPlayer=True).first()
+            is_current_player = player_gameplayer == current_game_player
 
             append_to_list.append({
                 'dashboardStatus': status,
                 'uuid': game.uuid,
                 'codeName': game.code_name,
-                'current_player_name': current_game_player,
+                'current_player_name': current_game_player.username,
                 'players': [self._format_player(gp) for gp in gameplayers],
                 'isCurrentPlayer': is_current_player,
                 'link': reverse(self.game_path, kwargs={'game_uuid': game.uuid}),

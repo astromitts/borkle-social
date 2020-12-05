@@ -22,8 +22,8 @@ from boatfight.models import (
     SHIPS,
     BoatFightGame,
     GamePlayer,
-    BoatPlacement,
     Turn,
+    GamePlayerBoard,
 )
 
 class BoatFightBaseView(BoGameBase):
@@ -52,7 +52,6 @@ class BoatFightBaseView(BoGameBase):
                     self.gameplayer = GamePlayer.objects.filter(game=self.game, player=self.player).first()
                     self.boatfighter = GamePlayer.objects.get(player=self.player, game=self.game)
                     self.opponent = self.game.gameplayer_set.exclude(player=self.boatfighter.player).first()
-                    self.boatplacement = BoatPlacement.objects.filter(player=self.boatfighter).first()
                     if self.game.status == 'active' and self.game.all_players_ready:
                         if not self.game.current_player:
                             self.game.start_game()
@@ -102,6 +101,11 @@ class InitializeGame(BoatFightBaseView):
             game.game_type = request.POST['game_type']
             game.created_by = self.player
             game.save()
+            for gameplayer in game.gameplayer_set.all():
+                gameplayerboard = GamePlayerBoard(
+                    gameplayer=gameplayer
+                )
+                gameplayerboard.save()
             return redirect(reverse('boatfight_game', kwargs={'game_uuid': game.uuid}))
         context = {
             'form': form,
@@ -136,25 +140,17 @@ class DashboardApi(BoatFightBaseView, DashboardApiBase):
 
 class GameBoard(BoatFightBaseView):
     def get(self, request, *args, **kwargs):
-        if self.boatplacement:
+        if self.boatfighter.gameplayerboard.ready:
             template = loader.get_template('boatfight/boatfight.html')
             self.game.set_status()
-            available_shots = self.boatfighter.available_shots
             context = {
                 'x_axis': range(1, 11),
                 'y_axis': range(1, 11),
-                'boats_to_place': SHIPS,
-                'available_shots': available_shots,
+                'boats_to_place': self.boatfighter.gameplayerboard.boats,
+                'available_shots': self.boatfighter.available_shots,
                 'game': self.game,
                 'player': self.player,
                 'opponent': self.opponent,
-                'placement_orientations': {
-                    'longship': self.boatplacement.longship_orientation,
-                    'knarr': self.boatplacement.knarr_orientation,
-                    'karve': self.boatplacement.karve_orientation,
-                    'kraken': self.boatplacement.kraken_orientation,
-                    'faering': self.boatplacement.faering_orientation,
-                }
             }
         else:
             template = loader.get_template('boatfight/boatfight_placement_board.html')
@@ -170,9 +166,7 @@ class GameBoard(BoatFightBaseView):
 
     def post(self, request, *args, **kwargs):
         boat_placement_data = {field: int(value) for field, value in request.POST.items()}
-        boat_placement_data.update({'player_id': self.boatfighter.pk})
-        boat_placement = BoatPlacement(**boat_placement_data)
-        boat_placement.save()
+        self.boatfighter.gameplayerboard.set_placements(boat_placement_data)
         self.boatfighter.status = 'ready'
         self.boatfighter.save()
         if self.game.all_players_ready:
@@ -180,6 +174,7 @@ class GameBoard(BoatFightBaseView):
 
         return JsonResponse({
             'status': 'success',
+            'boatsPlaced': self.boatfighter.gameplayerboard.boats
         })
 
 
@@ -205,58 +200,54 @@ class BoatFightApi(BoatFightBaseView):
 
         self.game.set_status()
         if self.game.status == 'over':
-            data['winner'] = self.game.winner.username,
+            loser = self.game.loser
+            data['winner'] = self.game.winner.username
+            data['loser'] = loser.username
+            data['lossType'] = loser.status
 
         if kwargs['api_target'] == 'boardsetup':
-            data['boats'] = {}
-            for boat_type, boat_meta in SHIPS.items():
-                data['boats'][boat_type] = {'positions': []}
-                for i in range(1, boat_meta.units + 1):
-                    xfield = '{}_{}_x'.format(boat_type, i)
-                    yfield = '{}_{}_y'.format(boat_type, i)
-                    position = {
-                        'xPos': getattr(self.boatplacement, xfield),
-                        'yPos': getattr(self.boatplacement, yfield)
-                    }
-                    data['boats'][boat_type]['positions'].append(position)
-
+            data['boats'] = self.boatfighter.gameplayerboard.boats
             if self.game.all_players_ready:
-                data['sunkShips'] = self.opponent.boatplacement.get_sunk_ships()
+                data['sunkShips'] = self.opponent.gameplayerboard.sunk_boats
             else:
-                data['sunkShips'] = {}
+                data['sunkShips'] = []
 
         elif kwargs['api_target'] == 'gamestatus':
-            default_shots = {
-                'hits': [],
-                'misses': [],
-                'sunk': []
-            }
-            if self.opponent.has_boatplacement and self.boatfighter.has_boatplacement:
-                opponent_shots = self.boatfighter.boatplacement.get_opponent_shots(self.opponent)
-                player_shots = self.boatfighter.boatplacement.get_player_shots(self.opponent)
-            else:
-                opponent_shots = default_shots
-                player_shots = default_shots
-            if self.game.all_players_ready or self.opponent.status == 'conceded':
+            opponent_shots = self.opponent.all_shots
+            player_shots = self.boatfighter.all_shots
+            if self.game.all_players_ready or self.game.status == 'over' or self.opponent.status == 'conceded':
                 data['opponentShots'] = opponent_shots
                 data['playerShots'] = player_shots
-                data['sunkShips'] = self.opponent.boatplacement.get_sunk_ships()
+                data['sunkShips'] = self.opponent.gameplayerboard.sunk_boats
             else:
-                data['opponentShots'] = default_shots
-                data['playerShots'] = default_shots
-                data['sunkShips'] = {}
+                data['opponentShots'] = []
+                data['playerShots'] = []
+                data['sunkShips'] = []
         return JsonResponse(data)
 
     def post(self, request, *args, **kwargs):
         if kwargs['api_target'] == 'fire':
-            post_data = {field: int(value) for field, value in request.POST.items()}
-            self.boatfighter.current_turn.update(post_data)
-            hits = self.opponent.boatplacement.check_hits(post_data)
-            hit_data = {field: 'hit' for field in hits}
-            self.boatfighter.current_turn.update(hit_data)
-            self.boatfighter.end_turn()
-            self.opponent.start_turn()
+            posted_shots = []
+            turn_shots = []
+            for i in range(1, 6):
+                x_field = 'shot_{}_x'.format(i)
+                y_field = 'shot_{}_y'.format(i)
+                if x_field in request.POST:
+                    posted_shots.append(
+                        [int(request.POST[x_field]), int(request.POST[y_field])]
+                    )
+                    turn_shot = {
+                        'x': int(request.POST[x_field]),
+                        'y': int(request.POST[y_field]),
+                        'status': 'pending'
+                    }
+                    turn_shots.append(turn_shot)
+
+            hits = self.opponent.gameplayerboard.check_shots(posted_shots)
+            turn_index = self.boatfighter.end_turn(turn_shots, hits)
+            self.opponent.start_turn(turn_index)
             data = {
-                'status': 'success'
+                'status': 'success',
+                'shot_data': self.boatfighter.all_shots,
             }
         return JsonResponse(data)
