@@ -24,7 +24,7 @@ class BoGameBase(View):
         self.dashboard_refresh_url = 'ERROR'
         self.start_game_path = 'ERROR'
         self.template_base = 'bogames/base.html'
-        self.dashboard_api_js_file = 'js/borkle/dashboardApi.js'
+        self.dashboard_api_js_file = 'js/dashboardApi.js'
         self.gamePlayerClass = GamePlayer
 
         if kwargs.get('game_uuid'):

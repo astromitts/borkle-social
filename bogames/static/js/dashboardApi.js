@@ -1,8 +1,16 @@
 function _gameTitle(game) {
-	var gameTitle = document.createElement('h5');
+	var titleSpan = document.createElement('span');
+	var gameTitle = document.createElement('h4');
 	gameTitle.setAttribute('class', 'card-title');
-	gameTitle.innerHTML = '<span class="codename">codename</span>' + game.codeName;
-	return gameTitle;
+	gameTitle.innerHTML = '<span class="codename">codename</span>: ' + game.codeName;
+	titleSpan.append(gameTitle)
+	if (game.gameType) {
+		var gameType = document.createElement('h5');
+		gameType.setAttribute('class', 'game-type');
+		gameType.innerHTML = 'game type: ' + game.gameType;
+		titleSpan.append(gameType)
+	}
+	return titleSpan;
 }
 
 function _gameLink(game) {
@@ -240,7 +248,6 @@ function refreshDashboard() {
 
 $(document).ready(function dashboard(){
 	var autoRefresh = true;
-
 	if (autoRefresh) {
 		var gameLoop = window.setInterval(function startGameLoop(){
 			refreshDashboard();

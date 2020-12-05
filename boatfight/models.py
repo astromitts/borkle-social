@@ -138,7 +138,10 @@ class GamePlayer(models.Model):
 
     @property
     def available_shots(self):
-        return len(self.gameplayerboard.boats) - self.gameplayerboard.count_sunk
+        if self.game.game_type == 'salvo':
+            return len(self.gameplayerboard.boats) - self.gameplayerboard.count_sunk
+        else:
+            return 1
 
     @property
     def current_turn(self):
