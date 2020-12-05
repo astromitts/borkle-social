@@ -123,7 +123,14 @@ class CancelGame(BoatFightBaseView, CancelGameView):
 
 
 class LeaveGame(BoatFightBaseView, LeaveGameView):
-    pass
+    def get(self, request, *args, **kwargs):
+        template = loader.get_template('bogames/confirm_action.html')
+        context = {
+            'base_template': self.template_base,
+            'cancel_url': reverse(self.game_path, kwargs={'game_uuid': self.game.uuid}),
+            'form_header': 'Are you sure you want to concede the game? Your ship placement will be revealed to your opponent.'
+        }
+        return HttpResponse(template.render(context, request))
 
 
 class DeclineGame(BoatFightBaseView, DeclineGameView):
